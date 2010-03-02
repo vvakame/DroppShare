@@ -2,4 +2,5 @@
 <resources>
     <string name="hello">Hello World, DroppShare!</string>
     <string name="app_name">DroppShare</string>
+<string name="application_name">アプリ名</string>
 </resources>
