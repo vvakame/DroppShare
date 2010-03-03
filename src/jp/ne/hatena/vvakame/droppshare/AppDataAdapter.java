@@ -5,7 +5,6 @@ import java.util.List;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +15,40 @@ import android.widget.TextView;
 public class AppDataAdapter extends ArrayAdapter<ApplicationInfo> {
 
 	private Context mCon = null;
+	private AppData[] mAppData = null;
+
+	private List<ApplicationInfo> mAppInfoList = null;
 	private PackageManager mPm = null;
-	private List<ApplicationInfo> mAppList = null;
-	private Drawable[] mIconArray = null;
+
+	private Thread mTh = null;
 
 	public AppDataAdapter(Context context, int textViewResourceId,
-			List<ApplicationInfo> objects) {
-		super(context, textViewResourceId, objects);
+			List<ApplicationInfo> appInfoList) {
+		super(context, textViewResourceId, appInfoList);
+
 		mCon = context;
+		mAppData = new AppData[appInfoList.size()];
+		mAppInfoList = appInfoList;
 		mPm = mCon.getPackageManager();
-		mAppList = objects;
-		mIconArray = new Drawable[mAppList.size()];
+
+		for (int i = 0; i < appInfoList.size(); i++) {
+			AppData appData = new AppData();
+			appData.setAppName(mPm.getApplicationLabel(appInfoList.get(i)));
+
+			mAppData[i] = appData;
+		}
+
+		mTh = new Thread() {
+			@Override
+			public void run() {
+				for (int i = 0; i < mAppInfoList.size(); i++) {
+					mAppData[i].setIcon(mAppInfoList.get(i).loadIcon(mPm));
+				}
+				// GCされたい
+				mAppInfoList = null;
+			}
+		};
+		mTh.start();
 	}
 
 	@Override
@@ -37,23 +59,15 @@ public class AppDataAdapter extends ArrayAdapter<ApplicationInfo> {
 			convertView = inflater.inflate(R.layout.application_view, null);
 		}
 
-		ApplicationInfo appData = mAppList.get(position);
-
-		ImageView iconView = (ImageView) convertView
-				.findViewById(R.id.application_icon);
-		Drawable iconImg = null;
-		if (mIconArray[position] != null) {
-			iconImg = mIconArray[position];
-		} else {
-			iconImg = appData.loadIcon(mPm);
-			mIconArray[position] = iconImg;
+		if (mAppData[position].getIcon() != null) {
+			ImageView iconView = (ImageView) convertView
+					.findViewById(R.id.application_icon);
+			iconView.setImageDrawable(mAppData[position].getIcon());
 		}
-		iconView.setImageDrawable(iconImg);
 
 		TextView appNameText = (TextView) convertView
 				.findViewById(R.id.application_name);
-		CharSequence appName = mPm.getApplicationLabel(appData);
-		appNameText.setText(appName);
+		appNameText.setText(mAppData[position].getAppName());
 
 		return convertView;
 	}
