@@ -7,7 +7,10 @@ import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -15,6 +18,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class DroppShareActivity extends Activity {
@@ -37,25 +41,46 @@ public class DroppShareActivity extends Activity {
 			mEventImpl = new EventNormalImpl();
 		}
 
-		mPm = getPackageManager();
-		List<ApplicationInfo> appInfoList = mPm
-				.getInstalledApplications(PackageManager.GET_ACTIVITIES);
+		/*
+		 * mPm = getPackageManager(); List<ApplicationInfo> appInfoList = mPm
+		 * .getInstalledApplications(PackageManager.GET_ACTIVITIES);
+		 * 
+		 * // TODO getApplicationLabelは決して安くない Collections.sort(appInfoList, new
+		 * Comparator<ApplicationInfo>() {
+		 * 
+		 * @Override public int compare(ApplicationInfo obj1, ApplicationInfo
+		 * obj2) { String str1 = mPm.getApplicationLabel(obj1).toString();
+		 * String str2 = mPm.getApplicationLabel(obj2).toString(); return
+		 * str1.compareTo(str2); } });
+		 * 
+		 * AppDataAdapter appDataAdapter = new AppDataAdapter(this,
+		 * R.layout.application_view, appInfoList); ListView listView =
+		 * (ListView) findViewById(R.id.app_list);
+		 * listView.setAdapter(appDataAdapter);
+		 * listView.setOnItemClickListener(mEventImpl);
+		 */
+	}
 
-		// TODO getApplicationLabelは決して安くない
-		Collections.sort(appInfoList, new Comparator<ApplicationInfo>() {
-			@Override
-			public int compare(ApplicationInfo obj1, ApplicationInfo obj2) {
-				String str1 = mPm.getApplicationLabel(obj1).toString();
-				String str2 = mPm.getApplicationLabel(obj2).toString();
-				return str1.compareTo(str2);
-			}
-		});
+	private BroadcastReceiver mReceiver = null;
 
-		AppDataAdapter appDataAdapter = new AppDataAdapter(this,
-				R.layout.application_view, appInfoList);
-		ListView listView = (ListView) findViewById(R.id.app_list);
-		listView.setAdapter(appDataAdapter);
-		listView.setOnItemClickListener(mEventImpl);
+	@Override
+	public void onResume() {
+		super.onResume();
+
+		// test
+		/*
+		 * mReceiver = new DroppShareReceiver(); IntentFilter filter = new
+		 * IntentFilter(); filter.addAction(Intent.ACTION_BOOT_COMPLETED);
+		 * filter.addAction(Intent.ACTION_PACKAGE_INSTALL);
+		 * registerReceiver(mReceiver, filter);
+		 */
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+
+		unregisterReceiver(mReceiver);
 	}
 
 	private String getUriFromAppData(String appName)

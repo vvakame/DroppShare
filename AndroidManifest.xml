@@ -16,6 +16,12 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
+		<receiver android:name="DroppShareReceiver">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+				<action android:name="android.intent.action.PACKAGE_INSTALL" />
+			</intent-filter>
+		</receiver>
 	</application>
 	<uses-sdk android:minSdkVersion="4" />
 </manifest> 
