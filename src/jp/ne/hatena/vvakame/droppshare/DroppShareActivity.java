@@ -8,20 +8,23 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class DroppShareActivity extends Activity {
+	private static final String TAG = DroppShareActivity.class.getSimpleName();
 
 	private static final String ACTION_INTERCEPT = "com.adamrocker.android.simeji.ACTION_INTERCEPT";
 	private static final String REPLACE_KEY = "replace_key";
@@ -32,6 +35,8 @@ public class DroppShareActivity extends Activity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
@@ -41,46 +46,56 @@ public class DroppShareActivity extends Activity {
 			mEventImpl = new EventNormalImpl();
 		}
 
-		/*
-		 * mPm = getPackageManager(); List<ApplicationInfo> appInfoList = mPm
-		 * .getInstalledApplications(PackageManager.GET_ACTIVITIES);
-		 * 
-		 * // TODO getApplicationLabelは決して安くない Collections.sort(appInfoList, new
-		 * Comparator<ApplicationInfo>() {
-		 * 
-		 * @Override public int compare(ApplicationInfo obj1, ApplicationInfo
-		 * obj2) { String str1 = mPm.getApplicationLabel(obj1).toString();
-		 * String str2 = mPm.getApplicationLabel(obj2).toString(); return
-		 * str1.compareTo(str2); } });
-		 * 
-		 * AppDataAdapter appDataAdapter = new AppDataAdapter(this,
-		 * R.layout.application_view, appInfoList); ListView listView =
-		 * (ListView) findViewById(R.id.app_list);
-		 * listView.setAdapter(appDataAdapter);
-		 * listView.setOnItemClickListener(mEventImpl);
-		 */
+		mPm = getPackageManager();
+		List<ApplicationInfo> appInfoList = mPm
+				.getInstalledApplications(PackageManager.GET_ACTIVITIES);
+
+		// TODO getApplicationLabelは決して安くない
+		Collections.sort(appInfoList, new Comparator<ApplicationInfo>() {
+
+			@Override
+			public int compare(ApplicationInfo obj1, ApplicationInfo obj2) {
+				String str1 = mPm.getApplicationLabel(obj1).toString();
+				String str2 = mPm.getApplicationLabel(obj2).toString();
+				return str1.compareTo(str2);
+			}
+		});
+
+		AppDataAdapter appDataAdapter = new AppDataAdapter(this,
+				R.layout.application_view, appInfoList);
+		ListView listView = (ListView) findViewById(R.id.app_list);
+		listView.setAdapter(appDataAdapter);
+		listView.setOnItemClickListener(mEventImpl);
 	}
 
-	private BroadcastReceiver mReceiver = null;
+	private IDroppDataService mServiceInterface = null;
+	ServiceConnection mServiceConnection = new ServiceConnection() {
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			mServiceInterface = IDroppDataService.Stub.asInterface(service);
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			mServiceInterface = null;
+		}
+	};
 
 	@Override
 	public void onResume() {
-		super.onResume();
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 
-		// test
-		/*
-		 * mReceiver = new DroppShareReceiver(); IntentFilter filter = new
-		 * IntentFilter(); filter.addAction(Intent.ACTION_BOOT_COMPLETED);
-		 * filter.addAction(Intent.ACTION_PACKAGE_INSTALL);
-		 * registerReceiver(mReceiver, filter);
-		 */
+		super.onResume();
+		Intent service = new Intent(this, DroppShareService.class);
+		bindService(service, mServiceConnection, Context.BIND_AUTO_CREATE);
 	}
 
 	@Override
 	public void onPause() {
-		super.onPause();
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 
-		unregisterReceiver(mReceiver);
+		super.onPause();
+		unbindService(mServiceConnection);
 	}
 
 	private String getUriFromAppData(String appName)
