@@ -33,7 +33,9 @@ public class AppDataAdapter extends ArrayAdapter<ApplicationInfo> {
 
 		for (int i = 0; i < appInfoList.size(); i++) {
 			AppData appData = new AppData();
-			appData.setAppName(mPm.getApplicationLabel(appInfoList.get(i)));
+			String appName = mPm.getApplicationLabel(appInfoList.get(i))
+					.toString();
+			appData.setAppName(appName);
 
 			mAppData[i] = appData;
 		}

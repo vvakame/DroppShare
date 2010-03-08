@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +15,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -88,6 +88,11 @@ public class DroppShareActivity extends Activity {
 		super.onResume();
 		Intent service = new Intent(this, DroppShareService.class);
 		bindService(service, mServiceConnection, Context.BIND_AUTO_CREATE);
+		try {
+			mServiceInterface.showToast();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
