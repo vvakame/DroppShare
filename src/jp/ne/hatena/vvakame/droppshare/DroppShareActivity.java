@@ -2,8 +2,6 @@ package jp.ne.hatena.vvakame.droppshare;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
@@ -11,8 +9,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -31,8 +27,6 @@ public class DroppShareActivity extends Activity {
 
 	private OnItemClickListener mEventImpl = null;
 
-	private PackageManager mPm = null;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
@@ -46,25 +40,7 @@ public class DroppShareActivity extends Activity {
 			mEventImpl = new EventNormalImpl();
 		}
 
-		mPm = getPackageManager();
-		List<ApplicationInfo> appInfoList = mPm
-				.getInstalledApplications(PackageManager.GET_ACTIVITIES);
-
-		// TODO getApplicationLabelは決して安くない
-		Collections.sort(appInfoList, new Comparator<ApplicationInfo>() {
-
-			@Override
-			public int compare(ApplicationInfo obj1, ApplicationInfo obj2) {
-				String str1 = mPm.getApplicationLabel(obj1).toString();
-				String str2 = mPm.getApplicationLabel(obj2).toString();
-				return str1.compareTo(str2);
-			}
-		});
-
-		AppDataAdapter appDataAdapter = new AppDataAdapter(this,
-				R.layout.application_view, appInfoList);
 		ListView listView = (ListView) findViewById(R.id.app_list);
-		listView.setAdapter(appDataAdapter);
 		listView.setOnItemClickListener(mEventImpl);
 	}
 
@@ -73,6 +49,19 @@ public class DroppShareActivity extends Activity {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			mServiceInterface = IDroppDataService.Stub.asInterface(service);
+
+			List<AppData> appDataList = null;
+			try {
+				appDataList = mServiceInterface.getAppDataList();
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+
+			AppDataAdapter appDataAdapter = new AppDataAdapter(
+					DroppShareActivity.this, R.layout.application_view,
+					appDataList);
+			ListView listView = (ListView) findViewById(R.id.app_list);
+			listView.setAdapter(appDataAdapter);
 		}
 
 		@Override
@@ -88,11 +77,6 @@ public class DroppShareActivity extends Activity {
 		super.onResume();
 		Intent service = new Intent(this, DroppShareService.class);
 		bindService(service, mServiceConnection, Context.BIND_AUTO_CREATE);
-		try {
-			mServiceInterface.showToast();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override

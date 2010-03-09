@@ -1,5 +1,7 @@
 package jp.ne.hatena.vvakame.droppshare;
 
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,28 +11,14 @@ public class AppData implements Parcelable {
 	private String packageName = null;
 	private Drawable icon = null;
 
-	public String getAppName() {
-		return appName;
-	}
+	public static AppData convApplicationInfo(PackageManager pm,
+			ApplicationInfo appInfo) {
+		AppData appData = new AppData();
+		appData.setAppName(pm.getApplicationLabel(appInfo).toString());
+		appData.setPackageName(appInfo.packageName);
+		appData.setIcon(pm.getApplicationIcon(appInfo));
 
-	public void setAppName(String appName) {
-		this.appName = appName;
-	}
-
-	public void setPackageName(String packageName) {
-		this.packageName = packageName;
-	}
-
-	public String getPackageName() {
-		return packageName;
-	}
-
-	public Drawable getIcon() {
-		return icon;
-	}
-
-	public void setIcon(Drawable icon) {
-		this.icon = icon;
+		return appData;
 	}
 
 	public AppData() {
@@ -65,4 +53,29 @@ public class AppData implements Parcelable {
 	public int describeContents() {
 		return 0;
 	}
+
+	public String getAppName() {
+		return appName;
+	}
+
+	public void setAppName(String appName) {
+		this.appName = appName;
+	}
+
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
+	}
+
+	public String getPackageName() {
+		return packageName;
+	}
+
+	public Drawable getIcon() {
+		return icon;
+	}
+
+	public void setIcon(Drawable icon) {
+		this.icon = icon;
+	}
+
 }
