@@ -1,4 +1,4 @@
-package jp.ne.hatena.vvakame.droppshare;
+package net.vvakame.droppshare;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

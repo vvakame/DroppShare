@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package jp.ne.hatena.vvakame.droppshare;
+package net.vvakame.droppshare;
 
 public final class R {
     public static final class attr {

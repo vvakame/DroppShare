@@ -1,7 +1,7 @@
-package jp.ne.hatena.vvakame.droppshare;
+package net.vvakame.droppshare;
 
-import jp.ne.hatena.vvakame.droppshare.AppData;
-import jp.ne.hatena.vvakame.droppshare.IDroppServiceCallback;
+import net.vvakame.droppshare.AppData;
+import net.vvakame.droppshare.IDroppServiceCallback;
 
 interface IDroppDataService {
 	List<AppData> getAppDataList();

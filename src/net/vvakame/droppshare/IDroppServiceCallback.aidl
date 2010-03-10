@@ -1,6 +1,6 @@
-package jp.ne.hatena.vvakame.droppshare;
+package net.vvakame.droppshare;
 
-import jp.ne.hatena.vvakame.droppshare.AppData;
+import net.vvakame.droppshare.AppData;
 
 oneway interface IDroppServiceCallback {
 	void pushAppDataList(in List<AppData> appDataList);
