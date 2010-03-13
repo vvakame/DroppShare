@@ -1,58 +1,15 @@
 package net.vvakame.droppshare;
 
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.io.Serializable;
 
-public class AppData implements Parcelable {
+import android.graphics.drawable.Drawable;
+
+public class AppData implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private String appName = null;
 	private String packageName = null;
-	private Drawable icon = null;
-
-	public static AppData convApplicationInfo(PackageManager pm,
-			ApplicationInfo appInfo) {
-		AppData appData = new AppData();
-		appData.setAppName(pm.getApplicationLabel(appInfo).toString());
-		appData.setPackageName(appInfo.packageName);
-		appData.setIcon(pm.getApplicationIcon(appInfo));
-
-		return appData;
-	}
-
-	public AppData() {
-	}
-
-	public AppData(Parcel in) {
-		appName = in.readString();
-		packageName = in.readString();
-		// icon = (Drawable) in.readValue(AppData.class.getClassLoader());
-	}
-
-	@Override
-	public void writeToParcel(Parcel out, int flags) {
-		out.writeString(appName);
-		out.writeString(packageName);
-		// out.writeValue(icon);
-	}
-
-	public static final Parcelable.Creator<AppData> CREATOR = new Creator<AppData>() {
-		@Override
-		public AppData createFromParcel(Parcel source) {
-			return new AppData(source);
-		}
-
-		@Override
-		public AppData[] newArray(int size) {
-			return new AppData[size];
-		}
-	};
-
-	@Override
-	public int describeContents() {
-		return 0;
-	}
+	private transient Drawable icon = null;
 
 	public String getAppName() {
 		return appName;
@@ -77,5 +34,4 @@ public class AppData implements Parcelable {
 	public void setIcon(Drawable icon) {
 		this.icon = icon;
 	}
-
 }

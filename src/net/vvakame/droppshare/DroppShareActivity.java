@@ -1,22 +1,25 @@
 package net.vvakame.droppshare;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class DroppShareActivity extends Activity {
@@ -25,7 +28,11 @@ public class DroppShareActivity extends Activity {
 	private static final String ACTION_INTERCEPT = "com.adamrocker.android.simeji.ACTION_INTERCEPT";
 	private static final String REPLACE_KEY = "replace_key";
 
+	private PackageManager mPm = null;
+
 	private OnItemClickListener mEventImpl = null;
+
+	private List<AppData> mAppDataList = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -42,41 +49,73 @@ public class DroppShareActivity extends Activity {
 
 		ListView listView = (ListView) findViewById(R.id.app_list);
 		listView.setOnItemClickListener(mEventImpl);
-	}
 
-	private IDroppDataService mServiceInterface = null;
-	ServiceConnection mServiceConnection = new ServiceConnection() {
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			mServiceInterface = IDroppDataService.Stub.asInterface(service);
+		mAppDataList = new ArrayList<AppData>();
 
-			List<AppData> appDataList = null;
-			try {
-				appDataList = mServiceInterface.getAppDataList();
-			} catch (RemoteException e) {
-				e.printStackTrace();
+		FilenameFilter filenameFilter = new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String filename) {
+				return filename.endsWith(".data");
+			}
+		};
+		File[] serializedFiles = getFilesDir().listFiles(filenameFilter);
+
+		if (serializedFiles.length != 0) {
+			for (File file : serializedFiles) {
+				AppData appData = AppDataUtil.readSerializedFile(this, file);
+				if (appData != null) {
+					mAppDataList.add(appData);
+				}
+			}
+		} else {
+			mPm = getPackageManager();
+			List<ApplicationInfo> appInfoList = mPm
+					.getInstalledApplications(PackageManager.GET_ACTIVITIES);
+
+			for (ApplicationInfo appInfo : appInfoList) {
+				Log.d(TAG, "now processing " + appInfo.packageName);
+
+				AppData appData = new AppData();
+
+				appData.setAppName(mPm.getApplicationLabel(appInfo).toString());
+				appData.setPackageName(appInfo.packageName);
+
+				Drawable icon = mPm.getApplicationIcon(appInfo);
+
+				if (icon instanceof BitmapDrawable) {
+					Bitmap resizedBitmap = AppDataUtil
+							.getResizedBitmapDrawable(((BitmapDrawable) icon)
+									.getBitmap());
+					icon = new BitmapDrawable(resizedBitmap);
+				} else {
+					Log.d(TAG, "Not supported icon type: "
+							+ icon.getClass().getSimpleName());
+				}
+				appData.setIcon(icon);
+
+				// AppDataUtil.writeSerializedFile(this, appData);
+
+				mAppDataList.add(appData);
 			}
 
-			AppDataAdapter appDataAdapter = new AppDataAdapter(
-					DroppShareActivity.this, R.layout.application_view,
-					appDataList);
-			ListView listView = (ListView) findViewById(R.id.app_list);
-			listView.setAdapter(appDataAdapter);
+			Collections.sort(mAppDataList, new Comparator<AppData>() {
+				@Override
+				public int compare(AppData obj1, AppData obj2) {
+					return obj1.getAppName().compareTo(obj2.getAppName());
+				}
+			});
 		}
 
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-			mServiceInterface = null;
-		}
-	};
+		AppDataAdapter appAdapter = new AppDataAdapter(this,
+				R.layout.application_view, mAppDataList);
+		listView.setAdapter(appAdapter);
+	}
 
 	@Override
 	public void onResume() {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 
 		super.onResume();
-		Intent service = new Intent(this, DroppShareService.class);
-		bindService(service, mServiceConnection, Context.BIND_AUTO_CREATE);
 	}
 
 	@Override
@@ -84,13 +123,6 @@ public class DroppShareActivity extends Activity {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 
 		super.onPause();
-		unbindService(mServiceConnection);
-	}
-
-	private String getUriFromAppData(String appName)
-			throws UnsupportedEncodingException {
-		return "http://market.android.com/search?q="
-				+ URLEncoder.encode(appName, "UTF-8");
 	}
 
 	private boolean isCalledBySimeji() {
@@ -116,12 +148,11 @@ public class DroppShareActivity extends Activity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			TextView appNameText = (TextView) view
-					.findViewById(R.id.application_name);
-			String appName = appNameText.getText().toString();
+			AppData appData = mAppDataList.get(position);
+
 			String marketUri = null;
 			try {
-				marketUri = getUriFromAppData(appName);
+				marketUri = AppDataUtil.getUriFromAppData(appData);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
@@ -129,7 +160,8 @@ public class DroppShareActivity extends Activity {
 			Intent data = new Intent();
 			data.setAction(Intent.ACTION_SEND);
 			data.setType("text/plain");
-			data.putExtra(Intent.EXTRA_TEXT, appName + " " + marketUri);
+			data.putExtra(Intent.EXTRA_TEXT, appData.getAppName() + " "
+					+ marketUri);
 
 			startActivity(data);
 			finish();
@@ -140,16 +172,16 @@ public class DroppShareActivity extends Activity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			TextView appNameText = (TextView) view
-					.findViewById(R.id.application_name);
-			String appName = appNameText.getText().toString();
+			AppData appData = mAppDataList.get(position);
+
 			String marketUri = null;
 			try {
-				marketUri = getUriFromAppData(appName);
+				marketUri = AppDataUtil.getUriFromAppData(mAppDataList
+						.get(position));
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
-			pushToSimeji(appName + " " + marketUri);
+			pushToSimeji(appData.getAppName() + " " + marketUri);
 		}
 	}
 }

@@ -4,8 +4,8 @@
 	<ImageView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:id="@+id/application_icon"
 		android:src="@drawable/icon" android:scaleType="fitXY"
-		android:adjustViewBounds="true" android:maxHeight="50dip"
-		android:maxWidth="50dip" android:minHeight="50dip" android:minWidth="50dip"></ImageView>
+		android:adjustViewBounds="true" android:maxHeight="48px"
+		android:maxWidth="48px" android:minHeight="48px" android:minWidth="48px"></ImageView>
 	<TextView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:text="@string/application_name"></TextView>
 	<TextView android:layout_width="wrap_content"
