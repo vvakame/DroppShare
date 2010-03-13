@@ -149,7 +149,7 @@ public class DroppShareActivity extends Activity {
 
 		super.onResume();
 
-		if (mDone) {
+		if (mDone && mAppDataList != null && mAppDataList.size() != 0) {
 			return;
 		}
 
@@ -167,7 +167,9 @@ public class DroppShareActivity extends Activity {
 		ListView listView = (ListView) findViewById(R.id.app_list);
 		listView.setOnItemClickListener(mEventImpl);
 
-		mTh.start();
+		if (!mTh.isAlive()) {
+			mTh.start();
+		}
 	}
 
 	@Override
@@ -181,7 +183,7 @@ public class DroppShareActivity extends Activity {
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DIALOG_PROGRESS:
-			mProgDialog = new ProgressDialog(this);
+			mProgDialog = new FunnyProgressDialog(this);
 			onPrepareDialog(id, mProgDialog);
 
 			return mProgDialog;
