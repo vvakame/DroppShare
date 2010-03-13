@@ -3,4 +3,6 @@
 	<string name="hello">Hello World, DroppShare!</string>
 	<string name="app_name">DroppShare</string>
 	<string name="application_name">アプリ名</string>
+<string name="wait_a_moment">少々お待ちください...</string>
+<string name="now_reading_app_data">アプリケーションデータ読込中</string>
 </resources>

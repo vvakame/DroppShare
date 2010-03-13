@@ -34,4 +34,8 @@ public class AppData implements Serializable {
 	public void setIcon(Drawable icon) {
 		this.icon = icon;
 	}
+
+	public String getUniqName() {
+		return this.appName + "_" + this.packageName;
+	}
 }
