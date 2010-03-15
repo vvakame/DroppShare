@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	
+	<item android:title="@string/cache_refresh" android:id="@+id/cache_refresh" android:icon="@android:drawable/ic_menu_rotate" android:numericShortcut="1" /><item android:icon="@android:drawable/ic_menu_preferences" android:id="@+id/preferences"
+		android:title="@string/preferences" android:numericShortcut="2"></item>
+</menu>

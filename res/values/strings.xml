@@ -2,6 +2,17 @@
 <resources>
 	<string name="app_name">DroppShare</string>
 	<string name="application_name">アプリ名</string>
-	<string name="wait_a_moment">少々お待ちください...</string>
+
 	<string name="now_reading_app_data">アプリ読込&amp;一覧作成中</string>
+	<string name="wait_a_moment">少々お待ちください...</string>
+
+	<string name="cache_refresh">キャッシュ最新化</string>
+	<string name="preferences">設定</string>
+
+	<string name="paste_uri_type">URI貼付け形式</string>
+	<string name="paste_uri_type_summary">どの形式で伝えるかを選びます。</string>
+
+	<string name="message_template_title">メッセージ形式</string>
+	<string name="message_template_summary">$app, $market と記述すると置き換えられます。</string>
+	<string name="message_template">$app - $market #droppshare</string>
 </resources>

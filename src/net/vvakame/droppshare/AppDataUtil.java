@@ -10,7 +10,6 @@ import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import android.content.Context;
@@ -24,10 +23,13 @@ public class AppDataUtil {
 
 	public static final String CACHE_FILE = "appDataList.cache";
 
-	public static String getUriFromAppData(AppData appData)
-			throws UnsupportedEncodingException {
+	public static String getHttpUriFromAppData(AppData appData) {
 		return "http://market.android.com/details?id="
 				+ appData.getPackageName();
+	}
+
+	public static String getMarketUriFromAppData(AppData appData) {
+		return "market://details?id=" + appData.getPackageName();
 	}
 
 	public static Bitmap getResizedBitmapDrawable(Bitmap origBitmap) {

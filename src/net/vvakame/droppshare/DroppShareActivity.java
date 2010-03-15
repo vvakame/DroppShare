@@ -1,6 +1,6 @@
 package net.vvakame.droppshare;
 
-import java.io.UnsupportedEncodingException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,6 +19,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -44,7 +47,182 @@ public class DroppShareActivity extends Activity {
 
 	private List<AppData> mAppDataList = null;
 
-	private Thread mTh = new Thread() {
+	private Thread mTh = null;
+
+	private Handler mProgHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			switch (msg.what) {
+			case MESSAGE_READING_APP_DATA:
+
+				if (mDone) {
+					AppDataAdapter appAdapter = new AppDataAdapter(
+							DroppShareActivity.this, R.layout.application_view,
+							mAppDataList);
+					ListView listView = (ListView) findViewById(R.id.app_list);
+					listView.setAdapter(appAdapter);
+					dismissDialog(DIALOG_PROGRESS);
+
+				} else {
+					mProgHandler.sendEmptyMessageDelayed(
+							MESSAGE_READING_APP_DATA, 100);
+				}
+
+				break;
+
+			case MESSAGE_UPDATE_PROGRESS:
+				mProgDialog.setMessage(msg.obj.toString());
+				break;
+
+			default:
+				break;
+			}
+		}
+	};
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+
+		super.onCreate(savedInstanceState);
+
+		setContentView(R.layout.main);
+	}
+
+	@Override
+	public void onResume() {
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+
+		super.onResume();
+
+		if (mDone && mAppDataList != null && mAppDataList.size() != 0) {
+			return;
+		}
+
+		constructCache();
+	}
+
+	private void constructCache() {
+		mDone = false;
+
+		showDialog(DIALOG_PROGRESS);
+		mProgHandler.sendEmptyMessage(MESSAGE_READING_APP_DATA);
+
+		if (isCalledBySimeji()) {
+			mEventImpl = new EventSimejiImpl();
+		} else {
+			mEventImpl = new EventNormalImpl();
+		}
+
+		ListView listView = (ListView) findViewById(R.id.app_list);
+		listView.setOnItemClickListener(mEventImpl);
+
+		mTh = new createCacheThread();
+		mTh.start();
+	}
+
+	@Override
+	public void onPause() {
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+
+		super.onPause();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		boolean ret = true;
+		Intent intent = null;
+		switch (item.getItemId()) {
+		case R.id.cache_refresh:
+			File[] allCacheFiles = getFilesDir().listFiles();
+			for (File file : allCacheFiles) {
+				file.delete();
+			}
+
+			constructCache();
+
+			break;
+
+		case R.id.preferences:
+			intent = new Intent(this, PreferencesActivity.class);
+			startActivity(intent);
+			break;
+
+		default:
+			ret = super.onOptionsItemSelected(item);
+			break;
+		}
+		return ret;
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DIALOG_PROGRESS:
+			mProgDialog = new FunnyProgressDialog(this);
+			onPrepareDialog(id, mProgDialog);
+
+			return mProgDialog;
+		default:
+			break;
+		}
+		return null;
+	}
+
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		switch (id) {
+		case DIALOG_PROGRESS:
+			ProgressDialog progDialog = (ProgressDialog) dialog;
+			progDialog.setTitle(getString(R.string.now_reading_app_data));
+			progDialog.setMessage(getString(R.string.wait_a_moment));
+			progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			progDialog.setCancelable(false);
+
+			break;
+		default:
+			break;
+		}
+	}
+
+	private String genPassionateMessage(AppData appData) {
+		String message = PreferencesActivity.getMessageTemplate(this);
+
+		String uri = null;
+		if (PreferencesActivity.isHttp(this)) {
+			uri = AppDataUtil.getHttpUriFromAppData(appData);
+		} else {
+			uri = AppDataUtil.getMarketUriFromAppData(appData);
+		}
+
+		message = message.replace("$app", appData.getAppName());
+		message = message.replace("$market", uri);
+
+		return message;
+	}
+
+	private boolean isCalledBySimeji() {
+		Intent intent = getIntent();
+		String action = intent.getAction();
+
+		// Simejiから呼び出された時
+		if (action != null && ACTION_INTERCEPT.equals(action)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	class createCacheThread extends Thread {
 		@Override
 		public void run() {
 
@@ -102,130 +280,6 @@ public class DroppShareActivity extends Activity {
 
 			mDone = true;
 		}
-	};
-
-	private Handler mProgHandler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
-			switch (msg.what) {
-			case MESSAGE_READING_APP_DATA:
-
-				if (mDone) {
-					AppDataAdapter appAdapter = new AppDataAdapter(
-							DroppShareActivity.this, R.layout.application_view,
-							mAppDataList);
-					ListView listView = (ListView) findViewById(R.id.app_list);
-					listView.setAdapter(appAdapter);
-					dismissDialog(DIALOG_PROGRESS);
-
-				} else {
-					mProgHandler.sendEmptyMessageDelayed(
-							MESSAGE_READING_APP_DATA, 100);
-				}
-
-				break;
-
-			case MESSAGE_UPDATE_PROGRESS:
-				mProgDialog.setMessage(msg.obj.toString());
-				break;
-
-			default:
-				break;
-			}
-		}
-	};
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-
-		super.onCreate(savedInstanceState);
-	}
-
-	@Override
-	public void onResume() {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-
-		super.onResume();
-
-		if (mDone && mAppDataList != null && mAppDataList.size() != 0) {
-			return;
-		}
-
-		showDialog(DIALOG_PROGRESS);
-		mProgHandler.sendEmptyMessage(MESSAGE_READING_APP_DATA);
-
-		setContentView(R.layout.main);
-
-		if (isCalledBySimeji()) {
-			mEventImpl = new EventSimejiImpl();
-		} else {
-			mEventImpl = new EventNormalImpl();
-		}
-
-		ListView listView = (ListView) findViewById(R.id.app_list);
-		listView.setOnItemClickListener(mEventImpl);
-
-		if (!mTh.isAlive()) {
-			mTh.start();
-		}
-	}
-
-	@Override
-	public void onPause() {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-
-		super.onPause();
-	}
-
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-		case DIALOG_PROGRESS:
-			mProgDialog = new FunnyProgressDialog(this);
-			onPrepareDialog(id, mProgDialog);
-
-			return mProgDialog;
-		default:
-			break;
-		}
-		return null;
-	}
-
-	@Override
-	protected void onPrepareDialog(int id, Dialog dialog) {
-		switch (id) {
-		case DIALOG_PROGRESS:
-			ProgressDialog progDialog = (ProgressDialog) dialog;
-			progDialog.setTitle(getString(R.string.now_reading_app_data));
-			progDialog.setMessage(getString(R.string.wait_a_moment));
-			progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			progDialog.setCancelable(false);
-
-			break;
-		default:
-			break;
-		}
-	}
-
-	private boolean isCalledBySimeji() {
-		Intent intent = getIntent();
-		String action = intent.getAction();
-
-		// Simejiから呼び出された時
-		if (action != null && ACTION_INTERCEPT.equals(action)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	private void pushToSimeji(String result) {
-		Intent data = new Intent();
-		data.putExtra(REPLACE_KEY, result);
-		setResult(RESULT_OK, data);
-		finish();
 	}
 
 	class EventNormalImpl implements OnItemClickListener {
@@ -234,18 +288,10 @@ public class DroppShareActivity extends Activity {
 				long id) {
 			AppData appData = mAppDataList.get(position);
 
-			String marketUri = null;
-			try {
-				marketUri = AppDataUtil.getUriFromAppData(appData);
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-
 			Intent data = new Intent();
 			data.setAction(Intent.ACTION_SEND);
 			data.setType("text/plain");
-			data.putExtra(Intent.EXTRA_TEXT, appData.getAppName() + " "
-					+ marketUri);
+			data.putExtra(Intent.EXTRA_TEXT, genPassionateMessage(appData));
 
 			startActivity(data);
 			finish();
@@ -258,14 +304,14 @@ public class DroppShareActivity extends Activity {
 				long id) {
 			AppData appData = mAppDataList.get(position);
 
-			String marketUri = null;
-			try {
-				marketUri = AppDataUtil.getUriFromAppData(mAppDataList
-						.get(position));
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-			pushToSimeji(appData.getAppName() + " " + marketUri);
+			pushToSimeji(genPassionateMessage(appData));
+		}
+
+		private void pushToSimeji(String result) {
+			Intent data = new Intent();
+			data.putExtra(REPLACE_KEY, result);
+			setResult(RESULT_OK, data);
+			finish();
 		}
 	}
 }
