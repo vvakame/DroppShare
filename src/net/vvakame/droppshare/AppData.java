@@ -9,6 +9,8 @@ public class AppData implements Serializable {
 
 	private String appName = null;
 	private String packageName = null;
+	private String description = null;
+	private String versionName = null;
 	private transient Drawable icon = null;
 
 	public String getAppName() {
@@ -19,12 +21,36 @@ public class AppData implements Serializable {
 		this.appName = appName;
 	}
 
-	public void setPackageName(String packageName) {
-		this.packageName = packageName;
+	public void setAppName(CharSequence appName) {
+		this.appName = toString(appName);
 	}
 
 	public String getPackageName() {
 		return packageName;
+	}
+
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setDescription(CharSequence description) {
+		this.description = toString(description);
+	}
+
+	public String getVersionName() {
+		return versionName;
+	}
+
+	public void setVersionName(String versionName) {
+		this.versionName = versionName;
 	}
 
 	public Drawable getIcon() {
@@ -37,5 +63,9 @@ public class AppData implements Serializable {
 
 	public String getUniqName() {
 		return this.appName + "_" + this.packageName;
+	}
+
+	private String toString(CharSequence charSeq) {
+		return charSeq != null ? charSeq.toString() : null;
 	}
 }

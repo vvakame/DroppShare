@@ -24,12 +24,15 @@ public class AppDataUtil {
 	public static final String CACHE_FILE = "appDataList.cache";
 
 	public static String getHttpUriFromAppData(AppData appData) {
-		return "http://market.android.com/details?id="
+		// TODO Vendingが落ちなくなったら"http://market.android.com/details?id="に戻すこと
+		return "http://market.android.com/search?q=pname:"
 				+ appData.getPackageName();
 	}
 
 	public static String getMarketUriFromAppData(AppData appData) {
-		return "market://details?id=" + appData.getPackageName();
+		// TODO Vendingが落ちなくなったら"http://market.android.com/details?id="に戻すこと
+		return "http://market.android.com/search?q=pname:"
+				+ appData.getPackageName();
 	}
 
 	public static Bitmap getResizedBitmapDrawable(Bitmap origBitmap) {

@@ -11,7 +11,9 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -243,11 +245,25 @@ public class DroppShareActivity extends Activity {
 				for (ApplicationInfo appInfo : appInfoList) {
 					Log.d(TAG, "now processing " + appInfo.packageName);
 
+					// デフォルト系アプリを撥ねる
+					if ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+						continue;
+					}
+
 					AppData appData = new AppData();
 
-					appData.setAppName(mPm.getApplicationLabel(appInfo)
-							.toString());
+					appData.setAppName(appInfo.loadLabel(mPm));
 					appData.setPackageName(appInfo.packageName);
+					appData.setDescription(appInfo.loadDescription(mPm));
+
+					PackageInfo pInfo = null;
+					try {
+						pInfo = mPm.getPackageInfo(appInfo.packageName,
+								PackageManager.GET_ACTIVITIES);
+					} catch (NameNotFoundException e) {
+						// 握りつぶす
+					}
+					appData.setVersionName(pInfo.versionName);
 
 					Drawable icon = mPm.getApplicationIcon(appInfo);
 

@@ -40,6 +40,14 @@ public class AppDataAdapter extends ArrayAdapter<AppData> {
 				.findViewById(R.id.application_name);
 		appNameText.setText(mAppDataList.get(position).getAppName());
 
+		TextView appDescText = (TextView) convertView
+				.findViewById(R.id.application_description);
+		appDescText.setText(mAppDataList.get(position).getDescription());
+
+		TextView appVerText = (TextView) convertView
+				.findViewById(R.id.application_version_name);
+		appVerText.setText(mAppDataList.get(position).getVersionName());
+
 		return convertView;
 	}
 }
