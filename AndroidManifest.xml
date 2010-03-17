@@ -19,8 +19,10 @@
 		</activity>
 		<receiver android:name=".DroppShareReceiver">
 			<intent-filter>
-				<action android:name="android.intent.action.BOOT_COMPLETED" />
-				<action android:name="android.intent.action.PACKAGE_INSTALL" />
+				<data android:scheme="package" />
+				<action android:name="android.intent.action.PACKAGE_ADDED" />
+				<action android:name="android.intent.action.PACKAGE_REMOVED" />
+				<action android:name="android.intent.action.PACKAGE_REPLACED" />
 			</intent-filter>
 		</receiver>
 		<activity android:name="PreferencesActivity"></activity>

@@ -30,9 +30,8 @@ public class AppDataUtil {
 	}
 
 	public static String getMarketUriFromAppData(AppData appData) {
-		// TODO Vendingが落ちなくなったら"http://market.android.com/details?id="に戻すこと
-		return "http://market.android.com/search?q=pname:"
-				+ appData.getPackageName();
+		// TODO Vendingが落ちなくなったら"market://details?id="に戻すこと
+		return "market://search?q=pname:" + appData.getPackageName();
 	}
 
 	public static Bitmap getResizedBitmapDrawable(Bitmap origBitmap) {

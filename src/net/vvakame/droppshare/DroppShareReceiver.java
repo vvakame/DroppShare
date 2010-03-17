@@ -3,12 +3,14 @@ package net.vvakame.droppshare;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
+import android.util.Log;
 
 public class DroppShareReceiver extends BroadcastReceiver {
+	private static final String TAG = DroppShareReceiver.class.getSimpleName();
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Toast.makeText(context, "broadcast!", Toast.LENGTH_LONG).show();
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", "
+				+ intent.getAction());
 	}
 }

@@ -90,6 +90,7 @@ public class DroppShareActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.main);
+
 	}
 
 	@Override
@@ -277,8 +278,6 @@ public class DroppShareActivity extends Activity {
 								+ icon.getClass().getSimpleName());
 					}
 					appData.setIcon(icon);
-					AppDataUtil
-							.writeIconCache(DroppShareActivity.this, appData);
 
 					mAppDataList.add(appData);
 				}
@@ -290,6 +289,10 @@ public class DroppShareActivity extends Activity {
 					}
 				});
 
+				for (AppData appData : mAppDataList) {
+					AppDataUtil
+							.writeIconCache(DroppShareActivity.this, appData);
+				}
 				AppDataUtil.writeSerializedCache(DroppShareActivity.this,
 						mAppDataList);
 			}
