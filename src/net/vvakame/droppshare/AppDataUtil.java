@@ -70,6 +70,7 @@ public class AppDataUtil {
 					context.openFileOutput(appData.getUniqName() + ".png",
 							Context.MODE_WORLD_READABLE));
 		} catch (FileNotFoundException e) {
+			Log.d(TAG, HelperUtil.getMethodName() + ":" + e.getMessage());
 		}
 	}
 
