@@ -2,7 +2,6 @@ package net.vvakame.droppshare;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -21,8 +20,6 @@ public class DroppShareActivity extends Activity {
 
 	private static final String ACTION_INTERCEPT = "com.adamrocker.android.simeji.ACTION_INTERCEPT";
 	private static final String REPLACE_KEY = "replace_key";
-
-	private boolean mDone = false;
 
 	private OnItemClickListener mEventImpl = null;
 
@@ -49,7 +46,7 @@ public class DroppShareActivity extends Activity {
 
 		super.onResume();
 
-		if (mDone && mAppDataList != null && mAppDataList.size() != 0) {
+		if (mAppDataList != null && mAppDataList.size() != 0) {
 			return;
 		}
 
@@ -60,27 +57,16 @@ public class DroppShareActivity extends Activity {
 	}
 
 	private void constructCache() {
-		mDone = false;
-
-		// TODO Cacheの考慮を入れる
-		try {
-			mAppDataList = new DroppCacheAsynkTask(this).execute().get();
-		} catch (InterruptedException e) {
-			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", "
-					+ e.getClass().getSimpleName() + ", " + e.getMessage());
-			return;
-		} catch (ExecutionException e) {
-			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", "
-					+ e.getClass().getSimpleName() + ", " + e.getMessage());
-			return;
-		}
-
-		AppDataAdapter appAdapter = new AppDataAdapter(DroppShareActivity.this,
-				R.layout.application_view, mAppDataList);
-		ListView listView = (ListView) findViewById(R.id.app_list);
-		listView.setAdapter(appAdapter);
-
-		mDone = true;
+		new DroppCacheAsynkTask(this, new Func<List<AppData>>() {
+			@Override
+			public void func(List<AppData> arg) {
+				mAppDataList = arg;
+				AppDataAdapter appAdapter = new AppDataAdapter(
+						DroppShareActivity.this, R.layout.application_view, arg);
+				ListView listView = (ListView) findViewById(R.id.app_list);
+				listView.setAdapter(appAdapter);
+			}
+		}).execute();
 	}
 
 	@Override

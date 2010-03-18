@@ -21,15 +21,20 @@ public class DroppCacheAsynkTask extends AsyncTask<Void, Void, List<AppData>> {
 	private static final String TAG = DroppCacheAsynkTask.class.getSimpleName();
 
 	private Activity mActivity = null;
+	private Func<List<AppData>> mFunc = null;
+
 	private PackageManager mPm = null;
 	private ProgressDialog mProgDialog = null;
 	private List<AppData> mAppDataList = null;
 
-	public DroppCacheAsynkTask(Activity activity) {
+	public DroppCacheAsynkTask(Activity activity,
+			Func<List<AppData>> postExecFunc) {
 		super();
 
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 		mActivity = activity;
+		mFunc = postExecFunc;
+
 		mProgDialog = new FunnyProgressDialog(mActivity);
 	}
 
@@ -133,6 +138,7 @@ public class DroppCacheAsynkTask extends AsyncTask<Void, Void, List<AppData>> {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 		super.onPostExecute(appDataList);
 
+		mFunc.func(mAppDataList);
 		mProgDialog.dismiss();
 	}
 }
