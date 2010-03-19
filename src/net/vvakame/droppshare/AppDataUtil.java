@@ -34,6 +34,38 @@ public class AppDataUtil {
 		return "market://search?q=pname:" + appData.getPackageName();
 	}
 
+	private static File getTmpDir(Context context) {
+		File dir = new File(context.getFilesDir(), "tmp/");
+		return dir;
+	}
+
+	private static File getCacheDir(Context context) {
+		File dir = new File(context.getFilesDir(), "cache/");
+		return dir;
+	}
+
+	private static File getTmpCacheFile(Context context) {
+		File file = new File(context.getFilesDir(), "tmp/" + CACHE_FILE);
+		return file;
+	}
+
+	private static File getCacheFile(Context context) {
+		File file = new File(context.getFilesDir(), "cache/" + CACHE_FILE);
+		return file;
+	}
+
+	private static void makeDir(File file) {
+		if (file == null) {
+			return;
+		} else if (file.exists()) {
+			return;
+		} else if (file.isDirectory()) {
+			file.mkdirs();
+		} else {
+			file.getParentFile().mkdirs();
+		}
+	}
+
 	public static Bitmap getResizedBitmapDrawable(Bitmap origBitmap) {
 		Log.d(TAG, "before convert bytes: "
 				+ String.valueOf(origBitmap.getRowBytes()));
@@ -51,44 +83,8 @@ public class AppDataUtil {
 		return resizedBitmap;
 	}
 
-	public static void writeIconCache(Context context, AppData appData) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-
-		if (appData == null || appData.getIcon() == null) {
-			return;
-		} else if (!(appData.getIcon() instanceof BitmapDrawable)) {
-			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + " "
-					+ appData.getIcon().getClass().getSimpleName());
-			return;
-		}
-
-		BitmapDrawable bitmapDrawable = (BitmapDrawable) appData.getIcon();
-		try {
-			bitmapDrawable.getBitmap().compress(
-					Bitmap.CompressFormat.PNG,
-					100,
-					context.openFileOutput(appData.getUniqName() + ".png",
-							Context.MODE_WORLD_READABLE));
-		} catch (FileNotFoundException e) {
-			Log.d(TAG, HelperUtil.getMethodName() + ":" + e.getMessage());
-		}
-	}
-
-	public static void readIconCache(Context context, AppData appData) {
-		try {
-			FileInputStream fin = context.openFileInput(appData.getUniqName()
-					+ ".png");
-			BitmapDrawable bitmapDrawable = new BitmapDrawable(fin);
-
-			appData.setIcon(bitmapDrawable);
-		} catch (FileNotFoundException e) {
-		}
-	}
-
 	public static boolean isExistCache(Context context) {
-		String cachePath = context.getFilesDir().getAbsolutePath() + "/"
-				+ CACHE_FILE;
-		File cacheFile = new File(cachePath);
+		File cacheFile = getCacheFile(context);
 
 		return cacheFile.exists();
 	}
@@ -100,9 +96,14 @@ public class AppDataUtil {
 		List<AppData> appDataList = null;
 		ObjectInputStream in = null;
 		try {
-			FileInputStream fin = context.openFileInput(CACHE_FILE);
+			File cacheFile = getCacheFile(context);
+			FileInputStream fin = new FileInputStream(cacheFile);
 			in = new ObjectInputStream(fin);
 			appDataList = (List<AppData>) in.readObject();
+
+			for (AppData appData : appDataList) {
+				readIconCache(context, appData);
+			}
 		} catch (ClassCastException e) {
 			Log.d(TAG, e.getClass().getSimpleName() + " " + e.getMessage());
 		} catch (ClassNotFoundException e) {
@@ -123,17 +124,43 @@ public class AppDataUtil {
 		return appDataList;
 	}
 
+	private static void readIconCache(Context context, AppData appData) {
+		try {
+			File cacheDir = getCacheDir(context);
+			makeDir(cacheDir);
+			File cacheIcon = new File(cacheDir, appData.getUniqName() + ".png");
+			FileInputStream fin = new FileInputStream(cacheIcon);
+			BitmapDrawable bitmapDrawable = new BitmapDrawable(fin);
+
+			appData.setIcon(bitmapDrawable);
+		} catch (FileNotFoundException e) {
+		}
+	}
+
 	public static void writeSerializedCache(Context context,
 			List<AppData> appDataList) {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 
 		ObjectOutputStream out = null;
 		try {
-			FileOutputStream fout = context.openFileOutput(CACHE_FILE,
-					Context.MODE_WORLD_READABLE);
+			for (AppData appData : appDataList) {
+				writeIconCache(context, appData);
+			}
+
+			File tmpCache = getTmpCacheFile(context);
+			makeDir(tmpCache);
+
+			FileOutputStream fout = new FileOutputStream(tmpCache);
 			out = new ObjectOutputStream(fout);
 			out.writeObject(appDataList);
 			out.flush();
+
+			// 旧キャッシュの削除とすげ替え
+			File cacheDir = getCacheDir(context);
+			cacheDir.delete();
+			File tmpDir = getTmpDir(context);
+			tmpDir.renameTo(cacheDir);
+
 		} catch (InvalidClassException e) {
 			Log.d(TAG, e.getClass().getSimpleName() + " " + e.getMessage());
 		} catch (NotSerializableException e) {
@@ -147,6 +174,31 @@ public class AppDataUtil {
 				} catch (IOException e) {
 				}
 			}
+		}
+	}
+
+	private static void writeIconCache(Context context, AppData appData) {
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+
+		if (appData == null || appData.getIcon() == null) {
+			return;
+		} else if (!(appData.getIcon() instanceof BitmapDrawable)) {
+			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + " "
+					+ appData.getIcon().getClass().getSimpleName());
+			return;
+		}
+
+		BitmapDrawable bitmapDrawable = (BitmapDrawable) appData.getIcon();
+		try {
+			File tmpDir = getTmpDir(context);
+			makeDir(tmpDir);
+			File tmpIcon = new File(tmpDir, appData.getUniqName() + ".png");
+			FileOutputStream fout = new FileOutputStream(tmpIcon);
+
+			bitmapDrawable.getBitmap().compress(Bitmap.CompressFormat.PNG, 100,
+					fout);
+		} catch (FileNotFoundException e) {
+			Log.d(TAG, HelperUtil.getMethodName() + ":" + e.getMessage());
 		}
 	}
 }

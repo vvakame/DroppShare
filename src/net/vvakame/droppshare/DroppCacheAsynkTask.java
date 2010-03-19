@@ -57,10 +57,6 @@ public class DroppCacheAsynkTask extends AsyncTask<Void, Void, List<AppData>> {
 
 		if (AppDataUtil.isExistCache(mActivity)) {
 			appDataList = AppDataUtil.readSerializedCaches(mActivity);
-
-			for (AppData appData : appDataList) {
-				AppDataUtil.readIconCache(mActivity, appData);
-			}
 		} else {
 			appDataList = new ArrayList<AppData>();
 
@@ -114,9 +110,6 @@ public class DroppCacheAsynkTask extends AsyncTask<Void, Void, List<AppData>> {
 				}
 			});
 
-			for (AppData appData : appDataList) {
-				AppDataUtil.writeIconCache(mActivity, appData);
-			}
 			AppDataUtil.writeSerializedCache(mActivity, appDataList);
 		}
 
