@@ -23,6 +23,10 @@ public class AppDataUtil {
 
 	public static final String CACHE_FILE = "appDataList.cache";
 
+	public static final int ICON_WIDTH = 48;
+	public static final int ICON_HEIGHT = 48;
+	public static final int COMPRESS_QUALITY = 100;
+
 	public static String getHttpUriFromAppData(AppData appData) {
 		// TODO Vendingが落ちなくなったら"http://market.android.com/details?id="に戻すこと
 		return "http://market.android.com/search?q=pname:"
@@ -54,24 +58,12 @@ public class AppDataUtil {
 		return file;
 	}
 
-	private static void makeDir(File file) {
-		if (file == null) {
-			return;
-		} else if (file.exists()) {
-			return;
-		} else if (file.isDirectory()) {
-			file.mkdirs();
-		} else {
-			file.getParentFile().mkdirs();
-		}
-	}
-
 	public static Bitmap getResizedBitmapDrawable(Bitmap origBitmap) {
 		Log.d(TAG, "before convert bytes: "
 				+ String.valueOf(origBitmap.getRowBytes()));
 		Matrix matrix = new Matrix();
-		int newWidth = 48;
-		int newHeight = 48;
+		int newWidth = ICON_WIDTH;
+		int newHeight = ICON_HEIGHT;
 		float scaleWidth = ((float) newWidth) / origBitmap.getWidth();
 		float scaleHeight = ((float) newHeight) / origBitmap.getHeight();
 		matrix.postScale(scaleWidth, scaleHeight);
@@ -105,13 +97,13 @@ public class AppDataUtil {
 				readIconCache(context, appData);
 			}
 		} catch (ClassCastException e) {
-			Log.d(TAG, e.getClass().getSimpleName() + " " + e.getMessage());
+			Log.d(TAG, HelperUtil.getExceptionLog(e));
 		} catch (ClassNotFoundException e) {
-			Log.d(TAG, e.getClass().getSimpleName() + " " + e.getMessage());
+			Log.d(TAG, HelperUtil.getExceptionLog(e));
 		} catch (StreamCorruptedException e) {
-			Log.d(TAG, e.getClass().getSimpleName() + " " + e.getMessage());
+			Log.d(TAG, HelperUtil.getExceptionLog(e));
 		} catch (IOException e) {
-			Log.d(TAG, e.getClass().getSimpleName() + " " + e.getMessage());
+			Log.d(TAG, HelperUtil.getExceptionLog(e));
 		} finally {
 			if (in != null) {
 				try {
@@ -127,13 +119,14 @@ public class AppDataUtil {
 	private static void readIconCache(Context context, AppData appData) {
 		try {
 			File cacheDir = getCacheDir(context);
-			makeDir(cacheDir);
+			cacheDir.mkdirs();
 			File cacheIcon = new File(cacheDir, appData.getUniqName() + ".png");
 			FileInputStream fin = new FileInputStream(cacheIcon);
 			BitmapDrawable bitmapDrawable = new BitmapDrawable(fin);
 
 			appData.setIcon(bitmapDrawable);
 		} catch (FileNotFoundException e) {
+			Log.d(TAG, HelperUtil.getExceptionLog(e));
 		}
 	}
 
@@ -143,12 +136,12 @@ public class AppDataUtil {
 
 		ObjectOutputStream out = null;
 		try {
+			File tmpCache = getTmpCacheFile(context);
+			tmpCache.getParentFile().mkdirs();
+
 			for (AppData appData : appDataList) {
 				writeIconCache(context, appData);
 			}
-
-			File tmpCache = getTmpCacheFile(context);
-			makeDir(tmpCache);
 
 			FileOutputStream fout = new FileOutputStream(tmpCache);
 			out = new ObjectOutputStream(fout);
@@ -157,21 +150,28 @@ public class AppDataUtil {
 
 			// 旧キャッシュの削除とすげ替え
 			File cacheDir = getCacheDir(context);
+			File[] cacheFiles = cacheDir.listFiles();
+			if (cacheFiles != null) {
+				for (File oldCache : cacheFiles) {
+					oldCache.delete();
+				}
+			}
 			cacheDir.delete();
 			File tmpDir = getTmpDir(context);
 			tmpDir.renameTo(cacheDir);
 
 		} catch (InvalidClassException e) {
-			Log.d(TAG, e.getClass().getSimpleName() + " " + e.getMessage());
+			Log.d(TAG, HelperUtil.getExceptionLog(e));
 		} catch (NotSerializableException e) {
-			Log.d(TAG, e.getClass().getSimpleName() + " " + e.getMessage());
+			Log.d(TAG, HelperUtil.getExceptionLog(e));
 		} catch (IOException e) {
-			Log.d(TAG, e.getClass().getSimpleName() + " " + e.getMessage());
+			Log.d(TAG, HelperUtil.getExceptionLog(e));
 		} finally {
 			if (out != null) {
 				try {
 					out.close();
 				} catch (IOException e) {
+					Log.d(TAG, HelperUtil.getExceptionLog(e));
 				}
 			}
 		}
@@ -191,14 +191,14 @@ public class AppDataUtil {
 		BitmapDrawable bitmapDrawable = (BitmapDrawable) appData.getIcon();
 		try {
 			File tmpDir = getTmpDir(context);
-			makeDir(tmpDir);
+			// 一個上のメソッドでDirectoryは作ってるから確実にある想定
 			File tmpIcon = new File(tmpDir, appData.getUniqName() + ".png");
 			FileOutputStream fout = new FileOutputStream(tmpIcon);
 
-			bitmapDrawable.getBitmap().compress(Bitmap.CompressFormat.PNG, 100,
-					fout);
+			bitmapDrawable.getBitmap().compress(Bitmap.CompressFormat.PNG,
+					COMPRESS_QUALITY, fout);
 		} catch (FileNotFoundException e) {
-			Log.d(TAG, HelperUtil.getMethodName() + ":" + e.getMessage());
+			Log.d(TAG, HelperUtil.getExceptionLog(e));
 		}
 	}
 }

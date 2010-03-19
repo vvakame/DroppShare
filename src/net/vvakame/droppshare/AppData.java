@@ -68,4 +68,9 @@ public class AppData implements Serializable {
 	private String toString(CharSequence charSeq) {
 		return charSeq != null ? charSeq.toString() : null;
 	}
+
+	@Override
+	public String toString() {
+		return getClass().getName() + "@" + packageName;
+	}
 }

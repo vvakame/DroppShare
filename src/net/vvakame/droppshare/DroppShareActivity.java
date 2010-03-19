@@ -1,6 +1,5 @@
 package net.vvakame.droppshare;
 
-import java.io.File;
 import java.util.List;
 
 import android.app.Activity;
@@ -38,6 +37,8 @@ public class DroppShareActivity extends Activity {
 		} else {
 			mEventImpl = new EventNormalImpl();
 		}
+
+		constructCache(false);
 	}
 
 	@Override
@@ -53,10 +54,9 @@ public class DroppShareActivity extends Activity {
 		ListView listView = (ListView) findViewById(R.id.app_list);
 		listView.setOnItemClickListener(mEventImpl);
 
-		constructCache();
 	}
 
-	private void constructCache() {
+	private void constructCache(boolean clearFlg) {
 		new DroppCacheAsynkTask(this, new Func<List<AppData>>() {
 			@Override
 			public void func(List<AppData> arg) {
@@ -66,7 +66,7 @@ public class DroppShareActivity extends Activity {
 				ListView listView = (ListView) findViewById(R.id.app_list);
 				listView.setAdapter(appAdapter);
 			}
-		}).execute();
+		}).execute(clearFlg);
 	}
 
 	@Override
@@ -90,12 +90,7 @@ public class DroppShareActivity extends Activity {
 		Intent intent = null;
 		switch (item.getItemId()) {
 		case R.id.cache_refresh:
-			File[] allCacheFiles = getFilesDir().listFiles();
-			for (File file : allCacheFiles) {
-				file.delete();
-			}
-
-			constructCache();
+			constructCache(true);
 
 			break;
 

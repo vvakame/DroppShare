@@ -17,7 +17,8 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class DroppCacheAsynkTask extends AsyncTask<Void, Void, List<AppData>> {
+public class DroppCacheAsynkTask extends
+		AsyncTask<Boolean, Void, List<AppData>> {
 	private static final String TAG = DroppCacheAsynkTask.class.getSimpleName();
 
 	private Activity mActivity = null;
@@ -50,12 +51,16 @@ public class DroppCacheAsynkTask extends AsyncTask<Void, Void, List<AppData>> {
 	}
 
 	@Override
-	protected List<AppData> doInBackground(Void... params) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+	protected List<AppData> doInBackground(Boolean... params) {
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", clear cache:"
+				+ (params.length == 1 ? params[0].toString() : "none"));
 
 		List<AppData> appDataList = null;
 
-		if (AppDataUtil.isExistCache(mActivity)) {
+		boolean clearFlg = params.length == 1
+				&& params[0].booleanValue() == true;
+
+		if (!clearFlg && AppDataUtil.isExistCache(mActivity)) {
 			appDataList = AppDataUtil.readSerializedCaches(mActivity);
 		} else {
 			appDataList = new ArrayList<AppData>();
