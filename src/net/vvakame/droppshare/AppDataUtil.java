@@ -109,6 +109,7 @@ public class AppDataUtil {
 				try {
 					in.close();
 				} catch (IOException e) {
+					Log.d(TAG, HelperUtil.getExceptionLog(e));
 				}
 			}
 		}
@@ -137,6 +138,9 @@ public class AppDataUtil {
 		ObjectOutputStream out = null;
 		try {
 			File tmpCache = getTmpCacheFile(context);
+			Log
+					.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", "
+							+ tmpCache);
 			tmpCache.getParentFile().mkdirs();
 
 			for (AppData appData : appDataList) {
@@ -150,13 +154,7 @@ public class AppDataUtil {
 
 			// 旧キャッシュの削除とすげ替え
 			File cacheDir = getCacheDir(context);
-			File[] cacheFiles = cacheDir.listFiles();
-			if (cacheFiles != null) {
-				for (File oldCache : cacheFiles) {
-					oldCache.delete();
-				}
-			}
-			cacheDir.delete();
+			deleteCache(context);
 			File tmpDir = getTmpDir(context);
 			tmpDir.renameTo(cacheDir);
 
@@ -200,5 +198,21 @@ public class AppDataUtil {
 		} catch (FileNotFoundException e) {
 			Log.d(TAG, HelperUtil.getExceptionLog(e));
 		}
+	}
+
+	public static void deleteCache(Context context) {
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+
+		File cacheDir = getCacheDir(context);
+		if (!cacheDir.exists()) {
+			return;
+		}
+		File[] cacheFiles = cacheDir.listFiles();
+		if (cacheFiles != null) {
+			for (File oldCache : cacheFiles) {
+				oldCache.delete();
+			}
+		}
+		cacheDir.delete();
 	}
 }

@@ -1,5 +1,7 @@
 package net.vvakame.droppshare;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,7 +10,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
-import android.widget.Toast;
 
 public class DroppShareReceiver extends BroadcastReceiver {
 	private static final String TAG = DroppShareReceiver.class.getSimpleName();
@@ -43,14 +44,19 @@ public class DroppShareReceiver extends BroadcastReceiver {
 		String action = intent.getAction();
 
 		if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
-			Toast.makeText(context, packageName + " " + action,
-					Toast.LENGTH_LONG).show();
+			// ADDの場合はキャッシュを再構成する
+			Intent newIntent = new Intent(context, DroppCacheActivity.class);
+			PendingIntent pIntent = PendingIntent.getActivity(context, 0,
+					newIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+			AlarmManager alarmMgr = (AlarmManager) context
+					.getSystemService(Context.ALARM_SERVICE);
+			alarmMgr.set(AlarmManager.RTC_WAKEUP,
+					System.currentTimeMillis() + 1000, pIntent);
 		} else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
-			Toast.makeText(context, packageName + " " + action,
-					Toast.LENGTH_LONG).show();
+			// REMOVEの場合は何もしない 消したはずのものが表示されても困らないだろうから(不気味には思うかも？)
 		} else if (Intent.ACTION_PACKAGE_REPLACED.equals(action)) {
-			Toast.makeText(context, packageName + " " + action,
-					Toast.LENGTH_LONG).show();
+			// REPLACEDの場合も何もしない 将来的にはVersionNameを再取得するためにキャッシュを作り直したほうがよいかもしれない
 		}
 	}
 }

@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -21,22 +21,21 @@ public class DroppCacheAsynkTask extends
 		AsyncTask<Boolean, Void, List<AppData>> {
 	private static final String TAG = DroppCacheAsynkTask.class.getSimpleName();
 
-	private Activity mActivity = null;
+	private Context mContext = null;
 	private Func<List<AppData>> mFunc = null;
 
 	private ProgressDialog mProgDialog = null;
 
 	private static Object lock = new Object();
 
-	public DroppCacheAsynkTask(Activity activity,
-			Func<List<AppData>> postExecFunc) {
+	public DroppCacheAsynkTask(Context context, Func<List<AppData>> postExecFunc) {
 		super();
 
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-		mActivity = activity;
+		mContext = context;
 		mFunc = postExecFunc;
 
-		mProgDialog = new FunnyProgressDialog(mActivity);
+		mProgDialog = new FunnyProgressDialog(mContext);
 	}
 
 	@Override
@@ -44,9 +43,8 @@ public class DroppCacheAsynkTask extends
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 		super.onPreExecute();
 
-		mProgDialog
-				.setTitle(mActivity.getString(R.string.now_reading_app_data));
-		mProgDialog.setMessage(mActivity.getString(R.string.wait_a_moment));
+		mProgDialog.setTitle(mContext.getString(R.string.now_reading_app_data));
+		mProgDialog.setMessage(mContext.getString(R.string.wait_a_moment));
 		mProgDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		mProgDialog.setCancelable(false);
 		mProgDialog.show();
@@ -61,16 +59,21 @@ public class DroppCacheAsynkTask extends
 
 		// 画面の縦横変更(=Activity再生成)で複数の場所から同時に入ってくる可能性があるのでロックする
 		synchronized (lock) {
+			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", lock in!");
 
 			boolean clearFlg = params.length == 1
 					&& params[0].booleanValue() == true;
 
-			if (!clearFlg && AppDataUtil.isExistCache(mActivity)) {
-				appDataList = AppDataUtil.readSerializedCaches(mActivity);
+			if (!clearFlg && AppDataUtil.isExistCache(mContext)) {
+				Log.d(TAG, TAG + ":" + HelperUtil.getMethodName()
+						+ ", use cache.");
+				appDataList = AppDataUtil.readSerializedCaches(mContext);
 			} else {
+				Log.d(TAG, TAG + ":" + HelperUtil.getMethodName()
+						+ ", create cache.");
 				appDataList = new ArrayList<AppData>();
 
-				PackageManager pm = mActivity.getPackageManager();
+				PackageManager pm = mContext.getPackageManager();
 				List<ApplicationInfo> appInfoList = pm
 						.getInstalledApplications(PackageManager.GET_ACTIVITIES);
 
@@ -93,7 +96,7 @@ public class DroppCacheAsynkTask extends
 						pInfo = pm.getPackageInfo(appInfo.packageName,
 								PackageManager.GET_ACTIVITIES);
 					} catch (NameNotFoundException e) {
-						// 握りつぶす
+						Log.d(TAG, HelperUtil.getExceptionLog(e));
 					}
 					appData.setVersionName(pInfo.versionName);
 
@@ -120,8 +123,10 @@ public class DroppCacheAsynkTask extends
 					}
 				});
 
-				AppDataUtil.writeSerializedCache(mActivity, appDataList);
+				AppDataUtil.writeSerializedCache(mContext, appDataList);
 			}
+
+			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", done it!");
 		}
 
 		return appDataList;
