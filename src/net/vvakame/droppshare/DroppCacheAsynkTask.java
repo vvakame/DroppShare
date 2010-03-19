@@ -23,9 +23,7 @@ public class DroppCacheAsynkTask extends AsyncTask<Void, Void, List<AppData>> {
 	private Activity mActivity = null;
 	private Func<List<AppData>> mFunc = null;
 
-	private PackageManager mPm = null;
 	private ProgressDialog mProgDialog = null;
-	private List<AppData> mAppDataList = null;
 
 	public DroppCacheAsynkTask(Activity activity,
 			Func<List<AppData>> postExecFunc) {
@@ -55,17 +53,19 @@ public class DroppCacheAsynkTask extends AsyncTask<Void, Void, List<AppData>> {
 	protected List<AppData> doInBackground(Void... params) {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 
-		if (AppDataUtil.isExistCache(mActivity)) {
-			mAppDataList = AppDataUtil.readSerializedCaches(mActivity);
+		List<AppData> appDataList = null;
 
-			for (AppData appData : mAppDataList) {
+		if (AppDataUtil.isExistCache(mActivity)) {
+			appDataList = AppDataUtil.readSerializedCaches(mActivity);
+
+			for (AppData appData : appDataList) {
 				AppDataUtil.readIconCache(mActivity, appData);
 			}
 		} else {
-			mAppDataList = new ArrayList<AppData>();
+			appDataList = new ArrayList<AppData>();
 
-			mPm = mActivity.getPackageManager();
-			List<ApplicationInfo> appInfoList = mPm
+			PackageManager pm = mActivity.getPackageManager();
+			List<ApplicationInfo> appInfoList = pm
 					.getInstalledApplications(PackageManager.GET_ACTIVITIES);
 
 			for (ApplicationInfo appInfo : appInfoList) {
@@ -78,20 +78,20 @@ public class DroppCacheAsynkTask extends AsyncTask<Void, Void, List<AppData>> {
 
 				AppData appData = new AppData();
 
-				appData.setAppName(appInfo.loadLabel(mPm));
+				appData.setAppName(appInfo.loadLabel(pm));
 				appData.setPackageName(appInfo.packageName);
-				appData.setDescription(appInfo.loadDescription(mPm));
+				appData.setDescription(appInfo.loadDescription(pm));
 
 				PackageInfo pInfo = null;
 				try {
-					pInfo = mPm.getPackageInfo(appInfo.packageName,
+					pInfo = pm.getPackageInfo(appInfo.packageName,
 							PackageManager.GET_ACTIVITIES);
 				} catch (NameNotFoundException e) {
 					// 握りつぶす
 				}
 				appData.setVersionName(pInfo.versionName);
 
-				Drawable icon = mPm.getApplicationIcon(appInfo);
+				Drawable icon = pm.getApplicationIcon(appInfo);
 
 				if (icon instanceof BitmapDrawable) {
 					Bitmap resizedBitmap = AppDataUtil
@@ -104,23 +104,23 @@ public class DroppCacheAsynkTask extends AsyncTask<Void, Void, List<AppData>> {
 				}
 				appData.setIcon(icon);
 
-				mAppDataList.add(appData);
+				appDataList.add(appData);
 			}
 
-			Collections.sort(mAppDataList, new Comparator<AppData>() {
+			Collections.sort(appDataList, new Comparator<AppData>() {
 				@Override
 				public int compare(AppData obj1, AppData obj2) {
 					return obj1.getAppName().compareTo(obj2.getAppName());
 				}
 			});
 
-			for (AppData appData : mAppDataList) {
+			for (AppData appData : appDataList) {
 				AppDataUtil.writeIconCache(mActivity, appData);
 			}
-			AppDataUtil.writeSerializedCache(mActivity, mAppDataList);
+			AppDataUtil.writeSerializedCache(mActivity, appDataList);
 		}
 
-		return mAppDataList;
+		return appDataList;
 	}
 
 	@Override
@@ -138,7 +138,7 @@ public class DroppCacheAsynkTask extends AsyncTask<Void, Void, List<AppData>> {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 		super.onPostExecute(appDataList);
 
-		mFunc.func(mAppDataList);
+		mFunc.func(appDataList);
 		mProgDialog.dismiss();
 	}
 }
