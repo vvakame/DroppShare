@@ -26,6 +26,8 @@ public class DroppCacheAsynkTask extends
 
 	private ProgressDialog mProgDialog = null;
 
+	private static Object lock = new Object();
+
 	public DroppCacheAsynkTask(Activity activity,
 			Func<List<AppData>> postExecFunc) {
 		super();
@@ -57,65 +59,69 @@ public class DroppCacheAsynkTask extends
 
 		List<AppData> appDataList = null;
 
-		boolean clearFlg = params.length == 1
-				&& params[0].booleanValue() == true;
+		// 画面の縦横変更(=Activity再生成)で複数の場所から同時に入ってくる可能性があるのでロックする
+		synchronized (lock) {
 
-		if (!clearFlg && AppDataUtil.isExistCache(mActivity)) {
-			appDataList = AppDataUtil.readSerializedCaches(mActivity);
-		} else {
-			appDataList = new ArrayList<AppData>();
+			boolean clearFlg = params.length == 1
+					&& params[0].booleanValue() == true;
 
-			PackageManager pm = mActivity.getPackageManager();
-			List<ApplicationInfo> appInfoList = pm
-					.getInstalledApplications(PackageManager.GET_ACTIVITIES);
+			if (!clearFlg && AppDataUtil.isExistCache(mActivity)) {
+				appDataList = AppDataUtil.readSerializedCaches(mActivity);
+			} else {
+				appDataList = new ArrayList<AppData>();
 
-			for (ApplicationInfo appInfo : appInfoList) {
-				Log.d(TAG, "now processing " + appInfo.packageName);
+				PackageManager pm = mActivity.getPackageManager();
+				List<ApplicationInfo> appInfoList = pm
+						.getInstalledApplications(PackageManager.GET_ACTIVITIES);
 
-				// デフォルト系アプリを撥ねる
-				if ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-					continue;
+				for (ApplicationInfo appInfo : appInfoList) {
+					Log.d(TAG, "now processing " + appInfo.packageName);
+
+					// デフォルト系アプリを撥ねる
+					if ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+						continue;
+					}
+
+					AppData appData = new AppData();
+
+					appData.setAppName(appInfo.loadLabel(pm));
+					appData.setPackageName(appInfo.packageName);
+					appData.setDescription(appInfo.loadDescription(pm));
+
+					PackageInfo pInfo = null;
+					try {
+						pInfo = pm.getPackageInfo(appInfo.packageName,
+								PackageManager.GET_ACTIVITIES);
+					} catch (NameNotFoundException e) {
+						// 握りつぶす
+					}
+					appData.setVersionName(pInfo.versionName);
+
+					Drawable icon = pm.getApplicationIcon(appInfo);
+
+					if (icon instanceof BitmapDrawable) {
+						Bitmap resizedBitmap = AppDataUtil
+								.getResizedBitmapDrawable(((BitmapDrawable) icon)
+										.getBitmap());
+						icon = new BitmapDrawable(resizedBitmap);
+					} else {
+						Log.d(TAG, "Not supported icon type: "
+								+ icon.getClass().getSimpleName());
+					}
+					appData.setIcon(icon);
+
+					appDataList.add(appData);
 				}
 
-				AppData appData = new AppData();
+				Collections.sort(appDataList, new Comparator<AppData>() {
+					@Override
+					public int compare(AppData obj1, AppData obj2) {
+						return obj1.getAppName().compareTo(obj2.getAppName());
+					}
+				});
 
-				appData.setAppName(appInfo.loadLabel(pm));
-				appData.setPackageName(appInfo.packageName);
-				appData.setDescription(appInfo.loadDescription(pm));
-
-				PackageInfo pInfo = null;
-				try {
-					pInfo = pm.getPackageInfo(appInfo.packageName,
-							PackageManager.GET_ACTIVITIES);
-				} catch (NameNotFoundException e) {
-					// 握りつぶす
-				}
-				appData.setVersionName(pInfo.versionName);
-
-				Drawable icon = pm.getApplicationIcon(appInfo);
-
-				if (icon instanceof BitmapDrawable) {
-					Bitmap resizedBitmap = AppDataUtil
-							.getResizedBitmapDrawable(((BitmapDrawable) icon)
-									.getBitmap());
-					icon = new BitmapDrawable(resizedBitmap);
-				} else {
-					Log.d(TAG, "Not supported icon type: "
-							+ icon.getClass().getSimpleName());
-				}
-				appData.setIcon(icon);
-
-				appDataList.add(appData);
+				AppDataUtil.writeSerializedCache(mActivity, appDataList);
 			}
-
-			Collections.sort(appDataList, new Comparator<AppData>() {
-				@Override
-				public int compare(AppData obj1, AppData obj2) {
-					return obj1.getAppName().compareTo(obj2.getAppName());
-				}
-			});
-
-			AppDataUtil.writeSerializedCache(mActivity, appDataList);
 		}
 
 		return appDataList;
@@ -128,6 +134,11 @@ public class DroppCacheAsynkTask extends
 
 	@Override
 	protected void onCancelled() {
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		if (mProgDialog != null && mProgDialog.isShowing()) {
+			mProgDialog.dismiss();
+			mProgDialog = null;
+		}
 		super.onCancelled();
 	}
 

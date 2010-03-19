@@ -57,16 +57,19 @@ public class DroppShareActivity extends Activity {
 	}
 
 	private void constructCache(boolean clearFlg) {
-		new DroppCacheAsynkTask(this, new Func<List<AppData>>() {
-			@Override
-			public void func(List<AppData> arg) {
-				mAppDataList = arg;
-				AppDataAdapter appAdapter = new AppDataAdapter(
-						DroppShareActivity.this, R.layout.application_view, arg);
-				ListView listView = (ListView) findViewById(R.id.app_list);
-				listView.setAdapter(appAdapter);
-			}
-		}).execute(clearFlg);
+		DroppCacheAsynkTask asyncTask = new DroppCacheAsynkTask(this,
+				new Func<List<AppData>>() {
+					@Override
+					public void func(List<AppData> arg) {
+						mAppDataList = arg;
+						AppDataAdapter appAdapter = new AppDataAdapter(
+								DroppShareActivity.this,
+								R.layout.application_view, arg);
+						ListView listView = (ListView) findViewById(R.id.app_list);
+						listView.setAdapter(appAdapter);
+					}
+				});
+		asyncTask.execute(clearFlg);
 	}
 
 	@Override
