@@ -121,6 +121,7 @@ public class DroppShareActivity extends Activity {
 
 		message = message.replace("$app", appData.getAppName());
 		message = message.replace("$market", uri);
+		message = message.replace("$version", appData.getVersionName());
 
 		return message;
 	}

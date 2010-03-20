@@ -1,5 +1,6 @@
 package net.vvakame.droppshare;
 
+import java.io.InvalidClassException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -63,12 +64,20 @@ public class DroppCacheAsynkTask extends
 
 			boolean clearFlg = params.length == 1
 					&& params[0].booleanValue() == true;
+			boolean done = false;
 
 			if (!clearFlg && AppDataUtil.isExistCache(mContext)) {
 				Log.d(TAG, TAG + ":" + HelperUtil.getMethodName()
 						+ ", use cache.");
-				appDataList = AppDataUtil.readSerializedCaches(mContext);
-			} else {
+				try {
+					appDataList = AppDataUtil.readSerializedCaches(mContext);
+					done = true;
+				} catch (InvalidClassException e) {
+					// ここに来るのは、SerializeされたオブジェクトのserialVersionUIDが一致しないときに来る想定
+					Log.d(TAG, HelperUtil.getExceptionLog(e));
+				}
+			}
+			if (!done) {
 				Log.d(TAG, TAG + ":" + HelperUtil.getMethodName()
 						+ ", create cache.");
 				appDataList = new ArrayList<AppData>();

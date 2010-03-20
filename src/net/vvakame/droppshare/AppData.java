@@ -5,7 +5,7 @@ import java.io.Serializable;
 import android.graphics.drawable.Drawable;
 
 public class AppData implements Serializable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
 	private String appName = null;
 	private String packageName = null;

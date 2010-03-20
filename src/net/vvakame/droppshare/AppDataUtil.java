@@ -82,7 +82,8 @@ public class AppDataUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<AppData> readSerializedCaches(Context context) {
+	public static List<AppData> readSerializedCaches(Context context)
+			throws InvalidClassException {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 
 		List<AppData> appDataList = null;
@@ -96,6 +97,9 @@ public class AppDataUtil {
 			for (AppData appData : appDataList) {
 				readIconCache(context, appData);
 			}
+		} catch (InvalidClassException e) {
+			Log.d(TAG, HelperUtil.getExceptionLog(e));
+			throw e;
 		} catch (ClassCastException e) {
 			Log.d(TAG, HelperUtil.getExceptionLog(e));
 		} catch (ClassNotFoundException e) {

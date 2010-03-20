@@ -44,16 +44,17 @@ public final class R {
     public static final class string {
         public static final int app_description=0x7f080001;
         public static final int app_name=0x7f080000;
-        public static final int application_name=0x7f080004;
-        public static final int cache_refresh=0x7f080005;
-        public static final int message_template=0x7f08000b;
-        public static final int message_template_summary=0x7f08000a;
-        public static final int message_template_title=0x7f080009;
-        public static final int now_reading_app_data=0x7f080002;
-        public static final int paste_uri_type=0x7f080007;
-        public static final int paste_uri_type_summary=0x7f080008;
-        public static final int preferences=0x7f080006;
-        public static final int wait_a_moment=0x7f080003;
+        public static final int application_name=0x7f080005;
+        public static final int cache_refresh=0x7f080006;
+        public static final int message_template=0x7f08000c;
+        public static final int message_template_summary=0x7f08000b;
+        public static final int message_template_title=0x7f08000a;
+        public static final int now_reading_app_data=0x7f080003;
+        public static final int paste_uri_type=0x7f080008;
+        public static final int paste_uri_type_summary=0x7f080009;
+        public static final int preferences=0x7f080007;
+        public static final int redirect_name=0x7f080002;
+        public static final int wait_a_moment=0x7f080004;
     }
     public static final class style {
         public static final int Animation_FunnyDialog=0x7f090000;
