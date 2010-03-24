@@ -47,9 +47,10 @@ public final class R {
         public static final int app_name=0x7f080000;
         public static final int cache_refresh=0x7f080006;
         public static final int installed=0x7f080005;
-        public static final int message_template=0x7f08000c;
-        public static final int message_template_summary=0x7f08000b;
-        public static final int message_template_title=0x7f08000a;
+        public static final int message_added=0x7f08000c;
+        public static final int message_added_summary=0x7f08000b;
+        public static final int message_added_title=0x7f08000a;
+        public static final int message_replaced=0x7f08000d;
         public static final int now_reading_app_data=0x7f080003;
         public static final int paste_uri_type=0x7f080008;
         public static final int paste_uri_type_summary=0x7f080009;

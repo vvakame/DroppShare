@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:summary="test">
-	<ListPreference android:entries="@array/uri_types" android:entryValues="@array/uri_types" android:key="uti_types" android:title="@string/paste_uri_type" android:summary="@string/paste_uri_type_summary" android:defaultValue="http"></ListPreference>
-	<EditTextPreference android:key="message_template" android:title="@string/message_template_title" android:summary="@string/message_template_summary" android:defaultValue="@string/message_template"></EditTextPreference>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	android:summary="test">
+	<ListPreference android:entries="@array/uri_types"
+		android:entryValues="@array/uri_types" android:key="uti_types"
+		android:title="@string/paste_uri_type" android:summary="@string/paste_uri_type_summary"
+		android:defaultValue="http"></ListPreference>
+	<EditTextPreference android:key="message_template"
+		android:title="@string/message_added_title" android:summary="@string/message_added_summary"
+		android:defaultValue="@string/message_added"></EditTextPreference>
 </PreferenceScreen>

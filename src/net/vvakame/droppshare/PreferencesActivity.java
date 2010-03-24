@@ -37,7 +37,7 @@ public class PreferencesActivity extends PreferenceActivity implements
 
 	public static String getMessageTemplate(Context con) {
 		String key = "message_template";
-		String messageTemplate = con.getString(R.string.message_template);
+		String messageTemplate = con.getString(R.string.message_added);
 		return PreferenceManager.getDefaultSharedPreferences(con).getString(
 				key, messageTemplate);
 	}

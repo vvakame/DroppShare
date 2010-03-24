@@ -81,6 +81,10 @@ public class TabContentActivity extends Activity implements SimejiIF {
 		message = message.replace("$app", appData.getAppName());
 		message = message.replace("$market", uri);
 		message = message.replace("$version", appData.getVersionName());
+		String description = appData.getDescription() == null ? "" : appData
+				.getDescription();
+		message = message.replace("$description", description);
+		message = message.replaceAll(" +", " ");
 
 		return message;
 	}

@@ -16,7 +16,10 @@
 	<string name="paste_uri_type">URI貼付け形式</string>
 	<string name="paste_uri_type_summary">どの形式で伝えるかを選びます。</string>
 
-	<string name="message_template_title">メッセージ形式</string>
-	<string name="message_template_summary">$app, $market, $version と記述すると置き換えられます。</string>
-	<string name="message_template">$app - $market #droppshare</string>
+	<string name="message_added_title">インストール時のメッセージ形式</string>
+	<string name="message_added_summary">$app, $market, $version, $description
+		と記述すると置き換えられます。</string>
+	<string name="message_added">$app $version $description AndroidOnly→$market
+		#droppshare</string>
+	<string name="message_replaced">$app - AndroidOnly→$market #droppshare</string>
 </resources>
