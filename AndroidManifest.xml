@@ -22,12 +22,14 @@
 		<activity android:name=".DroppCacheActivity" android:label="@string/app_name">
 		</activity>
 		<activity android:name=".DroppRedirectActivity"
-			android:label="@string/redirect_name">
+			android:label="@string/redirect_name" android:theme="@android:style/Theme.Dialog">
 			<intent-filter>
 				<action android:name="android.intent.action.SEND" />
 				<category android:name="android.intent.category.DEFAULT" />
 				<data android:mimeType="text/plain" />
 			</intent-filter>
+		</activity>
+		<activity android:name=".TabContentActivity" android:label="@string/app_name">
 		</activity>
 		<receiver android:name=".DroppShareReceiver">
 			<intent-filter android:priority="1">

@@ -2,13 +2,13 @@
 <resources>
 	<string name="app_name">DroppShare</string>
 	<string name="app_description">anDROid aPPlication Super Hyper Amaging Really
-		Exciting おすすめるアプリ</string>
+		Exciting おすすめたいアプリが俺にはある！</string>
 	<string name="redirect_name">Redirect to Market</string>
 
 	<string name="now_reading_app_data">アプリ読込&amp;一覧作成中</string>
 	<string name="wait_a_moment">少々お待ちください...</string>
 
-	<string name="application_name">アプリ名</string>
+	<string name="installed">Installed</string>
 
 	<string name="cache_refresh">キャッシュ最新化</string>
 	<string name="preferences">設定</string>

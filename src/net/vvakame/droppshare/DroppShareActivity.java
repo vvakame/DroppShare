@@ -2,23 +2,20 @@ package net.vvakame.droppshare;
 
 import java.util.List;
 
-import android.app.Activity;
+import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TabHost;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TabHost.TabSpec;
 
-public class DroppShareActivity extends Activity {
+public class DroppShareActivity extends TabActivity {
 	private static final String TAG = DroppShareActivity.class.getSimpleName();
-
-	private static final String ACTION_INTERCEPT = "com.adamrocker.android.simeji.ACTION_INTERCEPT";
-	private static final String REPLACE_KEY = "replace_key";
 
 	private OnItemClickListener mEventImpl = null;
 
@@ -30,15 +27,14 @@ public class DroppShareActivity extends Activity {
 
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.main);
+		TabHost tabs = getTabHost();
 
-		if (isCalledBySimeji()) {
-			mEventImpl = new EventSimejiImpl();
-		} else {
-			mEventImpl = new EventNormalImpl();
-		}
-
-		constructCache(false);
+		TabSpec tspec1 = tabs.newTabSpec("installedAppTab");
+		tspec1.setIndicator(getString(R.string.installed));
+		Intent tab1Intent = new Intent(getIntent());
+		tab1Intent.setClass(this, TabContentActivity.class);
+		tspec1.setContent(tab1Intent);
+		tabs.addTab(tspec1);
 	}
 
 	@Override
@@ -46,16 +42,9 @@ public class DroppShareActivity extends Activity {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 
 		super.onResume();
-
-		if (mAppDataList != null && mAppDataList.size() != 0) {
-			return;
-		}
-
-		ListView listView = (ListView) findViewById(R.id.app_list);
-		listView.setOnItemClickListener(mEventImpl);
-
 	}
 
+	// TODO TabContentActivityに同一のコードがある
 	private void constructCache(boolean clearFlg) {
 		DroppCacheAsynkTask asyncTask = new DroppCacheAsynkTask(this,
 				new Func<List<AppData>>() {
@@ -67,6 +56,9 @@ public class DroppShareActivity extends Activity {
 								R.layout.application_view, arg);
 						ListView listView = (ListView) findViewById(R.id.app_list);
 						listView.setAdapter(appAdapter);
+						if (mAppDataList != null && mAppDataList.size() != 0) {
+							listView.setOnItemClickListener(mEventImpl);
+						}
 					}
 				});
 		asyncTask.execute(clearFlg);
@@ -107,67 +99,5 @@ public class DroppShareActivity extends Activity {
 			break;
 		}
 		return ret;
-	}
-
-	private String genPassionateMessage(AppData appData) {
-		String message = PreferencesActivity.getMessageTemplate(this);
-
-		String uri = null;
-		if (PreferencesActivity.isHttp(this)) {
-			uri = AppDataUtil.getHttpUriFromAppData(appData);
-		} else {
-			uri = AppDataUtil.getMarketUriFromAppData(appData);
-		}
-
-		message = message.replace("$app", appData.getAppName());
-		message = message.replace("$market", uri);
-		message = message.replace("$version", appData.getVersionName());
-
-		return message;
-	}
-
-	private boolean isCalledBySimeji() {
-		Intent intent = getIntent();
-		String action = intent.getAction();
-
-		// Simejiから呼び出された時
-		if (action != null && ACTION_INTERCEPT.equals(action)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	class EventNormalImpl implements OnItemClickListener {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			AppData appData = mAppDataList.get(position);
-
-			Intent data = new Intent();
-			data.setAction(Intent.ACTION_SEND);
-			data.setType("text/plain");
-			data.putExtra(Intent.EXTRA_TEXT, genPassionateMessage(appData));
-
-			startActivity(data);
-			finish();
-		}
-	}
-
-	class EventSimejiImpl implements OnItemClickListener {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			AppData appData = mAppDataList.get(position);
-
-			pushToSimeji(genPassionateMessage(appData));
-		}
-
-		private void pushToSimeji(String result) {
-			Intent data = new Intent();
-			data.putExtra(REPLACE_KEY, result);
-			setResult(RESULT_OK, data);
-			finish();
-		}
 	}
 }
