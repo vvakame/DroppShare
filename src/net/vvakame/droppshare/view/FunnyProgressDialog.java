@@ -1,5 +1,6 @@
-package net.vvakame.droppshare;
+package net.vvakame.droppshare.view;
 
+import net.vvakame.droppshare.R;
 import android.app.ProgressDialog;
 import android.content.Context;
 

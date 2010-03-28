@@ -1,4 +1,4 @@
-package net.vvakame.droppshare;
+package net.vvakame.droppshare.activity;
 
 import java.io.InvalidClassException;
 import java.util.ArrayList;
@@ -6,6 +6,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import net.vvakame.droppshare.R;
+import net.vvakame.droppshare.helper.Func;
+import net.vvakame.droppshare.model.AppData;
+import net.vvakame.droppshare.util.AppDataUtil;
+import net.vvakame.droppshare.util.HelperUtil;
+import net.vvakame.droppshare.view.FunnyProgressDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -74,6 +80,9 @@ public class DroppCacheAsynkTask extends
 					done = true;
 				} catch (InvalidClassException e) {
 					// ここに来るのは、SerializeされたオブジェクトのserialVersionUIDが一致しないときに来る想定
+					Log.d(TAG, HelperUtil.getExceptionLog(e));
+				} catch (ClassNotFoundException e) {
+					// ここに来るのは、Serializeされたオブジェクトのパッケージ名が変更になってたりしたときに来る想定
 					Log.d(TAG, HelperUtil.getExceptionLog(e));
 				}
 			}

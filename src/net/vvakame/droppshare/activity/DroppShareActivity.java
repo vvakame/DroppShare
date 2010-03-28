@@ -1,18 +1,29 @@
-package net.vvakame.droppshare;
+package net.vvakame.droppshare.activity;
 
 import java.util.List;
+
+import net.vvakame.droppshare.R;
+import net.vvakame.droppshare.helper.Func;
+import net.vvakame.droppshare.model.AppData;
+import net.vvakame.droppshare.util.AppDataAdapter;
+import net.vvakame.droppshare.util.AppDataUtil;
+import net.vvakame.droppshare.util.HelperUtil;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TabHost;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class TabContentActivity extends Activity implements SimejiIF {
-	private static final String TAG = TabContentActivity.class.getSimpleName();
+public class DroppShareActivity extends Activity implements SimejiIF {
+	private static final String TAG = DroppShareActivity.class.getSimpleName();
 
 	private OnItemClickListener mEventImpl = null;
 
@@ -24,7 +35,17 @@ public class TabContentActivity extends Activity implements SimejiIF {
 
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.tab_contents);
+		setContentView(R.layout.main);
+		TabHost tabs = (TabHost) this.findViewById(R.id.tabhost);
+		tabs.setup();
+
+		TabHost.TabSpec tab1 = tabs.newTabSpec("installed");
+		tab1.setContent(R.id.installed);
+		tab1.setIndicator(getString(R.string.installed), getResources()
+				.getDrawable(R.drawable.icon));
+		tabs.addTab(tab1);
+
+		tabs.setCurrentTab(0);
 
 		if (isCalledBySimeji()) {
 			mEventImpl = new EventSimejiImpl();
@@ -42,6 +63,13 @@ public class TabContentActivity extends Activity implements SimejiIF {
 		super.onResume();
 	}
 
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
 	private void constructCache(boolean clearFlg) {
 		DroppCacheAsynkTask asyncTask = new DroppCacheAsynkTask(this,
 				new Func<List<AppData>>() {
@@ -49,8 +77,9 @@ public class TabContentActivity extends Activity implements SimejiIF {
 					public void func(List<AppData> arg) {
 						mAppDataList = arg;
 						AppDataAdapter appAdapter = new AppDataAdapter(
-								TabContentActivity.this,
+								DroppShareActivity.this,
 								R.layout.application_view, arg);
+
 						ListView listView = (ListView) findViewById(R.id.app_list);
 						listView.setAdapter(appAdapter);
 						if (mAppDataList != null && mAppDataList.size() != 0) {
@@ -66,6 +95,36 @@ public class TabContentActivity extends Activity implements SimejiIF {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 
 		super.onPause();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		boolean ret = true;
+		Intent intent = null;
+		switch (item.getItemId()) {
+		case R.id.cache_refresh:
+			constructCache(true);
+
+			break;
+
+		case R.id.preferences:
+			intent = new Intent(this, PreferencesActivity.class);
+			startActivity(intent);
+			break;
+
+		default:
+			ret = super.onOptionsItemSelected(item);
+			break;
+		}
+		return ret;
 	}
 
 	private String genPassionateMessage(AppData appData) {

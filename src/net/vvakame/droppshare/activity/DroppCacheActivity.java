@@ -1,6 +1,10 @@
-package net.vvakame.droppshare;
+package net.vvakame.droppshare.activity;
 
 import java.util.List;
+
+import net.vvakame.droppshare.helper.Func;
+import net.vvakame.droppshare.model.AppData;
+import net.vvakame.droppshare.util.HelperUtil;
 
 import android.app.Activity;
 import android.os.Bundle;

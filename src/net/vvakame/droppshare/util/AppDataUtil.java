@@ -1,4 +1,4 @@
-package net.vvakame.droppshare;
+package net.vvakame.droppshare.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +11,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.util.List;
+
+import net.vvakame.droppshare.model.AppData;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -83,7 +85,7 @@ public class AppDataUtil {
 
 	@SuppressWarnings("unchecked")
 	public static List<AppData> readSerializedCaches(Context context)
-			throws InvalidClassException {
+			throws InvalidClassException, ClassNotFoundException {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 
 		List<AppData> appDataList = null;
@@ -104,6 +106,7 @@ public class AppDataUtil {
 			Log.d(TAG, HelperUtil.getExceptionLog(e));
 		} catch (ClassNotFoundException e) {
 			Log.d(TAG, HelperUtil.getExceptionLog(e));
+			throw e;
 		} catch (StreamCorruptedException e) {
 			Log.d(TAG, HelperUtil.getExceptionLog(e));
 		} catch (IOException e) {

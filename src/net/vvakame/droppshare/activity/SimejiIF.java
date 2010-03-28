@@ -1,4 +1,4 @@
-package net.vvakame.droppshare;
+package net.vvakame.droppshare.activity;
 
 public interface SimejiIF {
 	public final String ACTION_INTERCEPT = "com.adamrocker.android.simeji.ACTION_INTERCEPT";

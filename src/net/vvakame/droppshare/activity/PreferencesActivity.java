@@ -1,5 +1,6 @@
-package net.vvakame.droppshare;
+package net.vvakame.droppshare.activity;
 
+import net.vvakame.droppshare.R;
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.Preference;

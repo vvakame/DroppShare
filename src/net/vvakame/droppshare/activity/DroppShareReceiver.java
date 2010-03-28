@@ -1,5 +1,6 @@
-package net.vvakame.droppshare;
+package net.vvakame.droppshare.activity;
 
+import net.vvakame.droppshare.util.HelperUtil;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;

@@ -1,7 +1,9 @@
-package net.vvakame.droppshare;
+package net.vvakame.droppshare.util;
 
 import java.util.List;
 
+import net.vvakame.droppshare.R;
+import net.vvakame.droppshare.model.AppData;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

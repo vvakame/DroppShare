@@ -2,6 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-	<ListView android:layout_height="wrap_content" android:id="@+id/app_list"
-	android:layout_width="fill_parent" android:persistentDrawingCache="scrolling"></ListView>
+	<TabHost android:id="@+id/tabhost" android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+		<TabWidget android:id="@android:id/tabs"
+			android:layout_width="fill_parent" android:layout_height="fill_parent" />
+		<FrameLayout android:id="@android:id/tabcontent"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:paddingTop="65px">
+			<LinearLayout android:id="@+id/installed"
+				android:orientation="vertical" android:layout_width="fill_parent"
+				android:layout_height="fill_parent">
+				<ListView android:id="@+id/app_list" android:layout_width="fill_parent"
+					android:layout_height="fill_parent">
+				</ListView>
+			</LinearLayout>
+		</FrameLayout>
+	</TabHost>
 </LinearLayout>

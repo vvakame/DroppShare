@@ -1,4 +1,4 @@
-package net.vvakame.droppshare;
+package net.vvakame.droppshare.model;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package net.vvakame.droppshare;
+package net.vvakame.droppshare.util;
 
 public class HelperUtil {
 	private static final int CALLEE_STACK = 3;
