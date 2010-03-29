@@ -24,9 +24,10 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class DroppCacheAsynkTask extends
+public class DroppInstalledAsynkTask extends
 		AsyncTask<Boolean, Void, List<AppData>> {
-	private static final String TAG = DroppCacheAsynkTask.class.getSimpleName();
+	private static final String TAG = DroppInstalledAsynkTask.class
+			.getSimpleName();
 
 	private Context mContext = null;
 	private Func<List<AppData>> mFunc = null;
@@ -35,7 +36,8 @@ public class DroppCacheAsynkTask extends
 
 	private static Object lock = new Object();
 
-	public DroppCacheAsynkTask(Context context, Func<List<AppData>> postExecFunc) {
+	public DroppInstalledAsynkTask(Context context,
+			Func<List<AppData>> postExecFunc) {
 		super();
 
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());

@@ -8,7 +8,6 @@ import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.Func;
 import net.vvakame.droppshare.helper.HelperUtil;
 import net.vvakame.droppshare.model.AppData;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -27,16 +27,17 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 
 	private OnItemClickListener mEventImpl = null;
 
-	private List<AppData> mAppDataList = null;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 
 		super.onCreate(savedInstanceState);
 
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		setProgressBarVisibility(true);
+
 		setContentView(R.layout.main);
-		TabHost tabs = (TabHost) this.findViewById(R.id.tabhost);
+		TabHost tabs = (TabHost) findViewById(R.id.tabhost);
 		tabs.setup();
 
 		TabHost.TabSpec tab1 = tabs.newTabSpec("installed");
@@ -71,23 +72,52 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 	}
 
 	private void constructCache(boolean clearFlg) {
-		DroppCacheAsynkTask asyncTask = new DroppCacheAsynkTask(this,
-				new Func<List<AppData>>() {
+		// あまりにも分かりにくいのでコメントとして何がしたいかを残す。要は、
+		// 1. DroppInstalledAsyncTaskを非同期で蹴る
+		// 2. 1が終わったら、DroppHistoryAsyncTaskを蹴る
+
+		Func<List<AppData>> installedFunc = new Func<List<AppData>>() {
+			@Override
+			public void func(List<AppData> arg) {
+				if (arg != null && arg.size() != 0) {
+					AppDataAdapter appAdapter = new AppDataAdapter(
+							DroppShareActivity.this, R.layout.application_view,
+							arg);
+
+					ListView listView = (ListView) findViewById(R.id.installed_list);
+					listView.setAdapter(appAdapter);
+					listView.setOnItemClickListener(mEventImpl);
+				}
+
+				Func<List<AppData>> historyFunc = new Func<List<AppData>>() {
 					@Override
 					public void func(List<AppData> arg) {
-						mAppDataList = arg;
-						AppDataAdapter appAdapter = new AppDataAdapter(
-								DroppShareActivity.this,
-								R.layout.application_view, arg);
+						if (arg != null && arg.size() != 0) {
+							AppDataAdapter appAdapter = new AppDataAdapter(
+									DroppShareActivity.this,
+									R.layout.application_view, arg);
 
-						ListView listView = (ListView) findViewById(R.id.app_list);
-						listView.setAdapter(appAdapter);
-						if (mAppDataList != null && mAppDataList.size() != 0) {
+							ListView listView = (ListView) findViewById(R.id.history_list);
+							listView.setAdapter(appAdapter);
 							listView.setOnItemClickListener(mEventImpl);
 						}
+
+						TabHost tabs = (TabHost) DroppShareActivity.this
+								.findViewById(R.id.tabhost);
+						TabHost.TabSpec tab2 = tabs.newTabSpec("history");
+						tab2.setContent(R.id.history);
+						tab2.setIndicator(getString(R.string.history),
+								getResources().getDrawable(R.drawable.icon));
+						tabs.addTab(tab2);
 					}
-				});
-		asyncTask.execute(clearFlg);
+				};
+
+				new DroppHistoryAsynkTask(DroppShareActivity.this, historyFunc)
+						.execute();
+			}
+		};
+
+		new DroppInstalledAsynkTask(this, installedFunc).execute(clearFlg);
 	}
 
 	@Override
@@ -167,8 +197,8 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-
-			AppData appData = mAppDataList.get(position);
+			AppDataAdapter adapter = (AppDataAdapter) parent.getAdapter();
+			AppData appData = adapter.getItem(position);
 
 			Intent data = new Intent();
 			data.setAction(Intent.ACTION_SEND);
@@ -187,8 +217,8 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-
-			AppData appData = mAppDataList.get(position);
+			AppDataAdapter adapter = (AppDataAdapter) parent.getAdapter();
+			AppData appData = adapter.getItem(position);
 
 			pushToSimeji(genPassionateMessage(appData));
 		}

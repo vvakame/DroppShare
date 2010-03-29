@@ -19,7 +19,7 @@ public class DroppCacheActivity extends Activity {
 
 		super.onCreate(savedInstanceState);
 
-		DroppCacheAsynkTask asyncTask = new DroppCacheAsynkTask(this,
+		DroppInstalledAsynkTask asyncTask = new DroppInstalledAsynkTask(this,
 				new Func<List<AppData>>() {
 					@Override
 					public void func(List<AppData> arg) {

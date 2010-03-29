@@ -12,8 +12,15 @@
 			<LinearLayout android:id="@+id/installed"
 				android:orientation="vertical" android:layout_width="fill_parent"
 				android:layout_height="fill_parent">
-				<ListView android:id="@+id/app_list" android:layout_width="fill_parent"
-					android:layout_height="fill_parent">
+				<ListView android:id="@+id/installed_list"
+					android:layout_width="fill_parent" android:layout_height="fill_parent">
+				</ListView>
+			</LinearLayout>
+			<LinearLayout android:id="@+id/history"
+				android:orientation="vertical" android:layout_width="fill_parent"
+				android:layout_height="fill_parent">
+				<ListView android:id="@+id/history_list"
+					android:layout_width="fill_parent" android:layout_height="fill_parent">
 				</ListView>
 			</LinearLayout>
 		</FrameLayout>

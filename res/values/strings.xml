@@ -9,6 +9,7 @@
 	<string name="wait_a_moment">少々お待ちください...</string>
 
 	<string name="installed">Installed</string>
+	<string name="history">History</string>
 
 	<string name="cache_refresh">キャッシュ最新化</string>
 	<string name="preferences">設定</string>
