@@ -1,6 +1,10 @@
 package net.vvakame.droppshare.activity;
 
-import net.vvakame.droppshare.util.HelperUtil;
+import java.util.Date;
+
+import net.vvakame.droppshare.helper.HelperUtil;
+import net.vvakame.droppshare.model.InstallLogDao;
+import net.vvakame.droppshare.model.InstallLogModel;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -59,5 +63,21 @@ public class DroppShareReceiver extends BroadcastReceiver {
 		} else if (Intent.ACTION_PACKAGE_REPLACED.equals(action)) {
 			// REPLACEDの場合も何もしない 将来的にはVersionNameを再取得するためにキャッシュを作り直したほうがよいかもしれない
 		}
+
+		String versionName = null;
+		try {
+			versionName = context.getPackageManager().getPackageInfo(
+					appInfo.packageName, PackageManager.GET_ACTIVITIES).versionName;
+		} catch (NameNotFoundException e) {
+			// 握りつぶす
+		}
+		InstallLogModel model = new InstallLogModel();
+		model.setPackageName(packageName);
+		model.setVersionName(versionName);
+		model.setActionType(action);
+		model.setProcessDate(new Date());
+		InstallLogDao dao = new InstallLogDao(context);
+		dao.save(model);
+		// dao.compress();
 	}
 }

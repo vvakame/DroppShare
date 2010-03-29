@@ -1,4 +1,4 @@
-package net.vvakame.droppshare.util;
+package net.vvakame.droppshare.helper;
 
 import java.io.File;
 import java.io.FileInputStream;

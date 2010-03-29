@@ -3,7 +3,7 @@ package net.vvakame.droppshare.activity;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.vvakame.droppshare.util.HelperUtil;
+import net.vvakame.droppshare.helper.HelperUtil;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;

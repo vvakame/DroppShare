@@ -7,10 +7,10 @@ import java.util.Comparator;
 import java.util.List;
 
 import net.vvakame.droppshare.R;
+import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.Func;
+import net.vvakame.droppshare.helper.HelperUtil;
 import net.vvakame.droppshare.model.AppData;
-import net.vvakame.droppshare.util.AppDataUtil;
-import net.vvakame.droppshare.util.HelperUtil;
 import net.vvakame.droppshare.view.FunnyProgressDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
