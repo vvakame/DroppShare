@@ -11,6 +11,8 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RecentTaskInfo;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -46,6 +48,7 @@ public class DroppRecentlyUsedAsynkTask extends
 
 		ActivityManager am = (ActivityManager) mContext
 				.getSystemService(Activity.ACTIVITY_SERVICE);
+		PackageManager pm = mContext.getPackageManager();
 		List<RecentTaskInfo> taskInfoList = am.getRecentTasks(MAX_NUM,
 				ActivityManager.RECENT_WITH_EXCLUDED);
 
@@ -56,6 +59,21 @@ public class DroppRecentlyUsedAsynkTask extends
 		for (RecentTaskInfo taskInfo : taskInfoList) {
 			String packageName = taskInfo.baseIntent.getComponent()
 					.getPackageName();
+			ApplicationInfo appInfo = null;
+			try {
+				appInfo = pm.getApplicationInfo(packageName,
+						PackageManager.GET_UNINSTALLED_PACKAGES);
+			} catch (NameNotFoundException e) {
+				// 見つからなかったらこの後もどうせ続かないので諦める
+				continue;
+			}
+
+			// デフォルト系アプリを撥ねる
+			if (appInfo != null
+					&& (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+				continue;
+			}
+
 			AppData appData = null;
 			try {
 				appData = AppDataUtil.convert(mContext, packageName);
