@@ -250,4 +250,28 @@ public class AppDataUtil {
 
 		return appData;
 	}
+
+	public static AppData convert(Context context, String packageName)
+			throws NameNotFoundException {
+		AppData appData = new AppData();
+
+		PackageManager pm = context.getPackageManager();
+		ApplicationInfo appInfo = pm.getApplicationInfo(packageName,
+				PackageManager.GET_UNINSTALLED_PACKAGES);
+
+		// String packageName = packageName;
+		CharSequence appName = pm.getApplicationLabel(appInfo);
+		CharSequence description = appInfo.loadDescription(pm);
+		String versionName = pm.getPackageInfo(packageName,
+				PackageManager.GET_UNINSTALLED_PACKAGES).versionName;
+		Drawable icon = appInfo.loadIcon(pm);
+
+		appData.setPackageName(packageName);
+		appData.setDescription(description);
+		appData.setAppName(appName);
+		appData.setVersionName(versionName);
+		appData.setIcon(icon);
+
+		return appData;
+	}
 }

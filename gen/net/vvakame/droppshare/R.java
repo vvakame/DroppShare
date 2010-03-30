@@ -30,12 +30,14 @@ public final class R {
         public static final int application_icon=0x7f0b0000;
         public static final int application_name=0x7f0b0001;
         public static final int application_version_name=0x7f0b0003;
-        public static final int cache_refresh=0x7f0b0009;
+        public static final int cache_refresh=0x7f0b000b;
         public static final int history=0x7f0b0007;
         public static final int history_list=0x7f0b0008;
         public static final int installed=0x7f0b0005;
         public static final int installed_list=0x7f0b0006;
-        public static final int preferences=0x7f0b000a;
+        public static final int preferences=0x7f0b000c;
+        public static final int recent_list=0x7f0b000a;
+        public static final int recently_used=0x7f0b0009;
         public static final int tabhost=0x7f0b0004;
     }
     public static final class layout {
@@ -48,17 +50,18 @@ public final class R {
     public static final class string {
         public static final int app_description=0x7f080001;
         public static final int app_name=0x7f080000;
-        public static final int cache_refresh=0x7f080007;
+        public static final int cache_refresh=0x7f080008;
         public static final int history=0x7f080006;
         public static final int installed=0x7f080005;
-        public static final int message_added=0x7f08000d;
-        public static final int message_added_summary=0x7f08000c;
-        public static final int message_added_title=0x7f08000b;
-        public static final int message_replaced=0x7f08000e;
+        public static final int message_added=0x7f08000e;
+        public static final int message_added_summary=0x7f08000d;
+        public static final int message_added_title=0x7f08000c;
+        public static final int message_replaced=0x7f08000f;
         public static final int now_reading_app_data=0x7f080003;
-        public static final int paste_uri_type=0x7f080009;
-        public static final int paste_uri_type_summary=0x7f08000a;
-        public static final int preferences=0x7f080008;
+        public static final int paste_uri_type=0x7f08000a;
+        public static final int paste_uri_type_summary=0x7f08000b;
+        public static final int preferences=0x7f080009;
+        public static final int recent=0x7f080007;
         public static final int redirect_name=0x7f080002;
         public static final int wait_a_moment=0x7f080004;
     }

@@ -23,6 +23,13 @@
 					android:layout_width="fill_parent" android:layout_height="fill_parent">
 				</ListView>
 			</LinearLayout>
+			<LinearLayout android:id="@+id/recently_used"
+				android:orientation="vertical" android:layout_width="fill_parent"
+				android:layout_height="fill_parent">
+				<ListView android:id="@+id/recent_list"
+					android:layout_width="fill_parent" android:layout_height="fill_parent">
+				</ListView>
+			</LinearLayout>
 		</FrameLayout>
 	</TabHost>
 </LinearLayout>

@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class InstallLogModel {
 
-	private static final String DATE_PATTERN = "yyyy/MM/dd HH:mm:ss";
+	private static final String DATE_PATTERN = "yyyy/MM/dd HH:mm:ss SSS";
 
 	private Long rowId = null;
 	private String packageName;
