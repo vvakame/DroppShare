@@ -16,14 +16,17 @@ public class AppDataAdapter extends ArrayAdapter<AppData> {
 
 	private Context mCon = null;
 
-	private List<AppData> mAppDataList = null;
+	public AppDataAdapter(Context context, int textViewResourceId) {
+		super(context, textViewResourceId);
+
+		mCon = context;
+	}
 
 	public AppDataAdapter(Context context, int textViewResourceId,
 			List<AppData> appDataList) {
 		super(context, textViewResourceId, appDataList);
 
 		mCon = context;
-		mAppDataList = appDataList;
 	}
 
 	@Override
@@ -36,19 +39,19 @@ public class AppDataAdapter extends ArrayAdapter<AppData> {
 
 		ImageView iconView = (ImageView) convertView
 				.findViewById(R.id.application_icon);
-		iconView.setImageDrawable(mAppDataList.get(position).getIcon());
+		iconView.setImageDrawable(getItem(position).getIcon());
 
 		TextView appNameText = (TextView) convertView
 				.findViewById(R.id.application_name);
-		appNameText.setText(mAppDataList.get(position).getAppName());
+		appNameText.setText(getItem(position).getAppName());
 
 		TextView appDescText = (TextView) convertView
 				.findViewById(R.id.application_description);
-		appDescText.setText(mAppDataList.get(position).getDescription());
+		appDescText.setText(getItem(position).getDescription());
 
 		TextView appVerText = (TextView) convertView
 				.findViewById(R.id.application_version_name);
-		appVerText.setText(mAppDataList.get(position).getVersionName());
+		appVerText.setText(getItem(position).getVersionName());
 
 		return convertView;
 	}

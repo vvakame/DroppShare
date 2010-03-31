@@ -25,6 +25,10 @@ import android.widget.AdapterView.OnItemClickListener;
 public class DroppShareActivity extends Activity implements SimejiIF {
 	private static final String TAG = DroppShareActivity.class.getSimpleName();
 
+	private AppDataAdapter mInstalledAdapter = null;
+	private AppDataAdapter mHistoryAdapter = null;
+	private AppDataAdapter mRecentAdapter = null;
+
 	private OnItemClickListener mEventImpl = null;
 
 	@Override
@@ -37,16 +41,45 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 		setProgressBarVisibility(true);
 
 		setContentView(R.layout.main);
-		TabHost tarHost = (TabHost) findViewById(R.id.tabhost);
-		tarHost.setup();
+		TabHost tabHost = (TabHost) findViewById(R.id.tabhost);
+		tabHost.setup();
 
-		TabHost.TabSpec tab = tarHost.newTabSpec("installed");
+		TabHost.TabSpec tab = tabHost.newTabSpec("installed");
 		tab.setContent(R.id.installed);
 		tab.setIndicator(getString(R.string.installed), getResources()
 				.getDrawable(android.R.drawable.ic_menu_share));
-		tarHost.addTab(tab);
+		tabHost.addTab(tab);
 
-		tarHost.setCurrentTab(0);
+		tabHost = (TabHost) DroppShareActivity.this.findViewById(R.id.tabhost);
+		tab = tabHost.newTabSpec("history");
+		tab.setContent(R.id.history);
+		tab.setIndicator(getString(R.string.history), getResources()
+				.getDrawable(android.R.drawable.ic_menu_myplaces));
+		tabHost.addTab(tab);
+
+		tabHost = (TabHost) DroppShareActivity.this.findViewById(R.id.tabhost);
+		tab = tabHost.newTabSpec("recent");
+		tab.setContent(R.id.recently_used);
+		tab.setIndicator(getString(R.string.recent), getResources()
+				.getDrawable(android.R.drawable.ic_menu_recent_history));
+		tabHost.addTab(tab);
+
+		tabHost.setCurrentTab(0);
+
+		mInstalledAdapter = new AppDataAdapter(this, R.layout.application_view);
+		ListView listView = (ListView) findViewById(R.id.installed_list);
+		listView.setAdapter(mInstalledAdapter);
+		listView.setOnItemClickListener(mEventImpl);
+
+		mHistoryAdapter = new AppDataAdapter(this, R.layout.application_view);
+		listView = (ListView) findViewById(R.id.history_list);
+		listView.setAdapter(mHistoryAdapter);
+		listView.setOnItemClickListener(mEventImpl);
+
+		mRecentAdapter = new AppDataAdapter(this, R.layout.application_view);
+		listView = (ListView) findViewById(R.id.recent_list);
+		listView.setAdapter(mRecentAdapter);
+		listView.setOnItemClickListener(mEventImpl);
 
 		if (isCalledBySimeji()) {
 			mEventImpl = new EventSimejiImpl();
@@ -83,75 +116,27 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 		mInstalledFunc = new Func<List<AppData>>() {
 			@Override
 			public void func(List<AppData> arg) {
-				if (arg != null && arg.size() != 0) {
-					AppDataAdapter appAdapter = new AppDataAdapter(
-							DroppShareActivity.this, R.layout.application_view,
-							arg);
-
-					ListView listView = (ListView) findViewById(R.id.installed_list);
-					listView.setAdapter(appAdapter);
-					listView.setOnItemClickListener(mEventImpl);
-				}
-
-				new DroppHistoryAsynkTask(DroppShareActivity.this, mHistoryFunc)
-						.execute();
+				new DroppHistoryAsynkTask(DroppShareActivity.this,
+						mHistoryAdapter, mHistoryFunc).execute();
 			}
 		};
 
 		mHistoryFunc = new Func<List<AppData>>() {
 			@Override
 			public void func(List<AppData> arg) {
-				if (arg != null && arg.size() != 0) {
-					AppDataAdapter appAdapter = new AppDataAdapter(
-							DroppShareActivity.this, R.layout.application_view,
-							arg);
-
-					ListView listView = (ListView) findViewById(R.id.history_list);
-					listView.setAdapter(appAdapter);
-					listView.setOnItemClickListener(mEventImpl);
-				}
-
-				TabHost tabHost = (TabHost) DroppShareActivity.this
-						.findViewById(R.id.tabhost);
-				TabHost.TabSpec tab = tabHost.newTabSpec("history");
-				tab.setContent(R.id.history);
-				tab.setIndicator(getString(R.string.history), getResources()
-						.getDrawable(android.R.drawable.ic_menu_myplaces));
-				tabHost.addTab(tab);
-
 				new DroppRecentlyUsedAsynkTask(DroppShareActivity.this,
-						mRecentFunc).execute();
+						mRecentAdapter, mRecentFunc).execute();
 			}
 		};
 
 		mRecentFunc = new Func<List<AppData>>() {
 			@Override
 			public void func(List<AppData> arg) {
-				if (arg != null && arg.size() != 0) {
-					AppDataAdapter appAdapter = new AppDataAdapter(
-							DroppShareActivity.this, R.layout.application_view,
-							arg);
-
-					ListView listView = (ListView) findViewById(R.id.recent_list);
-					listView.setAdapter(appAdapter);
-					listView.setOnItemClickListener(mEventImpl);
-				}
-
-				TabHost tabHost = (TabHost) DroppShareActivity.this
-						.findViewById(R.id.tabhost);
-				TabHost.TabSpec tab = tabHost.newTabSpec("recent");
-				tab.setContent(R.id.recently_used);
-				tab
-						.setIndicator(
-								getString(R.string.recent),
-								getResources()
-										.getDrawable(
-												android.R.drawable.ic_menu_recent_history));
-				tabHost.addTab(tab);
 			}
 		};
 
-		new DroppInstalledAsynkTask(this, mInstalledFunc).execute(clearFlg);
+		new DroppInstalledAsynkTask(this, mInstalledAdapter, mInstalledFunc)
+				.execute(clearFlg);
 	}
 
 	@Override

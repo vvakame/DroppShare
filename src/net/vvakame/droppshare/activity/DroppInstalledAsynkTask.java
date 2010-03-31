@@ -23,18 +23,43 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 public class DroppInstalledAsynkTask extends
-		AsyncTask<Boolean, Void, List<AppData>> {
+		AsyncTask<Boolean, AppData, List<AppData>> {
 	private static final String TAG = DroppInstalledAsynkTask.class
 			.getSimpleName();
 
+	private static final int MODE_NEW = 0;
+	private static final int MODE_CACHE = 1;
+
 	private Context mContext = null;
+	private ArrayAdapter<AppData> mAdapter = null;
 	private Func<List<AppData>> mFunc = null;
 
+	private Comparator<AppData> mComparator = new Comparator<AppData>() {
+		@Override
+		public int compare(AppData obj1, AppData obj2) {
+			return obj1.getAppName().compareTo(obj2.getAppName());
+		}
+	};
+
 	private ProgressDialog mProgDialog = null;
+	private int mMode = MODE_NEW;
 
 	private static Object lock = new Object();
+
+	public DroppInstalledAsynkTask(Context context,
+			ArrayAdapter<AppData> adapter, Func<List<AppData>> postExecFunc) {
+		super();
+
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		mContext = context;
+		mAdapter = adapter;
+		mFunc = postExecFunc;
+
+		mProgDialog = new FunnyProgressDialog(mContext);
+	}
 
 	public DroppInstalledAsynkTask(Context context,
 			Func<List<AppData>> postExecFunc) {
@@ -43,8 +68,6 @@ public class DroppInstalledAsynkTask extends
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 		mContext = context;
 		mFunc = postExecFunc;
-
-		mProgDialog = new FunnyProgressDialog(mContext);
 	}
 
 	@Override
@@ -79,6 +102,10 @@ public class DroppInstalledAsynkTask extends
 						+ ", use cache.");
 				try {
 					appDataList = AppDataUtil.readSerializedCaches(mContext);
+					mMode = MODE_CACHE;
+					for (AppData appData : appDataList) {
+						publishProgress(appData);
+					}
 					done = true;
 				} catch (InvalidClassException e) {
 					// ここに来るのは、SerializeされたオブジェクトのserialVersionUIDが一致しないときに来る想定
@@ -91,6 +118,7 @@ public class DroppInstalledAsynkTask extends
 			if (!done) {
 				Log.d(TAG, TAG + ":" + HelperUtil.getMethodName()
 						+ ", create cache.");
+				mMode = MODE_NEW;
 				appDataList = new ArrayList<AppData>();
 
 				PackageManager pm = mContext.getPackageManager();
@@ -133,15 +161,12 @@ public class DroppInstalledAsynkTask extends
 					}
 					appData.setIcon(icon);
 
+					publishProgress(appData);
+
 					appDataList.add(appData);
 				}
 
-				Collections.sort(appDataList, new Comparator<AppData>() {
-					@Override
-					public int compare(AppData obj1, AppData obj2) {
-						return obj1.getAppName().compareTo(obj2.getAppName());
-					}
-				});
+				Collections.sort(appDataList, mComparator);
 
 				AppDataUtil.writeSerializedCache(mContext, appDataList);
 			}
@@ -153,8 +178,18 @@ public class DroppInstalledAsynkTask extends
 	}
 
 	@Override
-	protected void onProgressUpdate(Void... values) {
+	protected void onProgressUpdate(AppData... values) {
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", appData="
+				+ values);
+
 		super.onProgressUpdate(values);
+
+		if (mAdapter != null && values.length == 1) {
+			mAdapter.add(values[0]);
+			if (mMode == MODE_NEW) {
+				mAdapter.sort(mComparator);
+			}
+		}
 	}
 
 	@Override
@@ -173,6 +208,9 @@ public class DroppInstalledAsynkTask extends
 		super.onPostExecute(appDataList);
 
 		mFunc.func(appDataList);
-		mProgDialog.dismiss();
+		if (mProgDialog != null && mProgDialog.isShowing()) {
+			mProgDialog.dismiss();
+			mProgDialog = null;
+		}
 	}
 }
