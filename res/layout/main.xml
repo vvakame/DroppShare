@@ -15,6 +15,9 @@
 				<ListView android:id="@+id/installed_list"
 					android:layout_width="fill_parent" android:layout_height="fill_parent">
 				</ListView>
+				<ProgressBar android:id="@+id/progress_installed"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					style="?android:attr/progressBarStyleSmall"></ProgressBar>
 			</LinearLayout>
 			<LinearLayout android:id="@+id/history"
 				android:orientation="vertical" android:layout_width="fill_parent"
@@ -22,6 +25,9 @@
 				<ListView android:id="@+id/history_list"
 					android:layout_width="fill_parent" android:layout_height="fill_parent">
 				</ListView>
+				<ProgressBar android:id="@+id/progress_history"
+					android:layout_width="fill_parent" android:layout_height="fill_parent"
+					style="?android:attr/progressBarStyleSmall"></ProgressBar>
 			</LinearLayout>
 			<LinearLayout android:id="@+id/recently_used"
 				android:orientation="vertical" android:layout_width="fill_parent"
@@ -29,6 +35,9 @@
 				<ListView android:id="@+id/recent_list"
 					android:layout_width="fill_parent" android:layout_height="fill_parent">
 				</ListView>
+				<ProgressBar android:id="@+id/progress_recent"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					style="?android:attr/progressBarStyleSmall"></ProgressBar>
 			</LinearLayout>
 		</FrameLayout>
 	</TabHost>

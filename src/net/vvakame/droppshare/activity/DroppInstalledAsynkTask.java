@@ -6,13 +6,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import net.vvakame.droppshare.R;
 import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.Func;
 import net.vvakame.droppshare.helper.HelperUtil;
 import net.vvakame.droppshare.model.AppData;
-import net.vvakame.droppshare.view.FunnyProgressDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -44,7 +41,6 @@ public class DroppInstalledAsynkTask extends
 		}
 	};
 
-	private ProgressDialog mProgDialog = null;
 	private int mMode = MODE_NEW;
 
 	private static Object lock = new Object();
@@ -57,8 +53,6 @@ public class DroppInstalledAsynkTask extends
 		mContext = context;
 		mAdapter = adapter;
 		mFunc = postExecFunc;
-
-		mProgDialog = new FunnyProgressDialog(mContext);
 	}
 
 	public DroppInstalledAsynkTask(Context context,
@@ -68,18 +62,6 @@ public class DroppInstalledAsynkTask extends
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 		mContext = context;
 		mFunc = postExecFunc;
-	}
-
-	@Override
-	protected void onPreExecute() {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-		super.onPreExecute();
-
-		mProgDialog.setTitle(mContext.getString(R.string.now_reading_app_data));
-		mProgDialog.setMessage(mContext.getString(R.string.wait_a_moment));
-		mProgDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		mProgDialog.setCancelable(false);
-		mProgDialog.show();
 	}
 
 	@Override
@@ -193,24 +175,10 @@ public class DroppInstalledAsynkTask extends
 	}
 
 	@Override
-	protected void onCancelled() {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-		if (mProgDialog != null && mProgDialog.isShowing()) {
-			mProgDialog.dismiss();
-			mProgDialog = null;
-		}
-		super.onCancelled();
-	}
-
-	@Override
 	protected void onPostExecute(List<AppData> appDataList) {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 		super.onPostExecute(appDataList);
 
 		mFunc.func(appDataList);
-		if (mProgDialog != null && mProgDialog.isShowing()) {
-			mProgDialog.dismiss();
-			mProgDialog = null;
-		}
 	}
 }

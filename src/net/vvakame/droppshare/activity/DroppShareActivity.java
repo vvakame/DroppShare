@@ -38,18 +38,16 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 		super.onCreate(savedInstanceState);
 
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		setProgressBarVisibility(true);
-
 		setContentView(R.layout.main);
+
+		setProgressBarIndeterminateVisibility(true);
+
+		// タブの準備
 		TabHost tabHost = (TabHost) findViewById(R.id.tabhost);
 		tabHost.setup();
+		TabHost.TabSpec tab;
 
-		TabHost.TabSpec tab = tabHost.newTabSpec("installed");
-		tab.setContent(R.id.installed);
-		tab.setIndicator(getString(R.string.installed), getResources()
-				.getDrawable(android.R.drawable.ic_menu_share));
-		tabHost.addTab(tab);
-
+		// インストール履歴タブ
 		tabHost = (TabHost) DroppShareActivity.this.findViewById(R.id.tabhost);
 		tab = tabHost.newTabSpec("history");
 		tab.setContent(R.id.history);
@@ -57,11 +55,19 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 				.getDrawable(android.R.drawable.ic_menu_myplaces));
 		tabHost.addTab(tab);
 
+		// 最近実行したアプリタブ
 		tabHost = (TabHost) DroppShareActivity.this.findViewById(R.id.tabhost);
 		tab = tabHost.newTabSpec("recent");
 		tab.setContent(R.id.recently_used);
 		tab.setIndicator(getString(R.string.recent), getResources()
 				.getDrawable(android.R.drawable.ic_menu_recent_history));
+		tabHost.addTab(tab);
+
+		// 全アプリタブ
+		tab = tabHost.newTabSpec("installed");
+		tab.setContent(R.id.installed);
+		tab.setIndicator(getString(R.string.installed), getResources()
+				.getDrawable(android.R.drawable.ic_menu_share));
 		tabHost.addTab(tab);
 
 		tabHost.setCurrentTab(0);
@@ -107,17 +113,15 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 	private Func<List<AppData>> mInstalledFunc = null;
 	private Func<List<AppData>> mHistoryFunc = null;
 	private Func<List<AppData>> mRecentFunc = null;
+	private boolean mClearFlag = false;
 
 	private void constructCache(boolean clearFlg) {
-		// あまりにも分かりにくいのでコメントとして何がしたいかを残す。要は、
-		// 1. DroppInstalledAsyncTaskを非同期で蹴る
-		// 2. 1が終わったら、DroppHistoryAsyncTaskを蹴る
+		mClearFlag = clearFlg;
 
 		mInstalledFunc = new Func<List<AppData>>() {
 			@Override
 			public void func(List<AppData> arg) {
-				new DroppHistoryAsynkTask(DroppShareActivity.this,
-						mHistoryAdapter, mHistoryFunc).execute();
+				setProgressBarIndeterminateVisibility(false);
 			}
 		};
 
@@ -132,11 +136,13 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 		mRecentFunc = new Func<List<AppData>>() {
 			@Override
 			public void func(List<AppData> arg) {
+				new DroppInstalledAsynkTask(DroppShareActivity.this,
+						mInstalledAdapter, mInstalledFunc).execute(mClearFlag);
 			}
 		};
+		new DroppHistoryAsynkTask(DroppShareActivity.this, mHistoryAdapter,
+				mHistoryFunc).execute();
 
-		new DroppInstalledAsynkTask(this, mInstalledAdapter, mInstalledFunc)
-				.execute(clearFlg);
 	}
 
 	@Override

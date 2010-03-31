@@ -50,12 +50,6 @@ public class DroppRecentlyUsedAsynkTask extends
 	}
 
 	@Override
-	protected void onPreExecute() {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-		super.onPreExecute();
-	}
-
-	@Override
 	protected List<AppData> doInBackground(Void... params) {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 
