@@ -1,17 +1,20 @@
 package net.vvakame.droppshare.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import android.graphics.drawable.Drawable;
 
 public class AppData implements Serializable {
-	private static final long serialVersionUID = 2L;
+	private static final long serialVersionUID = 3L;
 
 	private String appName = null;
 	private String packageName = null;
 	private String description = null;
 	private String versionName = null;
 	private transient Drawable icon = null;
+	private transient String action = null;
+	private transient Date processDate = null;
 
 	public String getAppName() {
 		return appName;
@@ -59,6 +62,22 @@ public class AppData implements Serializable {
 
 	public void setIcon(Drawable icon) {
 		this.icon = icon;
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	public Date getProcessDate() {
+		return processDate;
+	}
+
+	public void setProcessDate(Date processDate) {
+		this.processDate = processDate;
 	}
 
 	public String getUniqName() {

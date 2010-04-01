@@ -10,12 +10,15 @@ import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.util.Date;
 import java.util.List;
 
+import net.vvakame.droppshare.R;
 import net.vvakame.droppshare.model.AppData;
 import net.vvakame.droppshare.model.InstallLogModel;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -241,12 +244,25 @@ public class AppDataUtil {
 		CharSequence description = appInfo.loadDescription(pm);
 		String versionName = insLogModel.getVersionName();
 		Drawable icon = appInfo.loadIcon(pm);
+		String action = insLogModel.getActionType();
+		Date processDate = insLogModel.getProcessDate();
+
+		// アクションの加工を行う
+		if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
+			action = context.getString(R.string.added);
+		} else if (Intent.ACTION_PACKAGE_REPLACED.equals(action)) {
+			action = context.getString(R.string.replaced);
+		} else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
+			action = context.getString(R.string.removed);
+		}
 
 		appData.setPackageName(packageName);
 		appData.setDescription(description);
 		appData.setAppName(appName);
 		appData.setVersionName(versionName);
 		appData.setIcon(icon);
+		appData.setAction(action);
+		appData.setProcessDate(processDate);
 
 		return appData;
 	}

@@ -85,19 +85,19 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mProgressBar = inflater.inflate(R.layout.progress_bar, null);
 
-		mInstalledAdapter = new AppDataAdapter(this, R.layout.application_view);
+		mInstalledAdapter = new AppDataAdapter(this, R.layout.installed_view);
 		ListView listView = (ListView) findViewById(R.id.installed_list);
 		listView.addFooterView(mProgressBar);
 		listView.setAdapter(mInstalledAdapter);
 		listView.setOnItemClickListener(mEventImpl);
 
-		mHistoryAdapter = new AppDataAdapter(this, R.layout.application_view);
+		mHistoryAdapter = new AppDataAdapter(this, R.layout.history_view);
 		listView = (ListView) findViewById(R.id.history_list);
 		listView.addFooterView(mProgressBar);
 		listView.setAdapter(mHistoryAdapter);
 		listView.setOnItemClickListener(mEventImpl);
 
-		mRecentAdapter = new AppDataAdapter(this, R.layout.application_view);
+		mRecentAdapter = new AppDataAdapter(this, R.layout.recent_view);
 		listView = (ListView) findViewById(R.id.recent_list);
 		listView.addFooterView(mProgressBar);
 		listView.setAdapter(mRecentAdapter);

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="fill_parent"
+	android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
+	android:gravity="top|left">
+	<ImageView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/application_icon"
+		android:src="@drawable/icon" android:scaleType="fitXY"
+		android:adjustViewBounds="true" android:maxHeight="48px"
+		android:maxWidth="48px" android:minHeight="48px" android:minWidth="48px"
+		android:layout_alignParentTop="true" android:layout_alignParentLeft="true">
+	</ImageView>
+	<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="application name"
+		android:id="@+id/application_name" android:layout_toRightOf="@+id/application_icon"
+		android:textSize="20dip" android:textColor="@color/app_name"
+		android:layout_marginLeft="5dip"></TextView>
+	<TextView android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:id="@+id/application_description"
+		android:text="application description" android:layout_below="@+id/application_name"
+		android:layout_toRightOf="@+id/application_icon" android:textSize="12dip"
+		android:layout_marginLeft="10dip"></TextView>
+</RelativeLayout>

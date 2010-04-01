@@ -15,11 +15,13 @@ import android.widget.TextView;
 public class AppDataAdapter extends ArrayAdapter<AppData> {
 
 	private Context mCon = null;
+	private int mResId = 0;
 
 	public AppDataAdapter(Context context, int textViewResourceId) {
 		super(context, textViewResourceId);
 
 		mCon = context;
+		mResId = textViewResourceId;
 	}
 
 	public AppDataAdapter(Context context, int textViewResourceId,
@@ -34,24 +36,51 @@ public class AppDataAdapter extends ArrayAdapter<AppData> {
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) mCon
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = inflater.inflate(R.layout.application_view, null);
+			convertView = inflater.inflate(mResId, null);
 		}
 
+		// アプリicon
 		ImageView iconView = (ImageView) convertView
 				.findViewById(R.id.application_icon);
-		iconView.setImageDrawable(getItem(position).getIcon());
+		if (iconView != null) {
+			iconView.setImageDrawable(getItem(position).getIcon());
+		}
 
+		// アプリ名
 		TextView appNameText = (TextView) convertView
 				.findViewById(R.id.application_name);
-		appNameText.setText(getItem(position).getAppName());
+		if (appNameText != null) {
+			appNameText.setText(getItem(position).getAppName());
+		}
 
+		// アプリの説明
 		TextView appDescText = (TextView) convertView
 				.findViewById(R.id.application_description);
-		appDescText.setText(getItem(position).getDescription());
+		if (appDescText != null) {
+			appDescText.setText(getItem(position).getDescription());
+		}
 
+		// バージョン名
 		TextView appVerText = (TextView) convertView
 				.findViewById(R.id.application_version_name);
-		appVerText.setText(getItem(position).getVersionName());
+		if (appVerText != null) {
+			appVerText.setText(getItem(position).getVersionName());
+		}
+
+		// アクション
+		TextView actionView = (TextView) convertView
+				.findViewById(R.id.application_action);
+		if (actionView != null) {
+			actionView.setText(getItem(position).getAction());
+		}
+
+		// 処理日時
+		TextView processDateView = (TextView) convertView
+				.findViewById(R.id.application_process_date);
+		if (processDateView != null) {
+			processDateView.setText(getItem(position).getProcessDate()
+					.toLocaleString());
+		}
 
 		return convertView;
 	}
