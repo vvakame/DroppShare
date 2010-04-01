@@ -9,9 +9,11 @@ import net.vvakame.droppshare.helper.Func;
 import net.vvakame.droppshare.helper.HelperUtil;
 import net.vvakame.droppshare.model.AppData;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,6 +30,7 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 	private AppDataAdapter mInstalledAdapter = null;
 	private AppDataAdapter mHistoryAdapter = null;
 	private AppDataAdapter mRecentAdapter = null;
+	private View mProgressBar = null;
 
 	private OnItemClickListener mEventImpl = null;
 
@@ -72,18 +75,24 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 
 		tabHost.setCurrentTab(0);
 
+		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		mProgressBar = inflater.inflate(R.layout.progress_bar, null);
+
 		mInstalledAdapter = new AppDataAdapter(this, R.layout.application_view);
 		ListView listView = (ListView) findViewById(R.id.installed_list);
+		listView.addFooterView(mProgressBar);
 		listView.setAdapter(mInstalledAdapter);
 		listView.setOnItemClickListener(mEventImpl);
 
 		mHistoryAdapter = new AppDataAdapter(this, R.layout.application_view);
 		listView = (ListView) findViewById(R.id.history_list);
+		listView.addFooterView(mProgressBar);
 		listView.setAdapter(mHistoryAdapter);
 		listView.setOnItemClickListener(mEventImpl);
 
 		mRecentAdapter = new AppDataAdapter(this, R.layout.application_view);
 		listView = (ListView) findViewById(R.id.recent_list);
+		listView.addFooterView(mProgressBar);
 		listView.setAdapter(mRecentAdapter);
 		listView.setOnItemClickListener(mEventImpl);
 
@@ -121,6 +130,8 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 		mInstalledFunc = new Func<List<AppData>>() {
 			@Override
 			public void func(List<AppData> arg) {
+				ListView listView = (ListView) findViewById(R.id.installed_list);
+				listView.removeFooterView(mProgressBar);
 				setProgressBarIndeterminateVisibility(false);
 			}
 		};
@@ -128,6 +139,8 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 		mHistoryFunc = new Func<List<AppData>>() {
 			@Override
 			public void func(List<AppData> arg) {
+				ListView listView = (ListView) findViewById(R.id.history_list);
+				listView.removeFooterView(mProgressBar);
 				new DroppRecentlyUsedAsynkTask(DroppShareActivity.this,
 						mRecentAdapter, mRecentFunc).execute();
 			}
@@ -136,13 +149,15 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 		mRecentFunc = new Func<List<AppData>>() {
 			@Override
 			public void func(List<AppData> arg) {
+				ListView listView = (ListView) findViewById(R.id.recent_list);
+				listView.removeFooterView(mProgressBar);
 				new DroppInstalledAsynkTask(DroppShareActivity.this,
 						mInstalledAdapter, mInstalledFunc).execute(mClearFlag);
 			}
 		};
+
 		new DroppHistoryAsynkTask(DroppShareActivity.this, mHistoryAdapter,
 				mHistoryFunc).execute();
-
 	}
 
 	@Override
