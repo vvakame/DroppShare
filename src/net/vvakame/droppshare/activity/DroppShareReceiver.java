@@ -50,8 +50,8 @@ public class DroppShareReceiver extends BroadcastReceiver {
 
 		if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
 			// ADDの場合はキャッシュを再構成する
-			Intent newIntent = new Intent(context, DroppCacheActivity.class);
-			PendingIntent pIntent = PendingIntent.getActivity(context, 0,
+			Intent newIntent = new Intent(context, DroppCacheService.class);
+			PendingIntent pIntent = PendingIntent.getService(context, 0,
 					newIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 			AlarmManager alarmMgr = (AlarmManager) context

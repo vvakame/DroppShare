@@ -37,7 +37,7 @@ public class DroppInstalledAsynkTask extends
 	private Comparator<AppData> mComparator = new Comparator<AppData>() {
 		@Override
 		public int compare(AppData obj1, AppData obj2) {
-			return obj1.getAppName().compareTo(obj2.getAppName());
+			return obj1.getAppName().compareToIgnoreCase(obj2.getAppName());
 		}
 	};
 

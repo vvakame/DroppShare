@@ -21,9 +21,6 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".activity.DroppCacheActivity"
-			android:label="@string/app_name">
-		</activity>
 		<activity android:name=".activity.DroppRedirectActivity"
 			android:label="@string/redirect_name" android:theme="@android:style/Theme.Dialog">
 			<intent-filter>
@@ -32,6 +29,7 @@
 				<data android:mimeType="text/plain" />
 			</intent-filter>
 		</activity>
+		<activity android:name=".activity.PreferencesActivity"></activity>
 		<receiver android:name=".activity.DroppShareReceiver">
 			<intent-filter android:priority="1">
 				<data android:scheme="package" />
@@ -40,7 +38,7 @@
 				<action android:name="android.intent.action.PACKAGE_REPLACED" />
 			</intent-filter>
 		</receiver>
-		<activity android:name=".activity.PreferencesActivity"></activity>
+		<service android:name=".activity.DroppCacheService"></service>
 	</application>
 	<uses-sdk android:minSdkVersion="4" />
 </manifest> 

@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.AdapterView.OnItemClickListener;
@@ -75,6 +76,12 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 
 		tabHost.setCurrentTab(0);
 
+		if (isCalledBySimeji()) {
+			mEventImpl = new EventSimejiImpl();
+		} else {
+			mEventImpl = new EventNormalImpl();
+		}
+
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mProgressBar = inflater.inflate(R.layout.progress_bar, null);
 
@@ -96,13 +103,7 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 		listView.setAdapter(mRecentAdapter);
 		listView.setOnItemClickListener(mEventImpl);
 
-		if (isCalledBySimeji()) {
-			mEventImpl = new EventSimejiImpl();
-		} else {
-			mEventImpl = new EventNormalImpl();
-		}
-
-		constructCache(false);
+		startReadingData(false);
 	}
 
 	@Override
@@ -124,8 +125,22 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 	private Func<List<AppData>> mRecentFunc = null;
 	private boolean mClearFlag = false;
 
-	private void constructCache(boolean clearFlg) {
+	private void startReadingData(boolean clearFlg) {
 		mClearFlag = clearFlg;
+
+		setProgressBarIndeterminateVisibility(true);
+
+		mInstalledAdapter.clear();
+		ListView listView = (ListView) findViewById(R.id.installed_list);
+		listView.addFooterView(mProgressBar);
+
+		mHistoryAdapter.clear();
+		listView = (ListView) findViewById(R.id.history_list);
+		listView.addFooterView(mProgressBar);
+
+		mRecentAdapter.clear();
+		listView = (ListView) findViewById(R.id.recent_list);
+		listView.addFooterView(mProgressBar);
 
 		mInstalledFunc = new Func<List<AppData>>() {
 			@Override
@@ -181,7 +196,7 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 		Intent intent = null;
 		switch (item.getItemId()) {
 		case R.id.cache_refresh:
-			constructCache(true);
+			startReadingData(true);
 
 			break;
 
@@ -237,7 +252,8 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-			AppDataAdapter adapter = (AppDataAdapter) parent.getAdapter();
+
+			AppDataAdapter adapter = pickAppDataAdapter(parent);
 			AppData appData = adapter.getItem(position);
 
 			Intent data = new Intent();
@@ -257,7 +273,7 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-			AppDataAdapter adapter = (AppDataAdapter) parent.getAdapter();
+			AppDataAdapter adapter = pickAppDataAdapter(parent);
 			AppData appData = adapter.getItem(position);
 
 			pushToSimeji(genPassionateMessage(appData));
@@ -269,5 +285,17 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 			setResult(RESULT_OK, data);
 			finish();
 		}
+	}
+
+	private AppDataAdapter pickAppDataAdapter(AdapterView<?> parent) {
+		AppDataAdapter adapter;
+		Object adapterObj = parent.getAdapter();
+		if (adapterObj instanceof HeaderViewListAdapter) {
+			HeaderViewListAdapter headerAdapter = (HeaderViewListAdapter) adapterObj;
+			adapter = (AppDataAdapter) headerAdapter.getWrappedAdapter();
+		} else {
+			adapter = (AppDataAdapter) adapterObj;
+		}
+		return adapter;
 	}
 }
