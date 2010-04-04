@@ -3,9 +3,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 	android:summary="test">
 	<ListPreference android:entries="@array/uri_types"
-		android:entryValues="@array/uri_types" android:key="uti_types"
-		android:title="@string/paste_uri_type" android:summary="@string/paste_uri_type_summary"
-		android:defaultValue="http"></ListPreference>
+	android:entryValues="@array/uri_types" android:key="uti_types"
+	android:title="@string/paste_uri_type" android:summary="@string/paste_uri_type_summary"
+	android:defaultValue="http"></ListPreference>
+	<CheckBoxPreference android:key="uri_shorten"
+		android:title="@string/uri_shorten" android:summary="@string/uri_shorten_summary" android:defaultValue="true"></CheckBoxPreference>
 	<EditTextPreference android:key="message_template"
 		android:title="@string/message_added_title" android:summary="@string/message_added_summary"
 		android:defaultValue="@string/message_added"></EditTextPreference>

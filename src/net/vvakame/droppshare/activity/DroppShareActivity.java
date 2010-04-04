@@ -8,6 +8,8 @@ import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.Func;
 import net.vvakame.droppshare.helper.HelperUtil;
 import net.vvakame.droppshare.model.AppData;
+import net.vvakame.util.googleshorten.GoogleShorten;
+import net.vvakame.util.googleshorten.GoogleShorten.ShortenFailedException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class DroppShareActivity extends Activity implements SimejiIF {
@@ -218,6 +221,15 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 		String uri = null;
 		if (PreferencesActivity.isHttp(this)) {
 			uri = AppDataUtil.getHttpUriFromAppData(appData);
+			if (PreferencesActivity.isUriShorten(this)) {
+				try {
+					uri = new GoogleShorten().getShorten(uri);
+				} catch (ShortenFailedException e) {
+					// こけた場合はどーしようか
+					Toast.makeText(this, R.string.uri_shorten_failure,
+							Toast.LENGTH_LONG);
+				}
+			}
 		} else {
 			uri = AppDataUtil.getMarketUriFromAppData(appData);
 		}

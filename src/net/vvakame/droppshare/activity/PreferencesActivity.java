@@ -36,6 +36,12 @@ public class PreferencesActivity extends PreferenceActivity implements
 		return "market".equalsIgnoreCase(getUriType(con));
 	}
 
+	public static boolean isUriShorten(Context con) {
+		String key = "uri_shorten";
+		return PreferenceManager.getDefaultSharedPreferences(con).getBoolean(
+				key, true);
+	}
+
 	public static String getMessageTemplate(Context con) {
 		String key = "message_template";
 		String messageTemplate = con.getString(R.string.message_added);
