@@ -32,16 +32,14 @@ public final class R {
         public static final int application_name=0x7f0b0001;
         public static final int application_process_date=0x7f0b0003;
         public static final int application_version_name=0x7f0b0004;
-        public static final int cache_refresh=0x7f0b000f;
+        public static final int cache_refresh=0x7f0b000d;
         public static final int history=0x7f0b0009;
         public static final int history_list=0x7f0b000a;
         public static final int installed=0x7f0b0007;
         public static final int installed_list=0x7f0b0008;
-        public static final int preferences=0x7f0b0010;
-        public static final int progress_history=0x7f0b000b;
-        public static final int progress_recent=0x7f0b000e;
-        public static final int recent_list=0x7f0b000d;
-        public static final int recently_used=0x7f0b000c;
+        public static final int preferences=0x7f0b000e;
+        public static final int recent_list=0x7f0b000c;
+        public static final int recently_used=0x7f0b000b;
         public static final int tabhost=0x7f0b0006;
     }
     public static final class layout {
