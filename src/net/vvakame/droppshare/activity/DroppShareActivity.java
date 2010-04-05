@@ -35,6 +35,7 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 	private AppDataAdapter mHistoryAdapter = null;
 	private AppDataAdapter mRecentAdapter = null;
 	private View mProgressBar = null;
+	private View mAppNotExistView = null;
 
 	private OnItemClickListener mEventImpl = null;
 
@@ -87,6 +88,7 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mProgressBar = inflater.inflate(R.layout.progress_bar, null);
+		mAppNotExistView = inflater.inflate(R.layout.app_not_exists, null);
 
 		mInstalledAdapter = new AppDataAdapter(this, R.layout.installed_view);
 		ListView listView = (ListView) findViewById(R.id.installed_list);
@@ -135,21 +137,38 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 
 		mInstalledAdapter.clear();
 		ListView listView = (ListView) findViewById(R.id.installed_list);
+		if (listView.getAdapter() instanceof HeaderViewListAdapter) {
+			listView.removeFooterView(mProgressBar);
+		}
 		listView.addFooterView(mProgressBar);
+		listView.setOnItemClickListener(mEventImpl);
 
 		mHistoryAdapter.clear();
 		listView = (ListView) findViewById(R.id.history_list);
+		if (listView.getAdapter() instanceof HeaderViewListAdapter) {
+			listView.removeFooterView(mProgressBar);
+		}
 		listView.addFooterView(mProgressBar);
+		listView.setOnItemClickListener(mEventImpl);
 
 		mRecentAdapter.clear();
 		listView = (ListView) findViewById(R.id.recent_list);
+		if (listView.getAdapter() instanceof HeaderViewListAdapter) {
+			listView.removeFooterView(mProgressBar);
+		}
 		listView.addFooterView(mProgressBar);
+		listView.setOnItemClickListener(mEventImpl);
 
 		mInstalledFunc = new Func<List<AppData>>() {
 			@Override
 			public void func(List<AppData> arg) {
 				ListView listView = (ListView) findViewById(R.id.installed_list);
-				listView.removeFooterView(mProgressBar);
+				if (listView.getAdapter() instanceof HeaderViewListAdapter) {
+					listView.removeFooterView(mProgressBar);
+				}
+				if (arg == null || arg.size() == 0) {
+					listView.addFooterView(mAppNotExistView, null, false);
+				}
 				setProgressBarIndeterminateVisibility(false);
 			}
 		};
@@ -158,7 +177,12 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 			@Override
 			public void func(List<AppData> arg) {
 				ListView listView = (ListView) findViewById(R.id.history_list);
-				listView.removeFooterView(mProgressBar);
+				if (listView.getAdapter() instanceof HeaderViewListAdapter) {
+					listView.removeFooterView(mProgressBar);
+				}
+				if (arg == null || arg.size() == 0) {
+					listView.addFooterView(mAppNotExistView);
+				}
 				new DroppRecentlyUsedAsynkTask(DroppShareActivity.this,
 						mRecentAdapter, mRecentFunc).execute();
 			}
@@ -168,7 +192,12 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 			@Override
 			public void func(List<AppData> arg) {
 				ListView listView = (ListView) findViewById(R.id.recent_list);
-				listView.removeFooterView(mProgressBar);
+				if (listView.getAdapter() instanceof HeaderViewListAdapter) {
+					listView.removeFooterView(mProgressBar);
+				}
+				if (arg == null || arg.size() == 0) {
+					listView.addFooterView(mAppNotExistView);
+				}
 				new DroppInstalledAsynkTask(DroppShareActivity.this,
 						mInstalledAdapter, mInstalledFunc).execute(mClearFlag);
 			}
@@ -266,6 +295,9 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 
 			AppDataAdapter adapter = pickAppDataAdapter(parent);
+			if (adapter.getCount() <= 0) {
+				return;
+			}
 			AppData appData = adapter.getItem(position);
 
 			Intent data = new Intent();
@@ -273,8 +305,7 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 			data.setType("text/plain");
 			data.putExtra(Intent.EXTRA_TEXT, genPassionateMessage(appData));
 
-			startActivity(data);
-			finish();
+			startActivityForResult(data, 0);
 		}
 	}
 
@@ -286,6 +317,9 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 				long id) {
 			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 			AppDataAdapter adapter = pickAppDataAdapter(parent);
+			if (adapter.getCount() <= 0) {
+				return;
+			}
 			AppData appData = adapter.getItem(position);
 
 			pushToSimeji(genPassionateMessage(appData));

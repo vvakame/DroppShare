@@ -29,7 +29,7 @@ public class DroppHistoryAsynkTask extends
 		super();
 
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-		mContext = context;
+		mContext = context.getApplicationContext();
 		mAdapter = adapter;
 		mFunc = postExecFunc;
 	}
@@ -40,7 +40,7 @@ public class DroppHistoryAsynkTask extends
 		super();
 
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-		mContext = context;
+		mContext = context.getApplicationContext();
 		mFunc = postExecFunc;
 	}
 

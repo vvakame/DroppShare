@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-	<style name="Theme.FunnyDialog" parent="android:style/Theme.Dialog.Alert">
-		<item name="android:windowAnimationStyle">@style/Animation.FunnyDialog</item>
-	</style>
-</resources>

@@ -1,32 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">DroppShare</string>
-	<string name="app_description">おすすめアプリを友達におすすめるアプリ</string>
+	<string name="app_description"></string>
 	<string name="redirect_name">Redirect to Market</string>
-
-	<string name="now_reading_app_data">アプリ読込&amp;一覧作成中</string>
-	<string name="wait_a_moment">少々お待ちください...</string>
 
 	<string name="installed">Installed</string>
 	<string name="history">History</string>
 	<string name="recent">RecentlyUsed</string>
 
-	<string name="added">インストール</string>
-	<string name="replaced">アップデート</string>
-	<string name="removed">アンインストール</string>
-	<string name="uri_shorten_failure">URIの圧縮に失敗しました…</string>
+	<string name="added">Added</string>
+	<string name="replaced">Updated</string>
+	<string name="removed">Removed</string>
+	<string name="uri_shorten_failure">sorry, URI shorten failure...</string>
+	<string name="app_not_exists">Application not exists.</string>
 
-	<string name="cache_refresh">キャッシュ最新化</string>
-	<string name="preferences">設定</string>
+	<string name="cache_refresh">Refresh caches</string>
+	<string name="preferences">Preference</string>
 
-	<string name="paste_uri_type">URI貼付け形式</string>
-	<string name="paste_uri_type_summary">どの形式で伝えるかを選びます。</string>
-	<string name="uri_shorten">URIの圧縮</string>
-	<string name="uri_shorten_summary">可能であればURIを圧縮します(goo.gl)</string>
+	<string name="paste_uri_type">URI format</string>
+	<string name="paste_uri_type_summary">Which do you like? http or market</string>
+	<string name="uri_shorten">URI shorten</string>
+	<string name="uri_shorten_summary">Do you want URI shorten?(goo.gl)</string>
 
-	<string name="message_added_title">インストール時のメッセージ形式</string>
-	<string name="message_added_summary">$app, $market, $version, $description
-		と記述すると置き換えられます。</string>
+	<string name="message_added_title">Message format</string>
+	<string name="message_added_summary">If you write $app, $market, $version, $description.
+		ther are replaced.</string>
 	<string name="message_added">$app $version $description AndroidOnly→$market
 		#droppshare</string>
 	<string name="message_replaced">$app - AndroidOnly→$market #droppshare</string>

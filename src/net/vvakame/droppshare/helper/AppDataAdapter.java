@@ -14,13 +14,13 @@ import android.widget.TextView;
 
 public class AppDataAdapter extends ArrayAdapter<AppData> {
 
-	private Context mCon = null;
+	private Context mContext = null;
 	private int mResId = 0;
 
 	public AppDataAdapter(Context context, int textViewResourceId) {
 		super(context, textViewResourceId);
 
-		mCon = context;
+		mContext = context.getApplicationContext();
 		mResId = textViewResourceId;
 	}
 
@@ -28,13 +28,13 @@ public class AppDataAdapter extends ArrayAdapter<AppData> {
 			List<AppData> appDataList) {
 		super(context, textViewResourceId, appDataList);
 
-		mCon = context;
+		mContext = context.getApplicationContext();
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		if (convertView == null) {
-			LayoutInflater inflater = (LayoutInflater) mCon
+			LayoutInflater inflater = (LayoutInflater) mContext
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(mResId, null);
 		}

@@ -34,7 +34,7 @@ public class DroppRecentlyUsedAsynkTask extends
 		super();
 
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-		mContext = context;
+		mContext = context.getApplicationContext();
 		mAdapter = adapter;
 		mFunc = postExecFunc;
 	}
@@ -45,7 +45,7 @@ public class DroppRecentlyUsedAsynkTask extends
 		super();
 
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-		mContext = context;
+		mContext = context.getApplicationContext();
 		mFunc = postExecFunc;
 	}
 

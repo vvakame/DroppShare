@@ -119,12 +119,12 @@ public class GoogleShorten {
 			InputStreamReader isr = new InputStreamReader(con.getInputStream());
 			BufferedReader br = new BufferedReader(isr);
 
-			String line = br.readLine(); // 1�s�������Ȃ���
+			String line = br.readLine(); // 1行しか取れない前提
 
 			br.close();
 			isr.close();
 
-			// JSON���܂Ƃ��ɏ����������K�\���łЂ����ʂ�
+			// JSONから引っこ抜くのめんどいので正規表現でひっこぬく
 			Pattern httpPattern = Pattern
 					.compile("(http://[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+)");
 			Matcher matcher = httpPattern.matcher(line);

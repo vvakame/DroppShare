@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">DroppShare</string>
+	<string name="app_description">おすすめアプリを友達におすすめるアプリ</string>
+	<string name="redirect_name">Redirect to Market</string>
+
+	<string name="installed">Installed</string>
+	<string name="history">History</string>
+	<string name="recent">RecentlyUsed</string>
+
+	<string name="added">インストール</string>
+	<string name="replaced">アップデート</string>
+	<string name="removed">アンインストール</string>
+	<string name="uri_shorten_failure">URIの圧縮に失敗しました…</string>
+	<string name="app_not_exists">該当アプリがありませんでした。</string>
+
+	<string name="cache_refresh">キャッシュ最新化</string>
+	<string name="preferences">設定</string>
+
+	<string name="paste_uri_type">URI貼付け形式</string>
+	<string name="paste_uri_type_summary">どの形式で伝えるかを選びます。</string>
+	<string name="uri_shorten">URIの圧縮</string>
+	<string name="uri_shorten_summary">可能であればURIを圧縮します(goo.gl)</string>
+
+	<string name="message_added_title">インストール時のメッセージ形式</string>
+	<string name="message_added_summary">$app, $market, $version, $description
+		と記述すると置き換えられます。</string>
+	<string name="message_added">$app $version $description AndroidOnly→$market
+		#droppshare</string>
+	<string name="message_replaced">$app - AndroidOnly→$market #droppshare</string>
+</resources>

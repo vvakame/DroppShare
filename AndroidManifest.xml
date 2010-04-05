@@ -24,7 +24,8 @@
 			</intent-filter>
 		</activity>
 		<activity android:name=".activity.DroppRedirectActivity"
-			android:label="@string/redirect_name" android:theme="@android:style/Theme.Dialog">
+			android:label="@string/redirect_name" android:theme="@android:style/Theme.Dialog"
+			android:icon="@drawable/droid">
 			<intent-filter>
 				<action android:name="android.intent.action.SEND" />
 				<category android:name="android.intent.category.DEFAULT" />
