@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	style="@android:style/Theme.Dialog" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:padding="4dip"
+	android:orientation="vertical">
+	<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="@string/redirect_market_summary"
+		android:textSize="16dip" android:textStyle="bold"></TextView>
+	<ImageView android:layout_width="fill_parent"
+		android:layout_height="1dip" android:src="@android:drawable/divider_horizontal_dark"
+		android:scaleType="fitXY" android:gravity="fill_horizontal"
+		android:layout_marginLeft="10dip" android:layout_marginRight="10dip" />
+	<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/receive_text"
+		android:text="receive text"></TextView>
+</LinearLayout>

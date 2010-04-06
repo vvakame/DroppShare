@@ -22,6 +22,8 @@
 	<string name="uri_shorten">URIの圧縮</string>
 	<string name="uri_shorten_summary">可能であればURIを圧縮します(goo.gl)</string>
 
+	<string name="redirect_market_summary">market:// 表記をMarketへのリンクに変換します。</string>
+
 	<string name="message_added_title">インストール時のメッセージ形式</string>
 	<string name="message_added_summary">$app, $market, $version, $description
 		と記述すると置き換えられます。</string>

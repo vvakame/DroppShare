@@ -33,12 +33,13 @@ public final class R {
         public static final int application_name=0x7f0a0001;
         public static final int application_process_date=0x7f0a0003;
         public static final int application_version_name=0x7f0a0004;
-        public static final int cache_refresh=0x7f0a000d;
+        public static final int cache_refresh=0x7f0a000e;
         public static final int history=0x7f0a0009;
         public static final int history_list=0x7f0a000a;
         public static final int installed=0x7f0a0007;
         public static final int installed_list=0x7f0a0008;
-        public static final int preferences=0x7f0a000e;
+        public static final int preferences=0x7f0a000f;
+        public static final int receive_text=0x7f0a000d;
         public static final int recent_list=0x7f0a000c;
         public static final int recently_used=0x7f0a000b;
         public static final int tabhost=0x7f0a0006;
@@ -50,6 +51,7 @@ public final class R {
         public static final int main=0x7f030003;
         public static final int progress_bar=0x7f030004;
         public static final int recent_view=0x7f030005;
+        public static final int redirect_to_market=0x7f030006;
     }
     public static final class menu {
         public static final int main=0x7f090000;
@@ -62,14 +64,15 @@ public final class R {
         public static final int cache_refresh=0x7f08000b;
         public static final int history=0x7f080004;
         public static final int installed=0x7f080003;
-        public static final int message_added=0x7f080013;
-        public static final int message_added_summary=0x7f080012;
-        public static final int message_added_title=0x7f080011;
-        public static final int message_replaced=0x7f080014;
+        public static final int message_added=0x7f080014;
+        public static final int message_added_summary=0x7f080013;
+        public static final int message_added_title=0x7f080012;
+        public static final int message_replaced=0x7f080015;
         public static final int paste_uri_type=0x7f08000d;
         public static final int paste_uri_type_summary=0x7f08000e;
         public static final int preferences=0x7f08000c;
         public static final int recent=0x7f080005;
+        public static final int redirect_market_summary=0x7f080011;
         public static final int redirect_name=0x7f080002;
         public static final int removed=0x7f080008;
         public static final int replaced=0x7f080007;

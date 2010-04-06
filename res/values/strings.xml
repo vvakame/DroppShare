@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">DroppShare</string>
-	<string name="app_description"></string>
+	<string name="app_description">Share your favorite app!</string>
 	<string name="redirect_name">Redirect to Market</string>
 
 	<string name="installed">Installed</string>
@@ -21,6 +21,8 @@
 	<string name="paste_uri_type_summary">Which do you like? http or market</string>
 	<string name="uri_shorten">URI shorten</string>
 	<string name="uri_shorten_summary">Do you want URI shorten?(goo.gl)</string>
+
+	<string name="redirect_market_summary">If detect market://. Auto link to market.</string>
 
 	<string name="message_added_title">Message format</string>
 	<string name="message_added_summary">If you write $app, $market, $version, $description.
