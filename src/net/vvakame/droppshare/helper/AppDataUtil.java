@@ -32,6 +32,7 @@ public class AppDataUtil {
 	private static final String TAG = AppDataUtil.class.getSimpleName();
 
 	public static final String CACHE_FILE = "appDataList.cache";
+	public static final String TEMP_FILE = CACHE_FILE + ".tmp";
 
 	public static final int ICON_WIDTH = 48;
 	public static final int ICON_HEIGHT = 48;
@@ -48,29 +49,17 @@ public class AppDataUtil {
 		return "market://search?q=pname:" + appData.getPackageName();
 	}
 
-	private static File getTmpDir(Context context) {
-		File dir = new File(context.getFilesDir(), "tmp/");
-		return dir;
-	}
-
-	private static File getCacheDir(Context context) {
-		File dir = new File(context.getFilesDir(), "cache/");
-		return dir;
-	}
-
 	private static File getTmpCacheFile(Context context) {
-		File file = new File(context.getFilesDir(), "tmp/" + CACHE_FILE);
+		File file = new File(context.getFilesDir(), TEMP_FILE);
 		return file;
 	}
 
 	private static File getCacheFile(Context context) {
-		File file = new File(context.getFilesDir(), "cache/" + CACHE_FILE);
+		File file = new File(context.getFilesDir(), CACHE_FILE);
 		return file;
 	}
 
 	public static Bitmap getResizedBitmapDrawable(Bitmap origBitmap) {
-		Log.d(TAG, "before convert bytes: "
-				+ String.valueOf(origBitmap.getRowBytes()));
 		Matrix matrix = new Matrix();
 		int newWidth = ICON_WIDTH;
 		int newHeight = ICON_HEIGHT;
@@ -79,8 +68,6 @@ public class AppDataUtil {
 		matrix.postScale(scaleWidth, scaleHeight);
 		Bitmap resizedBitmap = Bitmap.createBitmap(origBitmap, 0, 0, origBitmap
 				.getWidth(), origBitmap.getHeight(), matrix, true);
-		Log.d(TAG, "after convert bytes: "
-				+ String.valueOf(resizedBitmap.getRowBytes()));
 
 		return resizedBitmap;
 	}
@@ -104,11 +91,31 @@ public class AppDataUtil {
 			in = new ObjectInputStream(fin);
 			appDataList = (List<AppData>) in.readObject();
 
-			for (AppData appData : appDataList) {
-				readIconCache(context, appData);
-			}
 		} catch (InvalidClassException e) {
 			Log.d(TAG, HelperUtil.getExceptionLog(e));
+
+			// v0.5→v0.6でキャッシュの構成を変更したのでお掃除コードを仕込む 暫く残す
+			File cacheDir = new File(context.getFilesDir(), "cache/");
+			if (cacheDir.exists()) {
+				File[] cacheFiles = cacheDir.listFiles();
+				if (cacheFiles != null) {
+					for (File oldCache : cacheFiles) {
+						oldCache.delete();
+					}
+				}
+				cacheDir.delete();
+			}
+			File tmpDir = new File(context.getFilesDir(), "tmp/");
+			if (tmpDir.exists()) {
+				File[] cacheFiles = tmpDir.listFiles();
+				if (cacheFiles != null) {
+					for (File oldCache : cacheFiles) {
+						oldCache.delete();
+					}
+				}
+				tmpDir.delete();
+			}
+
 			throw e;
 		} catch (ClassCastException e) {
 			Log.d(TAG, HelperUtil.getExceptionLog(e));
@@ -132,20 +139,6 @@ public class AppDataUtil {
 		return appDataList;
 	}
 
-	private static void readIconCache(Context context, AppData appData) {
-		try {
-			File cacheDir = getCacheDir(context);
-			cacheDir.mkdirs();
-			File cacheIcon = new File(cacheDir, appData.getUniqName() + ".png");
-			FileInputStream fin = new FileInputStream(cacheIcon);
-			BitmapDrawable bitmapDrawable = new BitmapDrawable(fin);
-
-			appData.setIcon(bitmapDrawable);
-		} catch (FileNotFoundException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
-		}
-	}
-
 	public static void writeSerializedCache(Context context,
 			List<AppData> appDataList) {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
@@ -156,11 +149,6 @@ public class AppDataUtil {
 			Log
 					.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", "
 							+ tmpCache);
-			tmpCache.getParentFile().mkdirs();
-
-			for (AppData appData : appDataList) {
-				writeIconCache(context, appData);
-			}
 
 			FileOutputStream fout = new FileOutputStream(tmpCache);
 			out = new ObjectOutputStream(fout);
@@ -168,10 +156,8 @@ public class AppDataUtil {
 			out.flush();
 
 			// 旧キャッシュの削除とすげ替え
-			File cacheDir = getCacheDir(context);
 			deleteCache(context);
-			File tmpDir = getTmpDir(context);
-			tmpDir.renameTo(cacheDir);
+			getTmpCacheFile(context).renameTo(getCacheFile(context));
 
 		} catch (InvalidClassException e) {
 			Log.d(TAG, HelperUtil.getExceptionLog(e));
@@ -190,7 +176,20 @@ public class AppDataUtil {
 		}
 	}
 
-	private static void writeIconCache(Context context, AppData appData) {
+	public static void deleteCache(Context context) {
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+
+		File cacheFile = getCacheFile(context);
+		if (!cacheFile.exists()) {
+			return;
+		} else {
+			cacheFile.delete();
+		}
+	}
+
+	@SuppressWarnings("unused")
+	private static void writeIconImage(Context context, File toDir,
+			AppData appData) {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 
 		if (appData == null || appData.getIcon() == null) {
@@ -203,32 +202,14 @@ public class AppDataUtil {
 
 		BitmapDrawable bitmapDrawable = (BitmapDrawable) appData.getIcon();
 		try {
-			File tmpDir = getTmpDir(context);
-			// 一個上のメソッドでDirectoryは作ってるから確実にある想定
-			File tmpIcon = new File(tmpDir, appData.getUniqName() + ".png");
-			FileOutputStream fout = new FileOutputStream(tmpIcon);
+			File iconFile = new File(toDir, appData.getUniqName() + ".png");
+			FileOutputStream fout = new FileOutputStream(iconFile);
 
 			bitmapDrawable.getBitmap().compress(Bitmap.CompressFormat.PNG,
 					COMPRESS_QUALITY, fout);
 		} catch (FileNotFoundException e) {
 			Log.d(TAG, HelperUtil.getExceptionLog(e));
 		}
-	}
-
-	public static void deleteCache(Context context) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-
-		File cacheDir = getCacheDir(context);
-		if (!cacheDir.exists()) {
-			return;
-		}
-		File[] cacheFiles = cacheDir.listFiles();
-		if (cacheFiles != null) {
-			for (File oldCache : cacheFiles) {
-				oldCache.delete();
-			}
-		}
-		cacheDir.delete();
 	}
 
 	public static AppData convert(Context context, InstallLogModel insLogModel)

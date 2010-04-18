@@ -1,12 +1,20 @@
 package net.vvakame.droppshare.model;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Date;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 public class AppData implements Serializable {
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 4L;
+	public static final int COMPRESS_QUALITY = 100;
 
 	private String appName = null;
 	private String packageName = null;
@@ -84,6 +92,32 @@ public class AppData implements Serializable {
 		return this.appName + "_" + this.packageName;
 	}
 
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		// transient 以外
+		out.defaultWriteObject();
+
+		// transient
+		SerializableBitmapWrapper sBitmap = null;
+		if (icon instanceof BitmapDrawable) {
+			sBitmap = new SerializableBitmapWrapper(((BitmapDrawable) icon)
+					.getBitmap());
+		}
+		out.writeObject(sBitmap);
+	}
+
+	private void readObject(ObjectInputStream in) throws IOException,
+			ClassNotFoundException {
+		// transient 以外
+		in.defaultReadObject();
+
+		// transient
+		SerializableBitmapWrapper sBitmap = (SerializableBitmapWrapper) in
+				.readObject();
+		if (sBitmap != null) {
+			icon = new BitmapDrawable(sBitmap.getBitmap());
+		}
+	}
+
 	private String toString(CharSequence charSeq) {
 		return charSeq != null ? charSeq.toString() : null;
 	}
@@ -91,5 +125,29 @@ public class AppData implements Serializable {
 	@Override
 	public String toString() {
 		return getClass().getName() + "@" + packageName;
+	}
+
+	private class SerializableBitmapWrapper implements Serializable {
+		private static final long serialVersionUID = AppData.serialVersionUID;
+
+		private byte[] mBitmapArray = null;
+		private transient Bitmap mBitmap = null;
+
+		public SerializableBitmapWrapper(Bitmap bitmap) {
+			mBitmap = bitmap;
+
+			ByteArrayOutputStream bout = new ByteArrayOutputStream();
+			mBitmap.compress(Bitmap.CompressFormat.PNG, COMPRESS_QUALITY, bout);
+			mBitmapArray = bout.toByteArray();
+		}
+
+		public Bitmap getBitmap() {
+			if (mBitmapArray == null) {
+				return null;
+			}
+			Bitmap bitmap = BitmapFactory.decodeByteArray(mBitmapArray, 0,
+					mBitmapArray.length);
+			return bitmap;
+		}
 	}
 }

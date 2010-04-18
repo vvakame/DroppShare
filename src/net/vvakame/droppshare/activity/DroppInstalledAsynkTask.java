@@ -161,9 +161,6 @@ public class DroppInstalledAsynkTask extends
 
 	@Override
 	protected void onProgressUpdate(AppData... values) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", appData="
-				+ values);
-
 		super.onProgressUpdate(values);
 
 		if (mAdapter != null && values.length == 1) {
