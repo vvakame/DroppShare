@@ -93,29 +93,6 @@ public class AppDataUtil {
 
 		} catch (InvalidClassException e) {
 			Log.d(TAG, HelperUtil.getExceptionLog(e));
-
-			// v0.5→v0.6でキャッシュの構成を変更したのでお掃除コードを仕込む 暫く残す
-			File cacheDir = new File(context.getFilesDir(), "cache/");
-			if (cacheDir.exists()) {
-				File[] cacheFiles = cacheDir.listFiles();
-				if (cacheFiles != null) {
-					for (File oldCache : cacheFiles) {
-						oldCache.delete();
-					}
-				}
-				cacheDir.delete();
-			}
-			File tmpDir = new File(context.getFilesDir(), "tmp/");
-			if (tmpDir.exists()) {
-				File[] cacheFiles = tmpDir.listFiles();
-				if (cacheFiles != null) {
-					for (File oldCache : cacheFiles) {
-						oldCache.delete();
-					}
-				}
-				tmpDir.delete();
-			}
-
 			throw e;
 		} catch (ClassCastException e) {
 			Log.d(TAG, HelperUtil.getExceptionLog(e));
@@ -142,6 +119,9 @@ public class AppDataUtil {
 	public static void writeSerializedCache(Context context,
 			List<AppData> appDataList) {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+
+		// v0.5→v0.6 のキャッシュ構成変更でゴミを残さないためのコード。暫く残す。
+		deleteOldCache(context);
 
 		ObjectOutputStream out = null;
 		try {
@@ -270,5 +250,31 @@ public class AppDataUtil {
 		appData.setIcon(icon);
 
 		return appData;
+	}
+
+	// v0.5→v0.6でキャッシュの構成を変更したのでお掃除コードを仕込む 暫く残す
+	private static void deleteOldCache(Context context) {
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+
+		File cacheDir = new File(context.getFilesDir(), "cache/");
+		if (cacheDir.exists()) {
+			File[] cacheFiles = cacheDir.listFiles();
+			if (cacheFiles != null) {
+				for (File oldCache : cacheFiles) {
+					oldCache.delete();
+				}
+			}
+			cacheDir.delete();
+		}
+		File tmpDir = new File(context.getFilesDir(), "tmp/");
+		if (tmpDir.exists()) {
+			File[] cacheFiles = tmpDir.listFiles();
+			if (cacheFiles != null) {
+				for (File oldCache : cacheFiles) {
+					oldCache.delete();
+				}
+			}
+			tmpDir.delete();
+		}
 	}
 }
