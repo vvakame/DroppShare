@@ -30,6 +30,8 @@ public class DroppInstalledAsynkTask extends
 	private static final int MODE_NEW = 0;
 	private static final int MODE_CACHE = 1;
 
+	public static final String CACHE_FILE = "installed.dropp";
+
 	private Context mContext = null;
 	private ArrayAdapter<AppData> mAdapter = null;
 	private Func<List<AppData>> mFunc = null;
@@ -42,8 +44,6 @@ public class DroppInstalledAsynkTask extends
 	};
 
 	private int mMode = MODE_NEW;
-
-	private static Object lock = new Object();
 
 	public DroppInstalledAsynkTask(Context context,
 			ArrayAdapter<AppData> adapter, Func<List<AppData>> postExecFunc) {
@@ -71,90 +71,84 @@ public class DroppInstalledAsynkTask extends
 
 		List<AppData> appDataList = null;
 
-		// 画面の縦横変更(=Activity再生成)で複数の場所から同時に入ってくる可能性があるのでロックする
-		synchronized (lock) {
-			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", lock in!");
+		boolean clearFlg = params.length == 1
+				&& params[0].booleanValue() == true;
+		boolean done = false;
 
-			boolean clearFlg = params.length == 1
-					&& params[0].booleanValue() == true;
-			boolean done = false;
-
-			if (!clearFlg && AppDataUtil.isExistCache(mContext)) {
-				Log.d(TAG, TAG + ":" + HelperUtil.getMethodName()
-						+ ", use cache.");
-				try {
-					appDataList = AppDataUtil.readSerializedCaches(mContext);
-					mMode = MODE_CACHE;
-					for (AppData appData : appDataList) {
-						publishProgress(appData);
-					}
-					done = true;
-				} catch (InvalidClassException e) {
-					// ここに来るのは、SerializeされたオブジェクトのserialVersionUIDが一致しないときに来る想定
-					Log.d(TAG, HelperUtil.getExceptionLog(e));
-				} catch (ClassNotFoundException e) {
-					// ここに来るのは、Serializeされたオブジェクトのパッケージ名が変更になってたりしたときに来る想定
-					Log.d(TAG, HelperUtil.getExceptionLog(e));
-				}
-			}
-			if (!done) {
-				Log.d(TAG, TAG + ":" + HelperUtil.getMethodName()
-						+ ", create cache.");
-				mMode = MODE_NEW;
-				appDataList = new ArrayList<AppData>();
-
-				PackageManager pm = mContext.getPackageManager();
-				List<ApplicationInfo> appInfoList = pm
-						.getInstalledApplications(PackageManager.GET_ACTIVITIES);
-
-				for (ApplicationInfo appInfo : appInfoList) {
-					Log.d(TAG, "now processing " + appInfo.packageName);
-
-					// デフォルト系アプリを撥ねる
-					if ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-						continue;
-					}
-
-					AppData appData = new AppData();
-
-					appData.setAppName(appInfo.loadLabel(pm));
-					appData.setPackageName(appInfo.packageName);
-					appData.setDescription(appInfo.loadDescription(pm));
-
-					PackageInfo pInfo = null;
-					try {
-						pInfo = pm.getPackageInfo(appInfo.packageName,
-								PackageManager.GET_ACTIVITIES);
-					} catch (NameNotFoundException e) {
-						Log.d(TAG, HelperUtil.getExceptionLog(e));
-					}
-					appData.setVersionName(pInfo.versionName);
-
-					Drawable icon = pm.getApplicationIcon(appInfo);
-
-					if (icon instanceof BitmapDrawable) {
-						Bitmap resizedBitmap = AppDataUtil
-								.getResizedBitmapDrawable(((BitmapDrawable) icon)
-										.getBitmap());
-						icon = new BitmapDrawable(resizedBitmap);
-					} else {
-						Log.d(TAG, "Not supported icon type: "
-								+ icon.getClass().getSimpleName());
-					}
-					appData.setIcon(icon);
-
+		if (!clearFlg && AppDataUtil.isExistCache(CACHE_FILE)) {
+			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", use cache.");
+			try {
+				appDataList = AppDataUtil.readSerializedCaches(CACHE_FILE);
+				mMode = MODE_CACHE;
+				for (AppData appData : appDataList) {
 					publishProgress(appData);
+				}
+				done = true;
+			} catch (InvalidClassException e) {
+				// ここに来るのは、SerializeされたオブジェクトのserialVersionUIDが一致しないときに来る想定
+				Log.d(TAG, HelperUtil.getExceptionLog(e));
+			} catch (ClassNotFoundException e) {
+				// ここに来るのは、Serializeされたオブジェクトのパッケージ名が変更になってたりしたときに来る想定
+				Log.d(TAG, HelperUtil.getExceptionLog(e));
+			}
+		}
+		if (!done) {
+			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName()
+					+ ", create cache.");
+			mMode = MODE_NEW;
+			appDataList = new ArrayList<AppData>();
 
-					appDataList.add(appData);
+			PackageManager pm = mContext.getPackageManager();
+			List<ApplicationInfo> appInfoList = pm
+					.getInstalledApplications(PackageManager.GET_ACTIVITIES);
+
+			for (ApplicationInfo appInfo : appInfoList) {
+				Log.d(TAG, "now processing " + appInfo.packageName);
+
+				// デフォルト系アプリを撥ねる
+				if ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+					continue;
 				}
 
-				Collections.sort(appDataList, mComparator);
+				AppData appData = new AppData();
 
-				AppDataUtil.writeSerializedCache(mContext, appDataList);
+				appData.setAppName(appInfo.loadLabel(pm));
+				appData.setPackageName(appInfo.packageName);
+				appData.setDescription(appInfo.loadDescription(pm));
+
+				PackageInfo pInfo = null;
+				try {
+					pInfo = pm.getPackageInfo(appInfo.packageName,
+							PackageManager.GET_ACTIVITIES);
+				} catch (NameNotFoundException e) {
+					Log.d(TAG, HelperUtil.getExceptionLog(e));
+				}
+				appData.setVersionName(pInfo.versionName);
+
+				Drawable icon = pm.getApplicationIcon(appInfo);
+
+				if (icon instanceof BitmapDrawable) {
+					Bitmap resizedBitmap = AppDataUtil
+							.getResizedBitmapDrawable(((BitmapDrawable) icon)
+									.getBitmap());
+					icon = new BitmapDrawable(resizedBitmap);
+				} else {
+					Log.d(TAG, "Not supported icon type: "
+							+ icon.getClass().getSimpleName());
+				}
+				appData.setIcon(icon);
+
+				publishProgress(appData);
+
+				appDataList.add(appData);
 			}
 
-			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", done it!");
+			Collections.sort(appDataList, mComparator);
+
+			AppDataUtil.writeSerializedCache(mContext, CACHE_FILE, appDataList);
 		}
+
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", done it!");
 
 		return appDataList;
 	}

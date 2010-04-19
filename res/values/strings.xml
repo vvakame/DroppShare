@@ -22,6 +22,9 @@
 	<string name="uri_shorten">URI shorten</string>
 	<string name="uri_shorten_summary">Do you want URI shorten?(goo.gl)</string>
 
+	<string name="create_cache_automatically">Create cache automatically</string>
+	<string name="create_cache_automatically_summary">Automatically create the background.</string>
+
 	<string name="redirect_market_summary">If detect market://. Auto link to market.</string>
 
 	<string name="message_added_title">Message format</string>

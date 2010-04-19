@@ -21,8 +21,8 @@ public class AppData implements Serializable {
 	private String description = null;
 	private String versionName = null;
 	private transient Drawable icon = null;
-	private transient String action = null;
-	private transient Date processDate = null;
+	private String action = null;
+	private Date processDate = null;
 
 	public String getAppName() {
 		return appName;

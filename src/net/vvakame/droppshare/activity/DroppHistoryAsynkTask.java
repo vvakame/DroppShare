@@ -1,5 +1,6 @@
 package net.vvakame.droppshare.activity;
 
+import java.io.InvalidClassException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +17,11 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 
 public class DroppHistoryAsynkTask extends
-		AsyncTask<Void, AppData, List<AppData>> {
+		AsyncTask<Boolean, AppData, List<AppData>> {
 	private static final String TAG = DroppHistoryAsynkTask.class
 			.getSimpleName();
+
+	public static final String CACHE_FILE = "history.dropp";
 
 	private Context mContext = null;
 	private ArrayAdapter<AppData> mAdapter = null;
@@ -34,7 +37,6 @@ public class DroppHistoryAsynkTask extends
 		mFunc = postExecFunc;
 	}
 
-	@Deprecated
 	public DroppHistoryAsynkTask(Context context,
 			Func<List<AppData>> postExecFunc) {
 		super();
@@ -45,7 +47,7 @@ public class DroppHistoryAsynkTask extends
 	}
 
 	@Override
-	protected List<AppData> doInBackground(Void... params) {
+	protected List<AppData> doInBackground(Boolean... params) {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 
 		InstallLogDao dao = new InstallLogDao(mContext);
@@ -54,18 +56,46 @@ public class DroppHistoryAsynkTask extends
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", get="
 				+ (installedList == null ? -1 : installedList.size()));
 
-		List<AppData> appDataList = new ArrayList<AppData>();
-		for (InstallLogModel model : installedList) {
-			AppData appData = null;
+		List<AppData> appDataList = null;
+
+		boolean clearFlg = params.length == 1
+				&& params[0].booleanValue() == true;
+		boolean done = false;
+
+		if (!clearFlg && AppDataUtil.isExistCache(CACHE_FILE)) {
+			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", use cache.");
 			try {
-				appData = AppDataUtil.convert(mContext, model);
-			} catch (NameNotFoundException e) {
-				// 握り潰す 単に表示しない
+				appDataList = AppDataUtil.readSerializedCaches(CACHE_FILE);
+				for (AppData appData : appDataList) {
+					publishProgress(appData);
+				}
+				done = true;
+			} catch (InvalidClassException e) {
+				// ここに来るのは、SerializeされたオブジェクトのserialVersionUIDが一致しないときに来る想定
+				Log.d(TAG, HelperUtil.getExceptionLog(e));
+			} catch (ClassNotFoundException e) {
+				// ここに来るのは、Serializeされたオブジェクトのパッケージ名が変更になってたりしたときに来る想定
+				Log.d(TAG, HelperUtil.getExceptionLog(e));
 			}
-			if (appData != null) {
-				publishProgress(appData);
-				appDataList.add(appData);
+		}
+		if (!done) {
+			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName()
+					+ ", create cache.");
+			appDataList = new ArrayList<AppData>();
+			for (InstallLogModel model : installedList) {
+				AppData appData = null;
+				try {
+					appData = AppDataUtil.convert(mContext, model);
+				} catch (NameNotFoundException e) {
+					// 握り潰す 単に表示しない
+				}
+				if (appData != null) {
+					publishProgress(appData);
+					appDataList.add(appData);
+				}
 			}
+
+			AppDataUtil.writeSerializedCache(mContext, CACHE_FILE, appDataList);
 		}
 
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", get="

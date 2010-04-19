@@ -43,5 +43,6 @@
 			</intent-filter>
 		</receiver>
 		<service android:name=".activity.DroppCacheService"></service>
+		<service android:name=".activity.DroppKickReceiverService"></service>
 	</application>
 </manifest> 

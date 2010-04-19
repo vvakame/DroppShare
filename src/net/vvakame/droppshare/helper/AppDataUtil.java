@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.List;
 
 import net.vvakame.droppshare.R;
+import net.vvakame.droppshare.activity.DroppHistoryAsynkTask;
+import net.vvakame.droppshare.activity.DroppInstalledAsynkTask;
 import net.vvakame.droppshare.model.AppData;
 import net.vvakame.droppshare.model.InstallLogModel;
 
@@ -37,7 +39,6 @@ public class AppDataUtil {
 	public static final File CACHE_DIR = new File(EX_STRAGE, "caches/");
 
 	public static final String CACHE_FILE = "appDataList.cache";
-	public static final String TEMP_FILE = CACHE_FILE + ".tmp";
 
 	public static final int ICON_WIDTH = 48;
 	public static final int ICON_HEIGHT = 48;
@@ -54,16 +55,6 @@ public class AppDataUtil {
 		return "market://search?q=pname:" + appData.getPackageName();
 	}
 
-	private static File getTmpCacheFile(Context context) {
-		File file = new File(CACHE_DIR, TEMP_FILE);
-		return file;
-	}
-
-	private static File getCacheFile(Context context) {
-		File file = new File(CACHE_DIR, CACHE_FILE);
-		return file;
-	}
-
 	public static Bitmap getResizedBitmapDrawable(Bitmap origBitmap) {
 		Matrix matrix = new Matrix();
 		int newWidth = ICON_WIDTH;
@@ -77,21 +68,22 @@ public class AppDataUtil {
 		return resizedBitmap;
 	}
 
-	public static boolean isExistCache(Context context) {
-		File cacheFile = getCacheFile(context);
+	public static boolean isExistCache(String fileName) {
+		File cacheFile = new File(CACHE_DIR, fileName);
 
 		return cacheFile.exists();
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<AppData> readSerializedCaches(Context context)
+	public static List<AppData> readSerializedCaches(String fileName)
 			throws InvalidClassException, ClassNotFoundException {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", file="
+				+ fileName);
 
 		List<AppData> appDataList = null;
 		ObjectInputStream in = null;
 		try {
-			File cacheFile = getCacheFile(context);
+			File cacheFile = new File(CACHE_DIR, fileName);
 			FileInputStream fin = new FileInputStream(cacheFile);
 			in = new ObjectInputStream(fin);
 			appDataList = (List<AppData>) in.readObject();
@@ -121,19 +113,18 @@ public class AppDataUtil {
 		return appDataList;
 	}
 
-	public static void writeSerializedCache(Context context,
+	public static void writeSerializedCache(Context context, String fileName,
 			List<AppData> appDataList) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", file="
+				+ fileName);
 
 		// v0.5→v0.6 のキャッシュ構成変更でゴミを残さないためのコード。暫く残す。
 		deleteOldCache(context);
 
 		ObjectOutputStream out = null;
 		try {
-			File tmpCache = getTmpCacheFile(context);
-			Log
-					.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", "
-							+ tmpCache);
+			File tmpCache = new File(CACHE_DIR, fileName + ".tmp");
+			File cache = new File(CACHE_DIR, fileName);
 
 			CACHE_DIR.mkdirs();
 			FileOutputStream fout = new FileOutputStream(tmpCache);
@@ -142,8 +133,10 @@ public class AppDataUtil {
 			out.flush();
 
 			// 旧キャッシュの削除とすげ替え
-			deleteCache(context);
-			getTmpCacheFile(context).renameTo(getCacheFile(context));
+			if (cache.exists()) {
+				cache.delete();
+			}
+			tmpCache.renameTo(cache);
 
 		} catch (InvalidClassException e) {
 			Log.d(TAG, HelperUtil.getExceptionLog(e));
@@ -162,20 +155,33 @@ public class AppDataUtil {
 		}
 	}
 
-	public static void deleteCache(Context context) {
+	public static void deleteCache(String fileName) {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 
-		File cacheFile = getCacheFile(context);
-		if (!cacheFile.exists()) {
-			return;
-		} else {
+		File cacheFile = new File(CACHE_DIR, fileName);
+		if (cacheFile.exists()) {
+			cacheFile.delete();
+		}
+	}
+
+	public static void deleteOwnCache() {
+		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+
+		File cacheFile = null;
+
+		cacheFile = new File(CACHE_DIR, DroppInstalledAsynkTask.CACHE_FILE);
+		if (cacheFile.exists()) {
+			cacheFile.delete();
+		}
+
+		cacheFile = new File(CACHE_DIR, DroppHistoryAsynkTask.CACHE_FILE);
+		if (cacheFile.exists()) {
 			cacheFile.delete();
 		}
 	}
 
 	@SuppressWarnings("unused")
-	private static void writeIconImage(Context context, File toDir,
-			AppData appData) {
+	private static void writeIconImage(File toDir, AppData appData) {
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
 
 		if (appData == null || appData.getIcon() == null) {

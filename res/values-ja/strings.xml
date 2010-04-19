@@ -22,6 +22,9 @@
 	<string name="uri_shorten">URIの圧縮</string>
 	<string name="uri_shorten_summary">可能であればURIを圧縮します(goo.gl)</string>
 
+	<string name="create_cache_automatically">キャッシュの自動生成</string>
+	<string name="create_cache_automatically_summary">Xperiaではチェックを外したほうが快適です。</string>
+
 	<string name="redirect_market_summary">market:// 表記をMarketへのリンクに変換します。</string>
 
 	<string name="message_added_title">インストール時のメッセージ形式</string>

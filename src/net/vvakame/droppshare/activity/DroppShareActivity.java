@@ -204,7 +204,7 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 		};
 
 		new DroppHistoryAsynkTask(DroppShareActivity.this, mHistoryAdapter,
-				mHistoryFunc).execute();
+				mHistoryFunc).execute(mClearFlag);
 	}
 
 	@Override
