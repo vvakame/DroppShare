@@ -1,6 +1,5 @@
 package net.vvakame.droppshare.activity;
 
-import java.io.InvalidClassException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,12 +17,10 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
-public class DroppInstalledAsynkTask extends
-		AsyncTask<Boolean, AppData, List<AppData>> {
+public class DroppInstalledAsynkTask extends DroppBaseAsynkTask {
 	private static final String TAG = DroppInstalledAsynkTask.class
 			.getSimpleName();
 
@@ -32,10 +29,6 @@ public class DroppInstalledAsynkTask extends
 
 	public static final String CACHE_FILE = "installed.dropp";
 
-	private Context mContext = null;
-	private ArrayAdapter<AppData> mAdapter = null;
-	private Func<List<AppData>> mFunc = null;
-
 	private Comparator<AppData> mComparator = new Comparator<AppData>() {
 		@Override
 		public int compare(AppData obj1, AppData obj2) {
@@ -43,25 +36,20 @@ public class DroppInstalledAsynkTask extends
 		}
 	};
 
-	private int mMode = MODE_NEW;
+	private int mMode = MODE_CACHE;
 
 	public DroppInstalledAsynkTask(Context context,
 			ArrayAdapter<AppData> adapter, Func<List<AppData>> postExecFunc) {
-		super();
+		super(context, adapter, postExecFunc);
 
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-		mContext = context.getApplicationContext();
-		mAdapter = adapter;
-		mFunc = postExecFunc;
 	}
 
 	public DroppInstalledAsynkTask(Context context,
 			Func<List<AppData>> postExecFunc) {
-		super();
+		super(context, postExecFunc);
 
 		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-		mContext = context.getApplicationContext();
-		mFunc = postExecFunc;
 	}
 
 	@Override
@@ -71,28 +59,9 @@ public class DroppInstalledAsynkTask extends
 
 		List<AppData> appDataList = null;
 
-		boolean clearFlg = params.length == 1
-				&& params[0].booleanValue() == true;
-		boolean done = false;
+		appDataList = tryReadCache(CACHE_FILE, params);
 
-		if (!clearFlg && AppDataUtil.isExistCache(CACHE_FILE)) {
-			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", use cache.");
-			try {
-				appDataList = AppDataUtil.readSerializedCaches(CACHE_FILE);
-				mMode = MODE_CACHE;
-				for (AppData appData : appDataList) {
-					publishProgress(appData);
-				}
-				done = true;
-			} catch (InvalidClassException e) {
-				// ここに来るのは、SerializeされたオブジェクトのserialVersionUIDが一致しないときに来る想定
-				Log.d(TAG, HelperUtil.getExceptionLog(e));
-			} catch (ClassNotFoundException e) {
-				// ここに来るのは、Serializeされたオブジェクトのパッケージ名が変更になってたりしたときに来る想定
-				Log.d(TAG, HelperUtil.getExceptionLog(e));
-			}
-		}
-		if (!done) {
+		if (appDataList == null) {
 			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName()
 					+ ", create cache.");
 			mMode = MODE_NEW;
@@ -155,21 +124,11 @@ public class DroppInstalledAsynkTask extends
 
 	@Override
 	protected void onProgressUpdate(AppData... values) {
-		super.onProgressUpdate(values);
-
 		if (mAdapter != null && values.length == 1) {
 			mAdapter.add(values[0]);
 			if (mMode == MODE_NEW) {
 				mAdapter.sort(mComparator);
 			}
 		}
-	}
-
-	@Override
-	protected void onPostExecute(List<AppData> appDataList) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
-		super.onPostExecute(appDataList);
-
-		mFunc.func(appDataList);
 	}
 }
