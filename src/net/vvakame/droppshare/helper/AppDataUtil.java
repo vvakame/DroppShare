@@ -26,10 +26,15 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.util.Log;
 
 public class AppDataUtil {
 	private static final String TAG = AppDataUtil.class.getSimpleName();
+
+	public static final File EX_STRAGE = new File(Environment
+			.getExternalStorageDirectory(), "DroppShare/");
+	public static final File CACHE_DIR = new File(EX_STRAGE, "caches/");
 
 	public static final String CACHE_FILE = "appDataList.cache";
 	public static final String TEMP_FILE = CACHE_FILE + ".tmp";
@@ -50,12 +55,12 @@ public class AppDataUtil {
 	}
 
 	private static File getTmpCacheFile(Context context) {
-		File file = new File(context.getFilesDir(), TEMP_FILE);
+		File file = new File(CACHE_DIR, TEMP_FILE);
 		return file;
 	}
 
 	private static File getCacheFile(Context context) {
-		File file = new File(context.getFilesDir(), CACHE_FILE);
+		File file = new File(CACHE_DIR, CACHE_FILE);
 		return file;
 	}
 
@@ -130,6 +135,7 @@ public class AppDataUtil {
 					.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", "
 							+ tmpCache);
 
+			CACHE_DIR.mkdirs();
 			FileOutputStream fout = new FileOutputStream(tmpCache);
 			out = new ObjectOutputStream(fout);
 			out.writeObject(appDataList);
