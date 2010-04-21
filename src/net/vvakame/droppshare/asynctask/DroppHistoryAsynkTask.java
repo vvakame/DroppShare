@@ -3,9 +3,10 @@ package net.vvakame.droppshare.asynctask;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.Func;
-import net.vvakame.droppshare.helper.HelperUtil;
+import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.model.AppData;
 import net.vvakame.droppshare.model.InstallLogDao;
 import net.vvakame.droppshare.model.InstallLogModel;
@@ -14,9 +15,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
-public class DroppHistoryAsynkTask extends DroppBaseAsynkTask {
-	private static final String TAG = DroppHistoryAsynkTask.class
-			.getSimpleName();
+public class DroppHistoryAsynkTask extends DroppBaseAsynkTask implements
+		LogTagIF {
 
 	public static final String CACHE_FILE = "history.dropp";
 
@@ -24,27 +24,26 @@ public class DroppHistoryAsynkTask extends DroppBaseAsynkTask {
 			ArrayAdapter<AppData> adapter, Func<List<AppData>> postExecFunc) {
 		super(context, adapter, postExecFunc);
 
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 	}
 
 	public DroppHistoryAsynkTask(Context context,
 			Func<List<AppData>> postExecFunc) {
 		super(context, postExecFunc);
 
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 	}
 
 	@Override
 	protected List<AppData> doInBackground(Boolean... params) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 
 		List<AppData> appDataList = null;
 
 		appDataList = tryReadCache(CACHE_FILE, params);
 
 		if (appDataList == null) {
-			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName()
-					+ ", create cache.");
+			Log.d(TAG, HelperUtil.getStackName() + ", create cache.");
 			InstallLogDao dao = new InstallLogDao(mContext);
 			List<InstallLogModel> installedList = dao.list();
 
@@ -65,8 +64,7 @@ public class DroppHistoryAsynkTask extends DroppBaseAsynkTask {
 			AppDataUtil.writeSerializedCache(mContext, CACHE_FILE, appDataList);
 		}
 
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", get="
-				+ appDataList.size());
+		Log.d(TAG, HelperUtil.getStackName() + ", get=" + appDataList.size());
 
 		return appDataList;
 	}

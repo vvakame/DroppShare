@@ -2,6 +2,7 @@ package net.vvakame.droppshare.activity;
 
 import java.util.List;
 
+import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
 import net.vvakame.droppshare.asynctask.DroppHistoryAsynkTask;
 import net.vvakame.droppshare.asynctask.DroppInstalledAsynkTask;
@@ -9,7 +10,7 @@ import net.vvakame.droppshare.asynctask.DroppRecentlyUsedAsynkTask;
 import net.vvakame.droppshare.helper.AppDataAdapter;
 import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.Func;
-import net.vvakame.droppshare.helper.HelperUtil;
+import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.model.AppData;
 import net.vvakame.util.googleshorten.GoogleShorten;
 import net.vvakame.util.googleshorten.GoogleShorten.ShortenFailedException;
@@ -31,8 +32,7 @@ import android.widget.TabHost;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class DroppShareActivity extends Activity implements SimejiIF {
-	private static final String TAG = DroppShareActivity.class.getSimpleName();
+public class DroppShareActivity extends Activity implements SimejiIF, LogTagIF {
 
 	private AppDataAdapter mInstalledAdapter = null;
 	private AppDataAdapter mHistoryAdapter = null;
@@ -44,7 +44,7 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 
 		super.onCreate(savedInstanceState);
 
@@ -116,14 +116,14 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 
 	@Override
 	public void onResume() {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 
 		super.onResume();
 	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -212,7 +212,7 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 
 	@Override
 	public void onPause() {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 
 		super.onPause();
 	}
@@ -290,12 +290,11 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 	}
 
 	class EventNormalImpl implements OnItemClickListener {
-		private final String TAG = EventNormalImpl.class.getSimpleName();
 
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+			Log.d(TAG, HelperUtil.getStackName());
 
 			AppDataAdapter adapter = pickAppDataAdapter(parent);
 			if (adapter.getCount() <= 0) {
@@ -313,12 +312,11 @@ public class DroppShareActivity extends Activity implements SimejiIF {
 	}
 
 	class EventSimejiImpl implements OnItemClickListener {
-		private final String TAG = EventSimejiImpl.class.getSimpleName();
 
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+			Log.d(TAG, HelperUtil.getStackName());
 			AppDataAdapter adapter = pickAppDataAdapter(parent);
 			if (adapter.getCount() <= 0) {
 				return;

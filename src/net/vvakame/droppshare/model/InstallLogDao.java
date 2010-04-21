@@ -3,7 +3,8 @@ package net.vvakame.droppshare.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.vvakame.droppshare.helper.HelperUtil;
+import net.vvakame.android.helper.HelperUtil;
+import net.vvakame.droppshare.helper.LogTagIF;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -11,8 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class InstallLogDao implements InstallLogIF {
-	private static final String TAG = InstallLogDao.class.getSimpleName();
+public class InstallLogDao implements InstallLogIF, LogTagIF {
 
 	private DBHelper mHelper = null;
 
@@ -47,7 +47,7 @@ public class InstallLogDao implements InstallLogIF {
 	}
 
 	public InstallLogModel save(InstallLogModel model) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", " + model);
+		Log.d(TAG, HelperUtil.getStackName() + ", " + model);
 
 		SQLiteDatabase db = mHelper.getWritableDatabase();
 		InstallLogModel result = null;
@@ -74,7 +74,7 @@ public class InstallLogDao implements InstallLogIF {
 	}
 
 	public InstallLogModel load(Long rowId) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 
 		SQLiteDatabase db = mHelper.getReadableDatabase();
 		Cursor cursor = null;
@@ -93,7 +93,7 @@ public class InstallLogDao implements InstallLogIF {
 	}
 
 	public void delete(InstallLogModel model) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 
 		SQLiteDatabase db = mHelper.getWritableDatabase();
 		try {
@@ -105,7 +105,7 @@ public class InstallLogDao implements InstallLogIF {
 	}
 
 	public void truncate() {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 
 		SQLiteDatabase db = mHelper.getWritableDatabase();
 		try {
@@ -116,7 +116,7 @@ public class InstallLogDao implements InstallLogIF {
 	}
 
 	public List<InstallLogModel> list() {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 
 		SQLiteDatabase db = mHelper.getReadableDatabase();
 		Cursor cursor = null;

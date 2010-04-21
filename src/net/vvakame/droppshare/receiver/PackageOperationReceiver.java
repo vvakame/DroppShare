@@ -2,9 +2,10 @@ package net.vvakame.droppshare.receiver;
 
 import java.util.Date;
 
+import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.activity.PreferencesActivity;
 import net.vvakame.droppshare.helper.AppDataUtil;
-import net.vvakame.droppshare.helper.HelperUtil;
+import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.model.InstallLogDao;
 import net.vvakame.droppshare.model.InstallLogModel;
 import net.vvakame.droppshare.service.SleepWatcherService;
@@ -17,14 +18,12 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 
-public class PackageOperationReceiver extends BroadcastReceiver {
-	private static final String TAG = PackageOperationReceiver.class
-			.getSimpleName();
+public class PackageOperationReceiver extends BroadcastReceiver implements
+		LogTagIF {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", "
-				+ intent.getAction());
+		Log.d(TAG, HelperUtil.getStackName() + ", " + intent.getAction());
 
 		String action = intent.getAction();
 		if (!Intent.ACTION_PACKAGE_ADDED.equals(action)
@@ -34,7 +33,7 @@ public class PackageOperationReceiver extends BroadcastReceiver {
 		}
 
 		String packageName = intent.getData().getSchemeSpecificPart();
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", " + packageName);
+		Log.d(TAG, HelperUtil.getStackName() + ", " + packageName);
 
 		PackageInfo pInfo = null;
 		ApplicationInfo appInfo = null;
@@ -50,8 +49,7 @@ public class PackageOperationReceiver extends BroadcastReceiver {
 		// DEBUGGABLEなアプリだったら無視する(開発中に反応するとうざいので)
 		// AndroidManifest,xmlで明示的に設定されていないと役にたたないけど。
 		if ((appInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
-			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName()
-					+ " Target is DEBUGGABLE!");
+			Log.d(TAG, HelperUtil.getStackName() + " Target is DEBUGGABLE!");
 			return;
 		}
 
@@ -78,8 +76,9 @@ public class PackageOperationReceiver extends BroadcastReceiver {
 
 		// キャッシュ生成用サービスを作成
 		boolean cacheFlg = PreferencesActivity.isAllowAutoCache(context);
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName()
-				+ ", isAllowAutoCache=" + cacheFlg);
+		Log
+				.d(TAG, HelperUtil.getStackName() + ", isAllowAutoCache="
+						+ cacheFlg);
 		if (cacheFlg) {
 			Intent cacheIntent = new Intent(context, SleepWatcherService.class);
 			cacheIntent.putExtra(SleepWatcherService.REGIST_FLG, cacheFlg);

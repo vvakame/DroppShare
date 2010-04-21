@@ -1,6 +1,7 @@
 package net.vvakame.droppshare.receiver;
 
-import net.vvakame.droppshare.helper.HelperUtil;
+import net.vvakame.android.helper.HelperUtil;
+import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.service.CreateCacheService;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -9,13 +10,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-public class SleepSignalReceiver extends BroadcastReceiver {
-	private static final String TAG = SleepSignalReceiver.class.getSimpleName();
+public class SleepSignalReceiver extends BroadcastReceiver implements LogTagIF {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", "
-				+ intent.getAction());
+		Log.d(TAG, HelperUtil.getStackName() + ", " + intent.getAction());
 
 		String action = intent.getAction();
 		if (Intent.ACTION_SCREEN_OFF.equals(action)) {

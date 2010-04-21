@@ -13,6 +13,7 @@ import java.io.StreamCorruptedException;
 import java.util.Date;
 import java.util.List;
 
+import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
 import net.vvakame.droppshare.asynctask.DroppHistoryAsynkTask;
 import net.vvakame.droppshare.asynctask.DroppInstalledAsynkTask;
@@ -31,8 +32,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.util.Log;
 
-public class AppDataUtil {
-	private static final String TAG = AppDataUtil.class.getSimpleName();
+public class AppDataUtil implements LogTagIF {
 
 	public static final File EX_STRAGE = new File(Environment
 			.getExternalStorageDirectory(), "DroppShare/");
@@ -77,8 +77,7 @@ public class AppDataUtil {
 	@SuppressWarnings("unchecked")
 	public static List<AppData> readSerializedCaches(String fileName)
 			throws InvalidClassException, ClassNotFoundException {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", file="
-				+ fileName);
+		Log.d(TAG, HelperUtil.getStackName() + ", file=" + fileName);
 
 		List<AppData> appDataList = null;
 		ObjectInputStream in = null;
@@ -115,8 +114,7 @@ public class AppDataUtil {
 
 	public static void writeSerializedCache(Context context, String fileName,
 			List<AppData> appDataList) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", file="
-				+ fileName);
+		Log.d(TAG, HelperUtil.getStackName() + ", file=" + fileName);
 
 		// v0.5→v0.6 のキャッシュ構成変更でゴミを残さないためのコード。暫く残す。
 		deleteOldCache(context);
@@ -156,7 +154,7 @@ public class AppDataUtil {
 	}
 
 	public static void deleteCache(String fileName) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 
 		File cacheFile = new File(CACHE_DIR, fileName);
 		if (cacheFile.exists()) {
@@ -165,7 +163,7 @@ public class AppDataUtil {
 	}
 
 	public static void deleteOwnCache() {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 
 		File cacheFile = null;
 
@@ -182,12 +180,12 @@ public class AppDataUtil {
 
 	@SuppressWarnings("unused")
 	private static void writeIconImage(File toDir, AppData appData) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 
 		if (appData == null || appData.getIcon() == null) {
 			return;
 		} else if (!(appData.getIcon() instanceof BitmapDrawable)) {
-			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + " "
+			Log.d(TAG, HelperUtil.getStackName() + " "
 					+ appData.getIcon().getClass().getSimpleName());
 			return;
 		}
@@ -266,7 +264,7 @@ public class AppDataUtil {
 
 	// v0.5→v0.6でキャッシュの構成を変更したのでお掃除コードを仕込む 暫く残す
 	private static void deleteOldCache(Context context) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 
 		File cacheDir = new File(context.getFilesDir(), "cache/");
 		if (cacheDir.exists()) {

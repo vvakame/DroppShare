@@ -2,8 +2,9 @@ package net.vvakame.droppshare.activity;
 
 import java.util.regex.Pattern;
 
+import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.helper.HelperUtil;
+import net.vvakame.droppshare.helper.LogTagIF;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,9 +13,7 @@ import android.util.Log;
 import android.view.Window;
 import android.widget.TextView;
 
-public class DroppRedirectActivity extends Activity {
-	private static final String TAG = DroppRedirectActivity.class
-			.getSimpleName();
+public class DroppRedirectActivity extends Activity implements LogTagIF {
 
 	private static String marketProtcol = "market://";
 	private static final Pattern MARKET_PATTERN = Pattern
@@ -22,7 +21,7 @@ public class DroppRedirectActivity extends Activity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 
 		super.onCreate(savedInstanceState);
 

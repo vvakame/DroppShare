@@ -3,9 +3,10 @@ package net.vvakame.droppshare.asynctask;
 import java.io.InvalidClassException;
 import java.util.List;
 
+import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.Func;
-import net.vvakame.droppshare.helper.HelperUtil;
+import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.model.AppData;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -13,8 +14,7 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 
 public abstract class DroppBaseAsynkTask extends
-		AsyncTask<Boolean, AppData, List<AppData>> {
-	private static final String TAG = DroppBaseAsynkTask.class.getSimpleName();
+		AsyncTask<Boolean, AppData, List<AppData>> implements LogTagIF {
 
 	protected Context mContext = null;
 	protected ArrayAdapter<AppData> mAdapter = null;
@@ -24,7 +24,7 @@ public abstract class DroppBaseAsynkTask extends
 			Func<List<AppData>> postExecFunc) {
 		super();
 
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 		mContext = context.getApplicationContext();
 		mAdapter = adapter;
 		mFunc = postExecFunc;
@@ -33,13 +33,13 @@ public abstract class DroppBaseAsynkTask extends
 	public DroppBaseAsynkTask(Context context, Func<List<AppData>> postExecFunc) {
 		super();
 
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 		mContext = context.getApplicationContext();
 		mFunc = postExecFunc;
 	}
 
 	protected List<AppData> tryReadCache(String fileName, Boolean... params) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 
 		List<AppData> appDataList = null;
 
@@ -47,7 +47,7 @@ public abstract class DroppBaseAsynkTask extends
 				&& params[0].booleanValue() == true;
 
 		if (!clearFlg && AppDataUtil.isExistCache(fileName)) {
-			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", use cache.");
+			Log.d(TAG, HelperUtil.getStackName() + ", use cache.");
 			try {
 				appDataList = AppDataUtil.readSerializedCaches(fileName);
 				for (AppData appData : appDataList) {
@@ -76,7 +76,7 @@ public abstract class DroppBaseAsynkTask extends
 
 	@Override
 	protected void onPostExecute(List<AppData> appDataList) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 		super.onPostExecute(appDataList);
 
 		mFunc.func(appDataList);

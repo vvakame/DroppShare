@@ -3,9 +3,10 @@ package net.vvakame.droppshare.asynctask;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.Func;
-import net.vvakame.droppshare.helper.HelperUtil;
+import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.model.AppData;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -17,9 +18,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
-public class DroppRecentlyUsedAsynkTask extends DroppBaseAsynkTask {
-	private static final String TAG = DroppRecentlyUsedAsynkTask.class
-			.getSimpleName();
+public class DroppRecentlyUsedAsynkTask extends DroppBaseAsynkTask implements
+		LogTagIF {
 
 	private static final int MAX_NUM = 30;
 
@@ -27,7 +27,7 @@ public class DroppRecentlyUsedAsynkTask extends DroppBaseAsynkTask {
 			ArrayAdapter<AppData> adapter, Func<List<AppData>> postExecFunc) {
 		super(context, adapter, postExecFunc);
 
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 	}
 
 	@Deprecated
@@ -35,12 +35,12 @@ public class DroppRecentlyUsedAsynkTask extends DroppBaseAsynkTask {
 			Func<List<AppData>> postExecFunc) {
 		super(context, postExecFunc);
 
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 	}
 
 	@Override
 	protected List<AppData> doInBackground(Boolean... params) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 
 		ActivityManager am = (ActivityManager) mContext
 				.getSystemService(Activity.ACTIVITY_SERVICE);
@@ -48,7 +48,7 @@ public class DroppRecentlyUsedAsynkTask extends DroppBaseAsynkTask {
 		List<RecentTaskInfo> taskInfoList = am.getRecentTasks(MAX_NUM,
 				ActivityManager.RECENT_WITH_EXCLUDED);
 
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", get="
+		Log.d(TAG, HelperUtil.getStackName() + ", get="
 				+ (taskInfoList == null ? -1 : taskInfoList.size()));
 
 		List<AppData> appDataList = new ArrayList<AppData>();
@@ -82,8 +82,7 @@ public class DroppRecentlyUsedAsynkTask extends DroppBaseAsynkTask {
 			}
 		}
 
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", get="
-				+ appDataList.size());
+		Log.d(TAG, HelperUtil.getStackName() + ", get=" + appDataList.size());
 
 		return appDataList;
 	}

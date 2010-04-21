@@ -1,6 +1,7 @@
 package net.vvakame.droppshare.service;
 
-import net.vvakame.droppshare.helper.HelperUtil;
+import net.vvakame.android.helper.HelperUtil;
+import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.receiver.PackageOperationReceiver;
 import android.app.Service;
 import android.content.Intent;
@@ -8,9 +9,7 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.util.Log;
 
-public class SleepWatcherService extends Service {
-	private static final String TAG = SleepWatcherService.class
-			.getSimpleName();
+public class SleepWatcherService extends Service implements LogTagIF {
 
 	public static final String REGIST_FLG = "regist_flg";
 
@@ -18,7 +17,7 @@ public class SleepWatcherService extends Service {
 
 	@Override
 	public void onStart(Intent intent, int startId) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 
 		boolean registFlg = intent.getBooleanExtra(REGIST_FLG, false);
 		if (registFlg) {
@@ -31,7 +30,7 @@ public class SleepWatcherService extends Service {
 			try {
 				unregisterReceiver(mReceiver);
 			} catch (IllegalArgumentException e) {
-				Log.e(TAG, TAG + ":" + HelperUtil.getExceptionLog(e));
+				Log.e(TAG, HelperUtil.getExceptionLog(e));
 			}
 		}
 	}

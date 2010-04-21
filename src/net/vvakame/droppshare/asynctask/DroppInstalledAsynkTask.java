@@ -5,9 +5,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.Func;
-import net.vvakame.droppshare.helper.HelperUtil;
+import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.model.AppData;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -20,9 +21,8 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
-public class DroppInstalledAsynkTask extends DroppBaseAsynkTask {
-	private static final String TAG = DroppInstalledAsynkTask.class
-			.getSimpleName();
+public class DroppInstalledAsynkTask extends DroppBaseAsynkTask implements
+		LogTagIF {
 
 	private static final int MODE_NEW = 0;
 	private static final int MODE_CACHE = 1;
@@ -42,19 +42,19 @@ public class DroppInstalledAsynkTask extends DroppBaseAsynkTask {
 			ArrayAdapter<AppData> adapter, Func<List<AppData>> postExecFunc) {
 		super(context, adapter, postExecFunc);
 
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 	}
 
 	public DroppInstalledAsynkTask(Context context,
 			Func<List<AppData>> postExecFunc) {
 		super(context, postExecFunc);
 
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName());
+		Log.d(TAG, HelperUtil.getStackName());
 	}
 
 	@Override
 	protected List<AppData> doInBackground(Boolean... params) {
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", clear cache:"
+		Log.d(TAG, HelperUtil.getStackName() + ", clear cache:"
 				+ (params.length == 1 ? params[0].toString() : "none"));
 
 		List<AppData> appDataList = null;
@@ -62,8 +62,7 @@ public class DroppInstalledAsynkTask extends DroppBaseAsynkTask {
 		appDataList = tryReadCache(CACHE_FILE, params);
 
 		if (appDataList == null) {
-			Log.d(TAG, TAG + ":" + HelperUtil.getMethodName()
-					+ ", create cache.");
+			Log.d(TAG, HelperUtil.getStackName() + ", create cache.");
 			mMode = MODE_NEW;
 			appDataList = new ArrayList<AppData>();
 
@@ -117,7 +116,7 @@ public class DroppInstalledAsynkTask extends DroppBaseAsynkTask {
 			AppDataUtil.writeSerializedCache(mContext, CACHE_FILE, appDataList);
 		}
 
-		Log.d(TAG, TAG + ":" + HelperUtil.getMethodName() + ", done it!");
+		Log.d(TAG, HelperUtil.getStackName() + ", done it!");
 
 		return appDataList;
 	}
