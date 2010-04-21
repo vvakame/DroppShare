@@ -14,8 +14,8 @@ import java.util.Date;
 import java.util.List;
 
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.activity.DroppHistoryAsynkTask;
-import net.vvakame.droppshare.activity.DroppInstalledAsynkTask;
+import net.vvakame.droppshare.asynctask.DroppHistoryAsynkTask;
+import net.vvakame.droppshare.asynctask.DroppInstalledAsynkTask;
 import net.vvakame.droppshare.model.AppData;
 import net.vvakame.droppshare.model.InstallLogModel;
 

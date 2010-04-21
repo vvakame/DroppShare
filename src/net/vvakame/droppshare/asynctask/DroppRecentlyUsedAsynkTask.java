@@ -1,4 +1,4 @@
-package net.vvakame.droppshare.activity;
+package net.vvakame.droppshare.asynctask;
 
 import java.util.ArrayList;
 import java.util.List;

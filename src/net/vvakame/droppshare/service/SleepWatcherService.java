@@ -1,19 +1,20 @@
-package net.vvakame.droppshare.activity;
+package net.vvakame.droppshare.service;
 
 import net.vvakame.droppshare.helper.HelperUtil;
+import net.vvakame.droppshare.receiver.PackageOperationReceiver;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.util.Log;
 
-public class DroppKickReceiverService extends Service {
-	private static final String TAG = DroppKickReceiverService.class
+public class SleepWatcherService extends Service {
+	private static final String TAG = SleepWatcherService.class
 			.getSimpleName();
 
 	public static final String REGIST_FLG = "regist_flg";
 
-	private DroppShareReceiver mReceiver = new DroppShareReceiver();
+	private PackageOperationReceiver mReceiver = new PackageOperationReceiver();
 
 	@Override
 	public void onStart(Intent intent, int startId) {

@@ -3,6 +3,9 @@ package net.vvakame.droppshare.activity;
 import java.util.List;
 
 import net.vvakame.droppshare.R;
+import net.vvakame.droppshare.asynctask.DroppHistoryAsynkTask;
+import net.vvakame.droppshare.asynctask.DroppInstalledAsynkTask;
+import net.vvakame.droppshare.asynctask.DroppRecentlyUsedAsynkTask;
 import net.vvakame.droppshare.helper.AppDataAdapter;
 import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.Func;

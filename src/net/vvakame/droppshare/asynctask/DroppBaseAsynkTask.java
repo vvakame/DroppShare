@@ -1,4 +1,4 @@
-package net.vvakame.droppshare.activity;
+package net.vvakame.droppshare.asynctask;
 
 import java.io.InvalidClassException;
 import java.util.List;
