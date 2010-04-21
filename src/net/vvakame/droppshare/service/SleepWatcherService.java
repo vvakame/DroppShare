@@ -3,6 +3,7 @@ package net.vvakame.droppshare.service;
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.receiver.PackageOperationReceiver;
+import net.vvakame.droppshare.receiver.SleepSignalReceiver;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -13,7 +14,7 @@ public class SleepWatcherService extends Service implements LogTagIF {
 
 	public static final String REGIST_FLG = "regist_flg";
 
-	private PackageOperationReceiver mReceiver = new PackageOperationReceiver();
+	private SleepSignalReceiver mReceiver = new SleepSignalReceiver();
 
 	@Override
 	public void onStart(Intent intent, int startId) {
