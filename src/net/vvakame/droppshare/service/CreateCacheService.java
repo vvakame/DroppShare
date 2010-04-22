@@ -46,6 +46,7 @@ public class CreateCacheService extends Service implements LogTagIF {
 								SleepWatcherService.class);
 						intent.putExtra(SleepWatcherService.REGIST_FLG, false);
 						stopService(intent);
+						CreateCacheService.this.stopSelf();
 					}
 				});
 
@@ -54,6 +55,8 @@ public class CreateCacheService extends Service implements LogTagIF {
 
 	@Override
 	public IBinder onBind(Intent intent) {
+		Log.d(TAG, HelperUtil.getStackName());
+
 		// 使わないので適当実装
 		return null;
 	}

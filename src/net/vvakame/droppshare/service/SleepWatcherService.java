@@ -2,7 +2,6 @@ package net.vvakame.droppshare.service;
 
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.helper.LogTagIF;
-import net.vvakame.droppshare.receiver.PackageOperationReceiver;
 import net.vvakame.droppshare.receiver.SleepSignalReceiver;
 import android.app.Service;
 import android.content.Intent;
@@ -37,8 +36,18 @@ public class SleepWatcherService extends Service implements LogTagIF {
 	}
 
 	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		Log.d(TAG, HelperUtil.getStackName());
+
+		unregisterReceiver(mReceiver);
+	}
+
+	@Override
 	public IBinder onBind(Intent intent) {
 		// 使わないので適当実装
+		Log.d(TAG, HelperUtil.getStackName());
+
 		return null;
 	}
 }
