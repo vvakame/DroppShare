@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="fill_parent"
+	android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
+	android:gravity="top|left">
+	<ImageView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:src="@drawable/icon"
+		android:scaleType="fitXY" android:adjustViewBounds="true"
+		android:maxHeight="48px" android:maxWidth="48px" android:minHeight="48px"
+		android:minWidth="48px" android:layout_alignParentTop="true"
+		android:layout_alignParentLeft="true" android:id="@+id/file_icon">
+	</ImageView>
+	<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="application_name"
+		android:layout_toRightOf="@+id/file_icon" android:textSize="20dip"
+		android:textColor="@color/app_name" android:layout_marginLeft="5dip"
+		android:id="@+id/file_name"></TextView>
+</RelativeLayout>

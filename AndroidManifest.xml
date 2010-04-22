@@ -9,6 +9,7 @@
 
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
 		android:description="@string/app_description">
+
 		<activity android:label="@string/app_name"
 			android:configChanges="orientation" android:name=".activity.DroppShareActivity">
 			<intent-filter>
@@ -30,7 +31,20 @@
 				<data android:mimeType="text/plain" />
 			</intent-filter>
 		</activity>
+		<activity android:name=".activity.DroppSelectorActivity"></activity>
+		<activity android:name=".activity.DroppViewerActivity">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="application/dropp" />
+				<data android:mimeType="application/droppshare" />
+			</intent-filter>
+		</activity>
 		<activity android:name=".activity.PreferencesActivity"></activity>
+
+		<service android:name=".service.CreateCacheService"></service>
+		<service android:name=".service.SleepWatcherService"></service>
+
 		<receiver android:name=".receiver.PackageOperationReceiver">
 			<intent-filter android:priority="1">
 				<data android:scheme="package" />
@@ -39,7 +53,6 @@
 				<action android:name="android.intent.action.PACKAGE_REPLACED" />
 			</intent-filter>
 		</receiver>
-		<service android:name=".service.CreateCacheService"></service>
-		<service android:name=".service.SleepWatcherService"></service>
+
 	</application>
 </manifest> 

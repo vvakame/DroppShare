@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<color name="app_name">#ffffffff</color>
+	<color name="dir_header_bg">#ffccffcc</color>
+	<color name="dir_header_textfore">#ff000000</color>
 </resources>

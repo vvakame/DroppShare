@@ -235,6 +235,11 @@ public class DroppShareActivity extends Activity implements SimejiIF, LogTagIF {
 
 			break;
 
+		case R.id.show_selector:
+			intent = new Intent(this, DroppSelectorActivity.class);
+			startActivity(intent);
+			break;
+
 		case R.id.preferences:
 			intent = new Intent(this, PreferencesActivity.class);
 			startActivity(intent);

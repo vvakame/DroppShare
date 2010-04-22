@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="wrap_content" android:layout_width="fill_parent" android:background="@color/dir_header_bg"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="dir title" android:id="@+id/title" android:textColor="@color/dir_header_textfore"></TextView>
+</LinearLayout>

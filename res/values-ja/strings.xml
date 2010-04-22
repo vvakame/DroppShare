@@ -15,6 +15,7 @@
 	<string name="app_not_exists">該当アプリがありませんでした。</string>
 
 	<string name="cache_refresh">キャッシュ最新化</string>
+	<string name="show_selector">セレクタ</string>
 	<string name="preferences">設定</string>
 
 	<string name="paste_uri_type">URI貼付け形式</string>

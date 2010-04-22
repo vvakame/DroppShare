@@ -15,6 +15,7 @@
 	<string name="app_not_exists">Application not exists.</string>
 
 	<string name="cache_refresh">Refresh caches</string>
+	<string name="show_selector">Selector</string>
 	<string name="preferences">Preference</string>
 
 	<string name="paste_uri_type">URI format</string>

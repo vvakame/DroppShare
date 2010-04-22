@@ -21,37 +21,47 @@ public final class R {
     }
     public static final class color {
         public static final int app_name=0x7f070000;
+        public static final int dir_header_bg=0x7f070001;
+        public static final int dir_header_textfore=0x7f070002;
     }
     public static final class drawable {
         public static final int droid=0x7f020000;
         public static final int icon=0x7f020001;
     }
     public static final class id {
-        public static final int application_action=0x7f0a0002;
-        public static final int application_description=0x7f0a0005;
-        public static final int application_icon=0x7f0a0000;
-        public static final int application_name=0x7f0a0001;
-        public static final int application_process_date=0x7f0a0003;
-        public static final int application_version_name=0x7f0a0004;
-        public static final int cache_refresh=0x7f0a000e;
-        public static final int history=0x7f0a0009;
-        public static final int history_list=0x7f0a000a;
-        public static final int installed=0x7f0a0007;
-        public static final int installed_list=0x7f0a0008;
-        public static final int preferences=0x7f0a000f;
-        public static final int receive_text=0x7f0a000d;
-        public static final int recent_list=0x7f0a000c;
-        public static final int recently_used=0x7f0a000b;
-        public static final int tabhost=0x7f0a0006;
+        public static final int application_action=0x7f0a0005;
+        public static final int application_description=0x7f0a0008;
+        public static final int application_icon=0x7f0a0003;
+        public static final int application_name=0x7f0a0004;
+        public static final int application_process_date=0x7f0a0006;
+        public static final int application_version_name=0x7f0a0007;
+        public static final int cache_refresh=0x7f0a0012;
+        public static final int dirs_layout=0x7f0a0011;
+        public static final int file_icon=0x7f0a0001;
+        public static final int file_name=0x7f0a0002;
+        public static final int history=0x7f0a000c;
+        public static final int history_list=0x7f0a000d;
+        public static final int installed=0x7f0a000a;
+        public static final int installed_list=0x7f0a000b;
+        public static final int preferences=0x7f0a0014;
+        public static final int receive_text=0x7f0a0010;
+        public static final int recent_list=0x7f0a000f;
+        public static final int recently_used=0x7f0a000e;
+        public static final int show_selector=0x7f0a0013;
+        public static final int tabhost=0x7f0a0009;
+        public static final int title=0x7f0a0000;
     }
     public static final class layout {
         public static final int app_not_exists=0x7f030000;
-        public static final int history_view=0x7f030001;
-        public static final int installed_view=0x7f030002;
-        public static final int main=0x7f030003;
-        public static final int progress_bar=0x7f030004;
-        public static final int recent_view=0x7f030005;
-        public static final int redirect_to_market=0x7f030006;
+        public static final int dir_header_view=0x7f030001;
+        public static final int file_view=0x7f030002;
+        public static final int history_view=0x7f030003;
+        public static final int installed_view=0x7f030004;
+        public static final int main=0x7f030005;
+        public static final int progress_bar=0x7f030006;
+        public static final int recent_view=0x7f030007;
+        public static final int redirect_to_market=0x7f030008;
+        public static final int selector=0x7f030009;
     }
     public static final class menu {
         public static final int main=0x7f090000;
@@ -62,25 +72,26 @@ public final class R {
         public static final int app_name=0x7f080000;
         public static final int app_not_exists=0x7f08000a;
         public static final int cache_refresh=0x7f08000b;
-        public static final int create_cache_automatically=0x7f080011;
-        public static final int create_cache_automatically_summary=0x7f080012;
+        public static final int create_cache_automatically=0x7f080012;
+        public static final int create_cache_automatically_summary=0x7f080013;
         public static final int history=0x7f080004;
         public static final int installed=0x7f080003;
-        public static final int message_added=0x7f080016;
-        public static final int message_added_summary=0x7f080015;
-        public static final int message_added_title=0x7f080014;
-        public static final int message_replaced=0x7f080017;
-        public static final int paste_uri_type=0x7f08000d;
-        public static final int paste_uri_type_summary=0x7f08000e;
-        public static final int preferences=0x7f08000c;
+        public static final int message_added=0x7f080017;
+        public static final int message_added_summary=0x7f080016;
+        public static final int message_added_title=0x7f080015;
+        public static final int message_replaced=0x7f080018;
+        public static final int paste_uri_type=0x7f08000e;
+        public static final int paste_uri_type_summary=0x7f08000f;
+        public static final int preferences=0x7f08000d;
         public static final int recent=0x7f080005;
-        public static final int redirect_market_summary=0x7f080013;
+        public static final int redirect_market_summary=0x7f080014;
         public static final int redirect_name=0x7f080002;
         public static final int removed=0x7f080008;
         public static final int replaced=0x7f080007;
-        public static final int uri_shorten=0x7f08000f;
+        public static final int show_selector=0x7f08000c;
+        public static final int uri_shorten=0x7f080010;
         public static final int uri_shorten_failure=0x7f080009;
-        public static final int uri_shorten_summary=0x7f080010;
+        public static final int uri_shorten_summary=0x7f080011;
     }
     public static final class xml {
         public static final int pref=0x7f050000;
