@@ -1,0 +1,8 @@
+####
+# This file is a file directory for a given load. automatic generate only.
+# if you want to modify yourself. you must edit "manuallyWatching.txt" please.
+####
+# このファイルはdroppファイル読み込み先指定用ファイルです。自動生成されるファイルなので、手動で編集しないでください。
+# もし、読み込み先ディレクトリを自分で追加したい場合は、"manuallyWatching.txt"へ追加してください。
+
+/sdcard/hoccer

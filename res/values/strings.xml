@@ -34,4 +34,11 @@
 	<string name="message_added">$app $version $description AndroidOnly→$market
 		#droppshare</string>
 	<string name="message_replaced">$app - AndroidOnly→$market #droppshare</string>
+
+	<string name="add_dir">Add directory</string>
+
+	<string name="files_not_exists">"*.dropp" files not exists.</string>
+
+	<string name="add_dir_title">Where is dropp files?</string>
+	<string name="add_dir_button_text">This directory is!</string>
 </resources>

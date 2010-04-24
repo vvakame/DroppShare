@@ -10,6 +10,9 @@ import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -18,11 +21,13 @@ import net.vvakame.droppshare.R;
 import net.vvakame.droppshare.asynctask.DroppHistoryAsynkTask;
 import net.vvakame.droppshare.asynctask.DroppInstalledAsynkTask;
 import net.vvakame.droppshare.model.AppData;
+import net.vvakame.droppshare.model.AppDiffData;
 import net.vvakame.droppshare.model.InstallLogModel;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
@@ -74,15 +79,22 @@ public class AppDataUtil implements LogTagIF {
 		return cacheFile.exists();
 	}
 
-	@SuppressWarnings("unchecked")
 	public static List<AppData> readSerializedCaches(String fileName)
 			throws InvalidClassException, ClassNotFoundException {
-		Log.d(TAG, HelperUtil.getStackName() + ", file=" + fileName);
+
+		File cacheFile = new File(CACHE_DIR, fileName);
+		return readSerializedCaches(cacheFile);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static List<AppData> readSerializedCaches(File cacheFile)
+			throws InvalidClassException, ClassNotFoundException {
+		Log.d(TAG, HelperUtil.getStackName() + ", file="
+				+ cacheFile.getAbsolutePath());
 
 		List<AppData> appDataList = null;
 		ObjectInputStream in = null;
 		try {
-			File cacheFile = new File(CACHE_DIR, fileName);
 			FileInputStream fin = new FileInputStream(cacheFile);
 			in = new ObjectInputStream(fin);
 			appDataList = (List<AppData>) in.readObject();
@@ -245,12 +257,13 @@ public class AppDataUtil implements LogTagIF {
 		PackageManager pm = context.getPackageManager();
 		ApplicationInfo appInfo = pm.getApplicationInfo(packageName,
 				PackageManager.GET_UNINSTALLED_PACKAGES);
+		PackageInfo packageInfo = pm.getPackageInfo(packageName,
+				PackageManager.GET_UNINSTALLED_PACKAGES);
 
-		// String packageName = packageName;
+		// 値の準備
 		CharSequence appName = pm.getApplicationLabel(appInfo);
 		CharSequence description = appInfo.loadDescription(pm);
-		String versionName = pm.getPackageInfo(packageName,
-				PackageManager.GET_UNINSTALLED_PACKAGES).versionName;
+		String versionName = packageInfo.versionName;
 		Drawable icon = appInfo.loadIcon(pm);
 
 		appData.setPackageName(packageName);
@@ -260,6 +273,95 @@ public class AppDataUtil implements LogTagIF {
 		appData.setIcon(icon);
 
 		return appData;
+	}
+
+	public static List<AppDiffData> zipAppData(List<AppData> srcList,
+			List<AppData> destList) {
+		srcList = srcList != null ? srcList : new ArrayList<AppData>();
+		destList = destList != null ? destList : new ArrayList<AppData>();
+
+		// リストのソート(突き合わせ用ソート)
+		Comparator<AppData> pkgCompare = new Comparator<AppData>() {
+			@Override
+			public int compare(AppData obj1, AppData obj2) {
+				return obj1.getPackageName().compareTo(obj2.getPackageName());
+			}
+		};
+		Collections.sort(srcList, pkgCompare);
+		Collections.sort(destList, pkgCompare);
+
+		List<AppDiffData> diffList = new ArrayList<AppDiffData>();
+
+		// 特殊なパターンに対処
+		if (srcList.size() == 0) {
+			for (int i = 0; i < destList.size(); i++) {
+				AppDiffData diff = new AppDiffData(null, destList.get(i));
+				diffList.add(diff);
+			}
+			return diffList;
+		} else if (destList.size() == 0) {
+			for (int i = 0; i < srcList.size(); i++) {
+				AppDiffData diff = new AppDiffData(srcList.get(i), null);
+				diffList.add(diff);
+			}
+			return diffList;
+		}
+
+		int i = 0;
+		int j = 0;
+		while (i < srcList.size() || j < destList.size()) {
+			AppData src = null;
+			if (srcList.size() != 0 && i < srcList.size()) {
+				src = srcList.get(i);
+			} else {
+				src = null;
+			}
+
+			AppData dest = null;
+			if (destList.size() != 0 && j < destList.size()) {
+				dest = destList.get(j);
+			} else {
+				dest = null;
+			}
+
+			int compare = 0;
+			if (src == null) {
+				compare = 1;
+			} else if (dest == null) {
+				compare = -1;
+			} else {
+				compare = src.getPackageName().compareTo(dest.getPackageName());
+			}
+			AppDiffData diff = null;
+
+			if (compare == 0) {
+				diff = new AppDiffData(src, dest);
+				i++;
+				j++;
+			} else if (compare < 0) {
+				diff = new AppDiffData(src, null);
+				i++;
+			} else {
+				diff = new AppDiffData(null, dest);
+				j++;
+			}
+
+			diffList.add(diff);
+		}
+
+		// リストのソート(表示用ソート)
+		Comparator<AppDiffData> nameCompare = new Comparator<AppDiffData>() {
+			@Override
+			public int compare(AppDiffData obj1, AppDiffData obj2) {
+				AppData o1 = obj1.getMasterAppData();
+				AppData o2 = obj2.getMasterAppData();
+
+				return o1.getAppName().compareToIgnoreCase(o2.getAppName());
+			}
+		};
+		Collections.sort(diffList, nameCompare);
+
+		return diffList;
 	}
 
 	// v0.5→v0.6でキャッシュの構成を変更したのでお掃除コードを仕込む 暫く残す

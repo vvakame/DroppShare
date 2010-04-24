@@ -15,6 +15,7 @@ import net.vvakame.droppshare.model.AppData;
 import net.vvakame.util.googleshorten.GoogleShorten;
 import net.vvakame.util.googleshorten.GoogleShorten.ShortenFailedException;
 import android.app.Activity;
+import android.app.LocalActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -55,7 +56,8 @@ public class DroppShareActivity extends Activity implements SimejiIF, LogTagIF {
 
 		// タブの準備
 		TabHost tabHost = (TabHost) findViewById(R.id.tabhost);
-		tabHost.setup();
+		// tabHost.setup();
+		tabHost.setup(new LocalActivityManager(this, true));
 		TabHost.TabSpec tab;
 
 		// インストール履歴タブ

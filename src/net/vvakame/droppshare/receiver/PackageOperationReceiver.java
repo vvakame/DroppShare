@@ -54,7 +54,6 @@ public class PackageOperationReceiver extends BroadcastReceiver implements
 		}
 
 		// キャッシュ再構成のためとりあえず消しておく
-		// TODO テストが終わったらコメントアウト解除すること
 		AppDataUtil.deleteOwnCache();
 
 		// 操作されたパッケージの情報をDBに書く

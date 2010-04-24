@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<color name="app_name">#ffffffff</color>
+
 	<color name="dir_header_bg">#ffccffcc</color>
 	<color name="dir_header_textfore">#ff000000</color>
+
+	<color name="strong">#ffffffff</color>
+	<color name="weak">#ff888888</color>
+	<color name="disable">#ff485859</color>
+	<color name="side_1_exists">#ff4d5aaf</color>
+	<color name="side_2_exists">#ffee836f</color>
 </resources>

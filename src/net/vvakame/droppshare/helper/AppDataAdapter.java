@@ -29,6 +29,7 @@ public class AppDataAdapter extends ArrayAdapter<AppData> {
 		super(context, textViewResourceId, appDataList);
 
 		mContext = context.getApplicationContext();
+		mResId = textViewResourceId;
 	}
 
 	@Override
