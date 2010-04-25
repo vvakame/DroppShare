@@ -33,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 
 public class DroppSelectorActivity extends Activity implements LogTagIF {
 	private static final String SUFFIX = ".dropp";
@@ -51,7 +52,8 @@ public class DroppSelectorActivity extends Activity implements LogTagIF {
 		}
 	};
 
-	private final OnClickListenerImpl mEventImpl = new OnClickListenerImpl();
+	private final OnItemClickListenerImpl mClickEventImpl = new OnItemClickListenerImpl();
+	private final OnItemLongClickListenerImpl mLongClickEventImpl = new OnItemLongClickListenerImpl();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -197,11 +199,12 @@ public class DroppSelectorActivity extends Activity implements LogTagIF {
 					null);
 			layout.addView(appNotExistView);
 		} else {
-			droppList.setOnItemClickListener(mEventImpl);
+			droppList.setOnItemClickListener(mClickEventImpl);
+			droppList.setOnItemLongClickListener(mLongClickEventImpl);
 		}
 	}
 
-	private class OnClickListenerImpl implements OnItemClickListener {
+	private class OnItemClickListenerImpl implements OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
@@ -211,6 +214,25 @@ public class DroppSelectorActivity extends Activity implements LogTagIF {
 					Uri.parse("file://" + file.getAbsolutePath()), TYPE);
 
 			startActivity(intent);
+		}
+	}
+
+	private class OnItemLongClickListenerImpl implements
+			OnItemLongClickListener {
+
+		@Override
+		public boolean onItemLongClick(AdapterView<?> parent, View view,
+				int position, long id) {
+
+			File file = (File) parent.getItemAtPosition(position);
+			Intent intent = new Intent(Intent.ACTION_SEND);
+			intent.setType(TYPE);
+			intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"
+					+ file.getAbsolutePath()));
+
+			startActivity(intent);
+
+			return false;
 		}
 	}
 }

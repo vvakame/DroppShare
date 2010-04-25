@@ -4,8 +4,7 @@
 	android:layout_height="fill_parent" android:gravity="top|left">
 	<LinearLayout android:id="@+id/side_1"
 		android:layout_alignParentLeft="true" android:maxWidth="10dip"
-		android:minWidth="10dip" android:layout_width="wrap_content"
-		android:layout_height="fill_parent" android:background="@color/none">
+		android:minWidth="10dip" android:layout_height="fill_parent" android:background="@color/none" android:layout_width="wrap_content">
 	</LinearLayout>
 	<ImageView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:id="@+id/application_icon"
