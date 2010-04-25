@@ -24,20 +24,18 @@ public class SelectorHelper {
 		try {
 			InputStream is = am.open(DEFAULT);
 			File def = new File(AppDataUtil.EX_STRAGE, DEFAULT);
-			def.getParentFile().mkdirs();
-			if (def.createNewFile()) {
-				FileOutputStream fout = new FileOutputStream(def);
-				byte[] byteArray = new byte[1024];
-				int len = 0;
-				while (-1 != (len = is.read(byteArray))) {
-					fout.write(byteArray, 0, len);
-				}
+			def.mkdirs();
+			def.createNewFile();
+			FileOutputStream fout = new FileOutputStream(def);
+			byte[] byteArray = new byte[1024];
+			int len = 0;
+			while (-1 != (len = is.read(byteArray))) {
+				fout.write(byteArray, 0, len);
 			}
 
 			File man = new File(AppDataUtil.EX_STRAGE, MANUAL);
-			if (!man.exists()) {
-				man.createNewFile();
-			}
+			man.createNewFile();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -54,8 +52,10 @@ public class SelectorHelper {
 		} catch (FileNotFoundException e) {
 		} finally {
 			try {
-				fin.close();
-				fin = null;
+				if (fin != null) {
+					fin.close();
+					fin = null;
+				}
 			} catch (IOException e) {
 			}
 		}
@@ -67,8 +67,10 @@ public class SelectorHelper {
 		} catch (FileNotFoundException e) {
 		} finally {
 			try {
-				fin.close();
-				fin = null;
+				if (fin != null) {
+					fin.close();
+					fin = null;
+				}
 			} catch (IOException e) {
 			}
 		}

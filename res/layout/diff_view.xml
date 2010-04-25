@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:gravity="top|left">
-	<TextView android:background="@color/disable"
-		android:layout_alignParentLeft="true" android:layout_height="fill_parent"
-		android:layout_width="wrap_content" android:id="@+id/side_1"
-		android:maxWidth="10dip" android:minWidth="10dip"></TextView>
+	android:id="@+id/boss" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:gravity="top|left">
+	<LinearLayout android:id="@+id/side_1"
+		android:layout_alignParentLeft="true" android:maxWidth="10dip"
+		android:minWidth="10dip" android:layout_width="wrap_content"
+		android:layout_height="fill_parent" android:background="@color/none">
+	</LinearLayout>
 	<ImageView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:id="@+id/application_icon"
 		android:src="@drawable/icon" android:scaleType="fitXY"
@@ -17,14 +18,19 @@
 		android:layout_height="wrap_content" android:text="application name"
 		android:id="@+id/application_name" android:layout_toRightOf="@+id/application_icon"
 		android:textSize="20dip" android:layout_marginLeft="5dip"
-		android:textColor="@color/weak"></TextView>
+		android:textColor="@color/weak" android:layout_toLeftOf="@+id/side_2"></TextView>
 	<TextView android:layout_height="wrap_content"
 		android:layout_width="wrap_content" android:id="@+id/application_description"
 		android:text="application description" android:layout_below="@+id/application_name"
 		android:layout_toRightOf="@+id/application_icon" android:textSize="12dip"
-		android:layout_marginLeft="10dip" android:textColor="@color/weak"></TextView>
-	<TextView android:background="@color/disable"
-		android:layout_alignParentRight="true" android:layout_height="fill_parent"
-		android:layout_width="wrap_content" android:id="@+id/side_2"
-		android:maxWidth="13dip" android:minWidth="13dip"></TextView>
+		android:layout_marginLeft="10dip" android:textColor="@color/weak"
+		android:layout_toLeftOf="@+id/side_2"></TextView>
+	<LinearLayout android:id="@+id/side_2_parent"
+		android:maxWidth="10dip" android:minWidth="10dip"
+		android:layout_width="wrap_content" android:layout_height="fill_parent"
+		android:layout_alignParentRight="true">
+		<ImageView android:background="@color/none" android:id="@+id/side_2"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:minWidth="5dip" android:minHeight="5dip"></ImageView>
+	</LinearLayout>
 </RelativeLayout>

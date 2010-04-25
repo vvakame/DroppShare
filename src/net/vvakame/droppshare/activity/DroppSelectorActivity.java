@@ -1,6 +1,8 @@
 package net.vvakame.droppshare.activity;
 
-import static net.vvakame.droppshare.helper.SelectorHelper.*;
+import static net.vvakame.droppshare.helper.SelectorHelper.installWatchingFile;
+import static net.vvakame.droppshare.helper.SelectorHelper.readWatchingFile;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Arrays;
@@ -12,8 +14,10 @@ import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.FileListAdapter;
 import net.vvakame.droppshare.helper.LogTagIF;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -98,8 +102,37 @@ public class DroppSelectorActivity extends Activity implements LogTagIF {
 			} catch (ActivityNotFoundException e) {
 				Log.d(TAG, HelperUtil.getExceptionLog(e));
 
-				// TODO!!
-				// OI File Managerのインストールを促す
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+						this);
+				alertDialogBuilder
+						.setTitle(getString(R.string.not_resolve_pick_dir_title));
+				alertDialogBuilder
+						.setMessage(getString(R.string.not_resolve_pick_dir_message));
+				alertDialogBuilder.setPositiveButton(
+						getString(R.string.go_market),
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								Intent marketIntent = new Intent(
+										Intent.ACTION_VIEW);
+								marketIntent
+										.setData(Uri
+												.parse("market://search?q=pname:org.openintents.filemanager"));
+								startActivity(marketIntent);
+							}
+						});
+				alertDialogBuilder.setNegativeButton(
+						getString(R.string.ignore),
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+							}
+						});
+				alertDialogBuilder.setCancelable(true);
+				alertDialogBuilder.create();
+				alertDialogBuilder.show();
 			}
 
 			break;
@@ -108,17 +141,22 @@ public class DroppSelectorActivity extends Activity implements LogTagIF {
 			ret = super.onOptionsItemSelected(item);
 			break;
 		}
+
 		return ret;
 	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.d(TAG, HelperUtil.getStackName() + ", req=" + requestCode
-				+ ", res=" + resultCode + ", data=" + data.getDataString());
+				+ ", res=" + resultCode + ", data="
+				+ (data != null ? data.getDataString() : "none"));
 
 		if (requestCode == REQUEST_PICK_DIR) {
-			String path = data.getData().getPath();
-			addFileSet(path);
+			Uri uri = data != null ? data.getData() : null;
+			if (uri != null) {
+				String path = data.getData().getPath();
+				addFileSet(path);
+			}
 		}
 	}
 

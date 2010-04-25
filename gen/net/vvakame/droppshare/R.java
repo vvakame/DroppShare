@@ -23,7 +23,7 @@ public final class R {
         public static final int app_name=0x7f070000;
         public static final int dir_header_bg=0x7f070001;
         public static final int dir_header_textfore=0x7f070002;
-        public static final int disable=0x7f070005;
+        public static final int none=0x7f070005;
         public static final int side_1_exists=0x7f070006;
         public static final int side_2_exists=0x7f070007;
         public static final int strong=0x7f070003;
@@ -34,31 +34,33 @@ public final class R {
         public static final int icon=0x7f020001;
     }
     public static final class id {
-        public static final int add_dir=0x7f0a0018;
-        public static final int application_action=0x7f0a0008;
-        public static final int application_description=0x7f0a0003;
-        public static final int application_icon=0x7f0a0001;
-        public static final int application_name=0x7f0a0002;
-        public static final int application_process_date=0x7f0a0009;
-        public static final int application_version_name=0x7f0a000a;
-        public static final int cache_refresh=0x7f0a0015;
-        public static final int dirs_layout=0x7f0a0013;
-        public static final int file_icon=0x7f0a0006;
-        public static final int file_name=0x7f0a0007;
-        public static final int history=0x7f0a000e;
-        public static final int history_list=0x7f0a000f;
-        public static final int installed=0x7f0a000c;
-        public static final int installed_list=0x7f0a000d;
-        public static final int list=0x7f0a0014;
-        public static final int preferences=0x7f0a0017;
-        public static final int receive_text=0x7f0a0012;
-        public static final int recent_list=0x7f0a0011;
-        public static final int recently_used=0x7f0a0010;
-        public static final int show_selector=0x7f0a0016;
-        public static final int side_1=0x7f0a0000;
+        public static final int add_dir=0x7f0a001a;
+        public static final int application_action=0x7f0a000a;
+        public static final int application_description=0x7f0a0005;
+        public static final int application_icon=0x7f0a0002;
+        public static final int application_name=0x7f0a0003;
+        public static final int application_process_date=0x7f0a000b;
+        public static final int application_version_name=0x7f0a000c;
+        public static final int boss=0x7f0a0000;
+        public static final int cache_refresh=0x7f0a0017;
+        public static final int dirs_layout=0x7f0a0015;
+        public static final int file_icon=0x7f0a0008;
+        public static final int file_name=0x7f0a0009;
+        public static final int history=0x7f0a0010;
+        public static final int history_list=0x7f0a0011;
+        public static final int installed=0x7f0a000e;
+        public static final int installed_list=0x7f0a000f;
+        public static final int list=0x7f0a0016;
+        public static final int preferences=0x7f0a0019;
+        public static final int receive_text=0x7f0a0014;
+        public static final int recent_list=0x7f0a0013;
+        public static final int recently_used=0x7f0a0012;
+        public static final int show_selector=0x7f0a0018;
+        public static final int side_1=0x7f0a0001;
         public static final int side_2=0x7f0a0004;
-        public static final int tabhost=0x7f0a000b;
-        public static final int title=0x7f0a0005;
+        public static final int side_2_parent=0x7f0a0006;
+        public static final int tabhost=0x7f0a000d;
+        public static final int title=0x7f0a0007;
     }
     public static final class layout {
         public static final int app_not_exists=0x7f030000;
@@ -80,9 +82,9 @@ public final class R {
         public static final int selector=0x7f090001;
     }
     public static final class string {
-        public static final int add_dir=0x7f080019;
-        public static final int add_dir_button_text=0x7f08001c;
-        public static final int add_dir_title=0x7f08001b;
+        public static final int add_dir=0x7f08001b;
+        public static final int add_dir_button_text=0x7f080022;
+        public static final int add_dir_title=0x7f080021;
         public static final int added=0x7f080006;
         public static final int app_description=0x7f080001;
         public static final int app_name=0x7f080000;
@@ -90,16 +92,23 @@ public final class R {
         public static final int cache_refresh=0x7f08000b;
         public static final int create_cache_automatically=0x7f080012;
         public static final int create_cache_automatically_summary=0x7f080013;
-        public static final int files_not_exists=0x7f08001a;
+        public static final int files_not_exists=0x7f080020;
+        public static final int go_market=0x7f08001e;
         public static final int history=0x7f080004;
+        public static final int ignore=0x7f08001f;
         public static final int installed=0x7f080003;
         public static final int message_added=0x7f080017;
         public static final int message_added_summary=0x7f080016;
         public static final int message_added_title=0x7f080015;
         public static final int message_replaced=0x7f080018;
+        public static final int not_resolve_pick_dir_message=0x7f08001d;
+        public static final int not_resolve_pick_dir_title=0x7f08001c;
+        public static final int now_matchting_data=0x7f080023;
         public static final int paste_uri_type=0x7f08000e;
         public static final int paste_uri_type_summary=0x7f08000f;
         public static final int preferences=0x7f08000d;
+        public static final int read_failure_dest=0x7f08001a;
+        public static final int read_failure_src=0x7f080019;
         public static final int recent=0x7f080005;
         public static final int redirect_market_summary=0x7f080014;
         public static final int redirect_name=0x7f080002;
@@ -109,6 +118,7 @@ public final class R {
         public static final int uri_shorten=0x7f080010;
         public static final int uri_shorten_failure=0x7f080009;
         public static final int uri_shorten_summary=0x7f080011;
+        public static final int wait_a_moment=0x7f080024;
     }
     public static final class xml {
         public static final int pref=0x7f050000;

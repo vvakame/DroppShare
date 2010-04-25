@@ -287,6 +287,18 @@ public class AppDataUtil implements LogTagIF {
 				return obj1.getPackageName().compareTo(obj2.getPackageName());
 			}
 		};
+
+		// リストのソート(表示用ソート)
+		Comparator<AppDiffData> nameCompare = new Comparator<AppDiffData>() {
+			@Override
+			public int compare(AppDiffData obj1, AppDiffData obj2) {
+				AppData o1 = obj1.getMasterAppData();
+				AppData o2 = obj2.getMasterAppData();
+
+				return o1.getAppName().compareToIgnoreCase(o2.getAppName());
+			}
+		};
+
 		Collections.sort(srcList, pkgCompare);
 		Collections.sort(destList, pkgCompare);
 
@@ -298,12 +310,14 @@ public class AppDataUtil implements LogTagIF {
 				AppDiffData diff = new AppDiffData(null, destList.get(i));
 				diffList.add(diff);
 			}
+			Collections.sort(diffList, nameCompare);
 			return diffList;
 		} else if (destList.size() == 0) {
 			for (int i = 0; i < srcList.size(); i++) {
 				AppDiffData diff = new AppDiffData(srcList.get(i), null);
 				diffList.add(diff);
 			}
+			Collections.sort(diffList, nameCompare);
 			return diffList;
 		}
 
@@ -349,18 +363,7 @@ public class AppDataUtil implements LogTagIF {
 			diffList.add(diff);
 		}
 
-		// リストのソート(表示用ソート)
-		Comparator<AppDiffData> nameCompare = new Comparator<AppDiffData>() {
-			@Override
-			public int compare(AppDiffData obj1, AppDiffData obj2) {
-				AppData o1 = obj1.getMasterAppData();
-				AppData o2 = obj2.getMasterAppData();
-
-				return o1.getAppName().compareToIgnoreCase(o2.getAppName());
-			}
-		};
 		Collections.sort(diffList, nameCompare);
-
 		return diffList;
 	}
 

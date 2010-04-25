@@ -6,11 +6,15 @@ import net.vvakame.droppshare.R;
 import net.vvakame.droppshare.model.AppData;
 import net.vvakame.droppshare.model.AppDiffData;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class AppDiffAdapter extends ArrayAdapter<AppDiffData> {
@@ -18,12 +22,28 @@ public class AppDiffAdapter extends ArrayAdapter<AppDiffData> {
 	private Context mContext = null;
 	private int mResId = 0;
 
+	private Bitmap mSide1bitmap = null;
+	private Bitmap mSide2bitmap = null;
+	private Bitmap mNonebitmap = null;
+
 	public AppDiffAdapter(Context context, int textViewResourceId,
 			List<AppDiffData> diffList) {
 		super(context, textViewResourceId, diffList);
 
 		mContext = context.getApplicationContext();
 		mResId = textViewResourceId;
+
+		mSide1bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+		mSide1bitmap.setPixel(0, 0, context.getResources().getColor(
+				R.color.side_1_exists));
+
+		mSide2bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+		mSide2bitmap.setPixel(0, 0, context.getResources().getColor(
+				R.color.side_2_exists));
+
+		mNonebitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+		mNonebitmap.setPixel(0, 0, context.getResources()
+				.getColor(R.color.none));
 	}
 
 	@Override
@@ -49,24 +69,32 @@ public class AppDiffAdapter extends ArrayAdapter<AppDiffData> {
 			textColor = mContext.getResources().getColor(R.color.side_2_exists);
 		}
 
+		RelativeLayout l = (RelativeLayout) convertView.findViewById(R.id.boss);
+		l.setBackgroundDrawable(new ColorDrawable(R.color.none));
+
 		// 左の耳の色
-		View side1View = convertView.findViewById(R.id.side_1);
+		LinearLayout side1View = (LinearLayout) convertView
+				.findViewById(R.id.side_1);
+
 		if (side1) {
-			side1View.setBackgroundColor(mContext.getResources().getColor(
-					R.color.side_1_exists));
+			side1View.setBackgroundDrawable(new ColorDrawable(mContext
+					.getResources().getColor(R.color.side_1_exists)));
+			side1View.setVisibility(View.VISIBLE);
 		} else {
-			side1View.setBackgroundColor(mContext.getResources().getColor(
-					R.color.weak));
+			side1View.setBackgroundDrawable(new ColorDrawable(mContext
+					.getResources().getColor(R.color.none)));
 		}
 
 		// 右の耳の色
-		View side2View = convertView.findViewById(R.id.side_2);
+		ImageView side2View = (ImageView) convertView.findViewById(R.id.side_2);
+
 		if (side2) {
-			side2View.setBackgroundColor(mContext.getResources().getColor(
-					R.color.side_2_exists));
+			side2View.setBackgroundDrawable(new ColorDrawable(mContext
+					.getResources().getColor(R.color.side_2_exists)));
+			side2View.setVisibility(View.VISIBLE);
 		} else {
-			side2View.setBackgroundColor(mContext.getResources().getColor(
-					R.color.weak));
+			side2View.setImageDrawable(new ColorDrawable(mContext
+					.getResources().getColor(R.color.none)));
 		}
 
 		// アプリicon
