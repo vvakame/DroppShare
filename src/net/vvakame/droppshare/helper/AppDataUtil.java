@@ -50,14 +50,12 @@ public class AppDataUtil implements LogTagIF {
 	public static final int COMPRESS_QUALITY = 100;
 
 	public static String getHttpUriFromAppData(AppData appData) {
-		// TODO Vendingが落ちなくなったら"http://market.android.com/details?id="に戻すこと
-		return "http://market.android.com/search?q=pname:"
+		return "http://market.android.com/details?id="
 				+ appData.getPackageName();
 	}
 
 	public static String getMarketUriFromAppData(AppData appData) {
-		// TODO Vendingが落ちなくなったら"market://details?id="に戻すこと
-		return "market://search?q=pname:" + appData.getPackageName();
+		return "market://details?id=" + appData.getPackageName();
 	}
 
 	public static Bitmap getResizedBitmapDrawable(Bitmap origBitmap) {
