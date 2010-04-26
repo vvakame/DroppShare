@@ -5,11 +5,10 @@
 	<LinearLayout android:id="@+id/side_1_parent"
 		android:layout_alignParentLeft="true" android:maxWidth="10dip"
 		android:minWidth="10dip" android:layout_height="fill_parent"
-		android:background="@color/none" android:layout_width="wrap_content">
+		android:layout_width="wrap_content">
 		<ImageView android:id="@+id/side_1" android:layout_width="fill_parent"
 			android:layout_height="fill_parent" android:minWidth="5dip"
-			android:minHeight="50dip" android:scaleType="fitXY"
-			android:background="@color/side_1_exists"></ImageView>
+			android:minHeight="50dip" android:background="@color/none"></ImageView>
 	</LinearLayout>
 	<ImageView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:id="@+id/application_icon"
@@ -35,7 +34,6 @@
 		android:layout_alignParentRight="true">
 		<ImageView android:id="@+id/side_2" android:layout_width="fill_parent"
 			android:layout_height="fill_parent" android:minWidth="5dip"
-			android:minHeight="50dip" android:scaleType="fitXY"
-			android:background="@color/side_2_exists"></ImageView>
+			android:minHeight="50dip" android:background="@color/none"></ImageView>
 	</LinearLayout>
 </RelativeLayout>

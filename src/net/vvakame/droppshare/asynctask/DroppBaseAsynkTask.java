@@ -50,8 +50,10 @@ public abstract class DroppBaseAsynkTask extends
 			Log.d(TAG, HelperUtil.getStackName() + ", use cache.");
 			try {
 				appDataList = AppDataUtil.readSerializedCaches(fileName);
-				for (AppData appData : appDataList) {
-					publishProgress(appData);
+				if (appDataList != null) {
+					for (AppData appData : appDataList) {
+						publishProgress(appData);
+					}
 				}
 			} catch (InvalidClassException e) {
 				// ここに来るのは、SerializeされたオブジェクトのserialVersionUIDが一致しないときに来る想定

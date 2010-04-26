@@ -23,6 +23,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -148,7 +149,6 @@ public class DroppViewerActivity extends Activity implements LogTagIF {
 		}
 	}
 
-	/*
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
@@ -168,7 +168,6 @@ public class DroppViewerActivity extends Activity implements LogTagIF {
 			label.forceLayout();
 		}
 	}
-	*/
 
 	private class OnClickListenerImpl implements OnItemClickListener {
 		@Override

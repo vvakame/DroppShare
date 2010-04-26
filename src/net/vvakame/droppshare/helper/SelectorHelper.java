@@ -24,7 +24,7 @@ public class SelectorHelper {
 		try {
 			InputStream is = am.open(DEFAULT);
 			File def = new File(AppDataUtil.EX_STRAGE, DEFAULT);
-			def.mkdirs();
+			def.getParentFile().mkdirs();
 			def.createNewFile();
 			FileOutputStream fout = new FileOutputStream(def);
 			byte[] byteArray = new byte[1024];
