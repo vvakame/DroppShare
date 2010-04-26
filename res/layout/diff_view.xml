@@ -2,16 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/boss" android:layout_width="fill_parent"
 	android:layout_height="fill_parent" android:gravity="top|left">
-	<LinearLayout android:id="@+id/side_1"
+	<LinearLayout android:id="@+id/side_1_parent"
 		android:layout_alignParentLeft="true" android:maxWidth="10dip"
-		android:minWidth="10dip" android:layout_height="fill_parent" android:background="@color/none" android:layout_width="wrap_content">
+		android:minWidth="10dip" android:layout_height="fill_parent"
+		android:background="@color/none" android:layout_width="wrap_content">
+		<ImageView android:background="@color/none" android:id="@+id/side_1"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:minWidth="5dip" android:minHeight="50dip"></ImageView>
 	</LinearLayout>
 	<ImageView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:id="@+id/application_icon"
 		android:src="@drawable/icon" android:scaleType="fitXY"
 		android:adjustViewBounds="true" android:maxHeight="48px"
 		android:maxWidth="48px" android:minHeight="48px" android:minWidth="48px"
-		android:layout_toRightOf="@+id/side_1">
+		android:layout_toRightOf="@+id/side_1_parent">
 	</ImageView>
 	<TextView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:text="application name"
@@ -30,6 +34,6 @@
 		android:layout_alignParentRight="true">
 		<ImageView android:background="@color/none" android:id="@+id/side_2"
 			android:layout_width="fill_parent" android:layout_height="fill_parent"
-			android:minWidth="5dip" android:minHeight="5dip"></ImageView>
+			android:minWidth="5dip" android:minHeight="50dip"></ImageView>
 	</LinearLayout>
 </RelativeLayout>

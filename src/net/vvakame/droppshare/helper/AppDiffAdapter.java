@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -73,15 +72,13 @@ public class AppDiffAdapter extends ArrayAdapter<AppDiffData> {
 		l.setBackgroundDrawable(new ColorDrawable(R.color.none));
 
 		// 左の耳の色
-		LinearLayout side1View = (LinearLayout) convertView
-				.findViewById(R.id.side_1);
+		ImageView side1View = (ImageView) convertView.findViewById(R.id.side_1);
 
 		if (side1) {
 			side1View.setBackgroundDrawable(new ColorDrawable(mContext
 					.getResources().getColor(R.color.side_1_exists)));
-			side1View.setVisibility(View.VISIBLE);
 		} else {
-			side1View.setBackgroundDrawable(new ColorDrawable(mContext
+			side1View.setImageDrawable(new ColorDrawable(mContext
 					.getResources().getColor(R.color.none)));
 		}
 
@@ -91,7 +88,6 @@ public class AppDiffAdapter extends ArrayAdapter<AppDiffData> {
 		if (side2) {
 			side2View.setBackgroundDrawable(new ColorDrawable(mContext
 					.getResources().getColor(R.color.side_2_exists)));
-			side2View.setVisibility(View.VISIBLE);
 		} else {
 			side2View.setImageDrawable(new ColorDrawable(mContext
 					.getResources().getColor(R.color.none)));

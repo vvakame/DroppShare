@@ -149,14 +149,15 @@ public class DroppViewerActivity extends Activity implements LogTagIF {
 		}
 	}
 
-	// TODO いらなかったら消す
-	public void onWindowFocusChangged(boolean hasFocus) {
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
 
 		ListView listView = (ListView) findViewById(R.id.list);
 
 		for (int i = 0; i < listView.getChildCount(); i++) {
 			View view = listView.getChildAt(i);
+
 			View parent = view.findViewById(R.id.boss);
 			ImageView label = null;
 			label = (ImageView) view.findViewById(R.id.side_1);
