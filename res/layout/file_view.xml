@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout android:layout_width="fill_parent"
 	android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
-	android:gravity="top|left">
+	android:gravity="top|left" android:layout_marginBottom="3dip"
+	android:layout_marginTop="3dip">
 	<ImageView android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:src="@drawable/icon"
-		android:scaleType="fitXY" android:adjustViewBounds="true"
-		android:maxHeight="48px" android:maxWidth="48px" android:minHeight="48px"
-		android:minWidth="48px" android:layout_alignParentTop="true"
-		android:layout_alignParentLeft="true" android:id="@+id/file_icon">
+		android:layout_height="wrap_content" android:scaleType="fitXY"
+		android:adjustViewBounds="true" android:layout_alignParentLeft="true"
+		android:id="@+id/file_icon" android:src="@drawable/droid"
+		android:maxHeight="32px" android:maxWidth="32px" android:minHeight="32px"
+		android:minWidth="32px" android:layout_centerVertical="true">
 	</ImageView>
 	<TextView android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:text="application_name"
-		android:layout_toRightOf="@+id/file_icon" android:textSize="20dip"
-		android:textColor="@color/app_name" android:layout_marginLeft="5dip"
-		android:id="@+id/file_name"></TextView>
+		android:layout_height="wrap_content" android:layout_toRightOf="@+id/file_icon"
+		android:textSize="20dip" android:textColor="@color/app_name"
+		android:layout_marginLeft="5dip" android:id="@+id/file_name"
+		android:text="file_name" android:layout_centerVertical="true"></TextView>
 </RelativeLayout>

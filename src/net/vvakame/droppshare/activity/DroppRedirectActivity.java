@@ -17,7 +17,7 @@ public class DroppRedirectActivity extends Activity implements LogTagIF {
 
 	private static String marketProtcol = "market://";
 	private static final Pattern MARKET_PATTERN = Pattern
-			.compile("market://[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+[a-zA-Z]");
+			.compile("market://(search|details)?[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+");
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
