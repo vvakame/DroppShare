@@ -5,9 +5,8 @@
 	<ImageView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:id="@+id/application_icon"
 		android:src="@drawable/icon" android:scaleType="fitXY"
-		android:adjustViewBounds="true" android:maxHeight="48px"
-		android:maxWidth="48px" android:minHeight="48px" android:minWidth="48px"
-		android:layout_alignParentTop="true" android:layout_alignParentLeft="true">
+		android:adjustViewBounds="true" android:layout_alignParentTop="true"
+		android:layout_alignParentLeft="true">
 	</ImageView>
 	<TextView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:text="application_name"

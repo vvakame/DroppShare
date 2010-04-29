@@ -15,9 +15,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
@@ -78,33 +75,16 @@ public class DroppInstalledAsynkTask extends DroppBaseAsynkTask implements
 					continue;
 				}
 
-				AppData appData = new AppData();
-
-				appData.setAppName(appInfo.loadLabel(pm));
-				appData.setPackageName(appInfo.packageName);
-				appData.setDescription(appInfo.loadDescription(pm));
-
 				PackageInfo pInfo = null;
+				AppData appData = null;
 				try {
 					pInfo = pm.getPackageInfo(appInfo.packageName,
 							PackageManager.GET_ACTIVITIES);
+					appData = AppDataUtil.convert(pm, pInfo, appInfo);
 				} catch (NameNotFoundException e) {
 					Log.d(TAG, HelperUtil.getExceptionLog(e));
+					continue;
 				}
-				appData.setVersionName(pInfo.versionName);
-
-				Drawable icon = pm.getApplicationIcon(appInfo);
-
-				if (icon instanceof BitmapDrawable) {
-					Bitmap resizedBitmap = AppDataUtil
-							.getResizedBitmapDrawable(((BitmapDrawable) icon)
-									.getBitmap());
-					icon = new BitmapDrawable(resizedBitmap);
-				} else {
-					Log.d(TAG, "Not supported icon type: "
-							+ icon.getClass().getSimpleName());
-				}
-				appData.setIcon(icon);
 
 				publishProgress(appData);
 

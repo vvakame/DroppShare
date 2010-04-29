@@ -45,8 +45,6 @@ public class AppDataUtil implements LogTagIF {
 
 	public static final String CACHE_FILE = "appDataList.cache";
 
-	public static final int ICON_WIDTH = 48;
-	public static final int ICON_HEIGHT = 48;
 	public static final int COMPRESS_QUALITY = 100;
 
 	public static String getHttpUriFromAppData(AppData appData) {
@@ -58,10 +56,12 @@ public class AppDataUtil implements LogTagIF {
 		return "market://details?id=" + appData.getPackageName();
 	}
 
-	public static Bitmap getResizedBitmapDrawable(Bitmap origBitmap) {
+	public static Bitmap getResizedBitmapDrawable(Context context,
+			Bitmap origBitmap) {
 		Matrix matrix = new Matrix();
-		int newWidth = ICON_WIDTH;
-		int newHeight = ICON_HEIGHT;
+		int newWidth = getIconSize(context);
+		int newHeight = getIconSize(context);
+
 		float scaleWidth = ((float) newWidth) / origBitmap.getWidth();
 		float scaleHeight = ((float) newHeight) / origBitmap.getHeight();
 		matrix.postScale(scaleWidth, scaleHeight);
@@ -214,17 +214,9 @@ public class AppDataUtil implements LogTagIF {
 
 	public static AppData convert(Context context, InstallLogModel insLogModel)
 			throws NameNotFoundException {
-		AppData appData = new AppData();
+		AppData appData = convert(context, insLogModel.getPackageName());
 
-		PackageManager pm = context.getPackageManager();
-		ApplicationInfo appInfo = pm.getApplicationInfo(insLogModel
-				.getPackageName(), PackageManager.GET_UNINSTALLED_PACKAGES);
-
-		String packageName = insLogModel.getPackageName();
-		CharSequence appName = pm.getApplicationLabel(appInfo);
-		CharSequence description = appInfo.loadDescription(pm);
 		String versionName = insLogModel.getVersionName();
-		Drawable icon = appInfo.loadIcon(pm);
 		String action = insLogModel.getActionType();
 		Date processDate = insLogModel.getProcessDate();
 
@@ -237,11 +229,7 @@ public class AppDataUtil implements LogTagIF {
 			action = context.getString(R.string.removed);
 		}
 
-		appData.setPackageName(packageName);
-		appData.setDescription(description);
-		appData.setAppName(appName);
 		appData.setVersionName(versionName);
-		appData.setIcon(icon);
 		appData.setAction(action);
 		appData.setProcessDate(processDate);
 
@@ -250,18 +238,24 @@ public class AppDataUtil implements LogTagIF {
 
 	public static AppData convert(Context context, String packageName)
 			throws NameNotFoundException {
-		AppData appData = new AppData();
 
 		PackageManager pm = context.getPackageManager();
 		ApplicationInfo appInfo = pm.getApplicationInfo(packageName,
 				PackageManager.GET_UNINSTALLED_PACKAGES);
-		PackageInfo packageInfo = pm.getPackageInfo(packageName,
+		PackageInfo pInfo = pm.getPackageInfo(packageName,
 				PackageManager.GET_UNINSTALLED_PACKAGES);
 
-		// 値の準備
+		return convert(pm, pInfo, appInfo);
+	}
+
+	public static AppData convert(PackageManager pm, PackageInfo pInfo,
+			ApplicationInfo appInfo) throws NameNotFoundException {
+		AppData appData = new AppData();
+
+		String packageName = pInfo.packageName;
 		CharSequence appName = pm.getApplicationLabel(appInfo);
 		CharSequence description = appInfo.loadDescription(pm);
-		String versionName = packageInfo.versionName;
+		String versionName = pInfo.versionName;
 		Drawable icon = appInfo.loadIcon(pm);
 
 		appData.setPackageName(packageName);
@@ -363,6 +357,10 @@ public class AppDataUtil implements LogTagIF {
 
 		Collections.sort(diffList, nameCompare);
 		return diffList;
+	}
+
+	public static int getIconSize(Context context) {
+		return context.getResources().getInteger(R.attr.icon_size_px);
 	}
 
 	// v0.5→v0.6でキャッシュの構成を変更したのでお掃除コードを仕込む 暫く残す
