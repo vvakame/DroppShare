@@ -18,6 +18,11 @@ public class SelectorHelper {
 	public static final String DEFAULT = "generatedWatching.txt";
 	public static final String MANUAL = "manuallyWatching.txt";
 
+	/**
+	 * 監視対象設定ファイルのインストール
+	 * 
+	 * @param context
+	 */
 	public static void installWatchingFile(Context context) {
 		AssetManager am = context.getAssets();
 
@@ -41,6 +46,11 @@ public class SelectorHelper {
 		}
 	}
 
+	/**
+	 * 設定ファイルの読み込み
+	 * 
+	 * @return 読み込み先ファイルパスのリスト
+	 */
 	public static List<String> readWatchingFile() {
 		ArrayList<String> fileList = new ArrayList<String>();
 		FileInputStream fin = null;

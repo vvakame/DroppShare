@@ -12,6 +12,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * List<AppData>をListViewなどに表示するためのAdapter
+ * 
+ * @author vvakame
+ */
 public class AppDataAdapter extends ArrayAdapter<AppData> {
 
 	private Context mContext = null;
@@ -44,8 +49,8 @@ public class AppDataAdapter extends ArrayAdapter<AppData> {
 		ImageView iconView = (ImageView) convertView
 				.findViewById(R.id.application_icon);
 		if (iconView != null) {
-			int size = mContext.getResources().getInteger(R.attr.icon_size_px);
 			iconView.setImageDrawable(getItem(position).getIcon());
+			int size = mContext.getResources().getInteger(R.attr.icon_size_px);
 			iconView.setMinimumHeight(size);
 			iconView.setMinimumWidth(size);
 			iconView.setMaxHeight(size);

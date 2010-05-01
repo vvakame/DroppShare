@@ -18,9 +18,16 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
+/**
+ * 最近使ったアプリ一覧読み取り用AsyncTask<BR>
+ * 水物なのでキャッシュ化は行わない
+ * 
+ * @author vvakame
+ */
 public class DroppRecentlyUsedAsynkTask extends DroppBaseAsynkTask implements
 		LogTagIF {
 
+	/** 表示するアプリの最大量 */
 	private static final int MAX_NUM = 30;
 
 	public DroppRecentlyUsedAsynkTask(Context context,

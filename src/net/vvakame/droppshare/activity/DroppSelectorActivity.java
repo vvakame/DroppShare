@@ -15,10 +15,10 @@ import net.vvakame.droppshare.helper.FileListAdapter;
 import net.vvakame.droppshare.helper.LogTagIF;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -35,16 +35,19 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
-public class DroppSelectorActivity extends Activity implements LogTagIF {
+/**
+ * アプリ一覧読み込み元ファイル選択用Activity
+ * 
+ * @author vvakame
+ */
+public class DroppSelectorActivity extends Activity implements LogTagIF,
+		OpenIntentIF {
+	/** 探すデータファイルの拡張子 */
 	private static final String SUFFIX = ".dropp";
-	private static final String TYPE = "application/droppshare";
-
-	private static final String PICK_DIRECTORY = "org.openintents.action.PICK_DIRECTORY";
-	private static final String TITLE = "org.openintents.extra.TITLE";
-	private static final String BUTTON_TEXT = "org.openintents.extra.BUTTON_TEXT";
 
 	private static final int REQUEST_PICK_DIR = 0;
 
+	/** ".dropp"なファイルを探すフィルタ */
 	private static final FilenameFilter sDroppFilter = new FilenameFilter() {
 		@Override
 		public boolean accept(File dir, String filename) {
@@ -91,7 +94,8 @@ public class DroppSelectorActivity extends Activity implements LogTagIF {
 		Intent intent = null;
 		switch (item.getItemId()) {
 		case R.id.add_dir:
-			intent = new Intent(PICK_DIRECTORY);
+
+			intent = new Intent(ACTION_PICK_DIRECTORY);
 			intent.setData(Uri.parse("file://"
 					+ Environment.getExternalStorageDirectory()
 							.getAbsolutePath()));
@@ -99,43 +103,40 @@ public class DroppSelectorActivity extends Activity implements LogTagIF {
 			intent.putExtra(BUTTON_TEXT,
 					getString(R.string.add_dir_button_text));
 
-			try {
-				startActivityForResult(intent, REQUEST_PICK_DIR);
-			} catch (ActivityNotFoundException e) {
-				Log.d(TAG, HelperUtil.getExceptionLog(e));
+			ResolveInfo resolveInfo = getPackageManager().resolveActivity(
+					intent, REQUEST_PICK_DIR);
 
-				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-						this);
-				alertDialogBuilder
-						.setTitle(getString(R.string.not_resolve_pick_dir_title));
-				alertDialogBuilder
-						.setMessage(getString(R.string.not_resolve_pick_dir_message));
-				alertDialogBuilder.setPositiveButton(
-						getString(R.string.go_market),
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								Intent marketIntent = new Intent(
-										Intent.ACTION_VIEW);
-								marketIntent
-										.setData(Uri
-												.parse("market://search?q=pname:org.openintents.filemanager"));
-								startActivity(marketIntent);
-							}
-						});
-				alertDialogBuilder.setNegativeButton(
-						getString(R.string.ignore),
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-							}
-						});
-				alertDialogBuilder.setCancelable(true);
-				alertDialogBuilder.create();
-				alertDialogBuilder.show();
+			// IO File Managerなどがインストールされていればそのまま処理
+			if (resolveInfo != null) {
+				startActivityForResult(intent, REQUEST_PICK_DIR);
+				break;
 			}
+
+			// なければ、MarketにOI File Managerが取得しにいくか聞く。
+			AlertDialog.Builder diagBldr = new AlertDialog.Builder(this);
+			diagBldr.setTitle(getString(R.string.not_resolve_pick_dir_title));
+			diagBldr
+					.setMessage(getString(R.string.not_resolve_pick_dir_message));
+			diagBldr.setPositiveButton(getString(R.string.go_market),
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							Intent intent = new Intent(Intent.ACTION_VIEW);
+							intent
+									.setData(Uri
+											.parse("market://details?id=org.openintents.filemanager"));
+							startActivity(intent);
+						}
+					});
+			diagBldr.setNegativeButton(getString(R.string.ignore),
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+			diagBldr.setCancelable(true);
+			diagBldr.create();
+			diagBldr.show();
 
 			break;
 
@@ -211,7 +212,8 @@ public class DroppSelectorActivity extends Activity implements LogTagIF {
 			File file = (File) parent.getItemAtPosition(position);
 			Intent intent = new Intent(Intent.ACTION_VIEW);
 			intent.setDataAndType(
-					Uri.parse("file://" + file.getAbsolutePath()), TYPE);
+					Uri.parse("file://" + file.getAbsolutePath()),
+					DroppViewerActivity.TYPE);
 
 			startActivity(intent);
 		}
@@ -226,7 +228,7 @@ public class DroppSelectorActivity extends Activity implements LogTagIF {
 
 			File file = (File) parent.getItemAtPosition(position);
 			Intent intent = new Intent(Intent.ACTION_SEND);
-			intent.setType(TYPE);
+			intent.setType(DroppViewerActivity.TYPE);
 			intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"
 					+ file.getAbsolutePath()));
 

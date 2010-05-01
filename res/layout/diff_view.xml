@@ -13,9 +13,7 @@
 	<ImageView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:id="@+id/application_icon"
 		android:src="@drawable/icon" android:scaleType="fitXY"
-		android:adjustViewBounds="true" android:maxHeight="48px"
-		android:maxWidth="48px" android:minHeight="48px" android:minWidth="48px"
-		android:layout_toRightOf="@+id/side_1_parent">
+		android:adjustViewBounds="true" android:layout_toRightOf="@+id/side_1_parent">
 	</ImageView>
 	<TextView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:text="application name"

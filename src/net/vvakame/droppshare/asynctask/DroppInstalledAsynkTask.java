@@ -18,6 +18,11 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
+/**
+ * 全アプリ一覧読み取り用AsyncTask
+ * 
+ * @author vvakame
+ */
 public class DroppInstalledAsynkTask extends DroppBaseAsynkTask implements
 		LogTagIF {
 

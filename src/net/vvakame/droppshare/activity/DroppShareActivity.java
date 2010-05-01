@@ -33,6 +33,11 @@ import android.widget.TabHost;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+/**
+ * アプリ一覧からみんなと共有したいアプリを選ぶActivity
+ * 
+ * @author vvakame
+ */
 public class DroppShareActivity extends Activity implements SimejiIF, LogTagIF {
 
 	private AppDataAdapter mInstalledAdapter = null;
@@ -56,7 +61,6 @@ public class DroppShareActivity extends Activity implements SimejiIF, LogTagIF {
 
 		// タブの準備
 		TabHost tabHost = (TabHost) findViewById(R.id.tabhost);
-		// tabHost.setup();
 		tabHost.setup(new LocalActivityManager(this, true));
 		TabHost.TabSpec tab;
 

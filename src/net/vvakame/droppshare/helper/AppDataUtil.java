@@ -23,7 +23,6 @@ import net.vvakame.droppshare.asynctask.DroppInstalledAsynkTask;
 import net.vvakame.droppshare.model.AppData;
 import net.vvakame.droppshare.model.AppDiffData;
 import net.vvakame.droppshare.model.InstallLogModel;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -31,52 +30,86 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.util.Log;
 
+/**
+ * AppData回りの付帯処理
+ * 
+ * @author vvakame
+ */
 public class AppDataUtil implements LogTagIF {
 
 	public static final File EX_STRAGE = new File(Environment
 			.getExternalStorageDirectory(), "DroppShare/");
 	public static final File CACHE_DIR = new File(EX_STRAGE, "caches/");
 
-	public static final String CACHE_FILE = "appDataList.cache";
-
 	public static final int COMPRESS_QUALITY = 100;
 
+	/**
+	 * AppDataからMarketへのhttpによるURIを作成する。
+	 * 
+	 * @param appData
+	 * @return
+	 */
 	public static String getHttpUriFromAppData(AppData appData) {
 		return "http://market.android.com/details?id="
 				+ appData.getPackageName();
 	}
 
+	/**
+	 * AppDataからMarketへのmarketによるURIを作成する。
+	 * 
+	 * @param appData
+	 * @return
+	 */
 	public static String getMarketUriFromAppData(AppData appData) {
 		return "market://details?id=" + appData.getPackageName();
 	}
 
+	/**
+	 * アイコンを適正サイズにリサイズする。
+	 * 
+	 * @param context
+	 * @param origBitmap
+	 *            リサイズ元Bitmap
+	 * @return リサイズ後Bitmap
+	 */
 	public static Bitmap getResizedBitmapDrawable(Context context,
 			Bitmap origBitmap) {
-		Matrix matrix = new Matrix();
 		int newWidth = getIconSize(context);
 		int newHeight = getIconSize(context);
 
-		float scaleWidth = ((float) newWidth) / origBitmap.getWidth();
-		float scaleHeight = ((float) newHeight) / origBitmap.getHeight();
-		matrix.postScale(scaleWidth, scaleHeight);
-		Bitmap resizedBitmap = Bitmap.createBitmap(origBitmap, 0, 0, origBitmap
-				.getWidth(), origBitmap.getHeight(), matrix, true);
+		Bitmap resizedBitmap = Bitmap.createBitmap(origBitmap, 0, 0, newWidth,
+				newHeight);
 
 		return resizedBitmap;
 	}
 
+	/**
+	 * 指定されたキャッシュが存在するか調べる
+	 * 
+	 * @param fileName
+	 *            調べたいキャッシュファイル名
+	 * @return 存在する場合はtrue, 存在しない場合はfalseを返す。
+	 */
 	public static boolean isExistCache(String fileName) {
 		File cacheFile = new File(CACHE_DIR, fileName);
 
 		return cacheFile.exists();
 	}
 
+	/**
+	 * 指定されたキャッシュを読み込み返す
+	 * 
+	 * @param fileName
+	 *            読み込むキャッシュファイル
+	 * @return アプリ一覧
+	 * @throws InvalidClassException
+	 * @throws ClassNotFoundException
+	 */
 	public static List<AppData> readSerializedCaches(String fileName)
 			throws InvalidClassException, ClassNotFoundException {
 
@@ -84,6 +117,15 @@ public class AppDataUtil implements LogTagIF {
 		return readSerializedCaches(cacheFile);
 	}
 
+	/**
+	 * 指定されたキャッシュを読み込み返す
+	 * 
+	 * @param cacheFile
+	 *            読み込むキャッシュファイル
+	 * @return アプリリスト
+	 * @throws InvalidClassException
+	 * @throws ClassNotFoundException
+	 */
 	@SuppressWarnings("unchecked")
 	public static List<AppData> readSerializedCaches(File cacheFile)
 			throws InvalidClassException, ClassNotFoundException {
@@ -122,6 +164,15 @@ public class AppDataUtil implements LogTagIF {
 		return appDataList;
 	}
 
+	/**
+	 * キャッシュを指定されたファイル名で作成する
+	 * 
+	 * @param context
+	 * @param fileName
+	 *            作成するキャッシュファイル名
+	 * @param appDataList
+	 *            キャッシュ化したいアプリリスト
+	 */
 	public static void writeSerializedCache(Context context, String fileName,
 			List<AppData> appDataList) {
 		Log.d(TAG, HelperUtil.getStackName() + ", file=" + fileName);
@@ -163,6 +214,12 @@ public class AppDataUtil implements LogTagIF {
 		}
 	}
 
+	/**
+	 * 指定されたキャッシュを削除する
+	 * 
+	 * @param fileName
+	 *            削除するキャッシュファイル
+	 */
 	public static void deleteCache(String fileName) {
 		Log.d(TAG, HelperUtil.getStackName());
 
@@ -172,6 +229,9 @@ public class AppDataUtil implements LogTagIF {
 		}
 	}
 
+	/**
+	 * キャッシュファイルを全て削除する
+	 */
 	public static void deleteOwnCache() {
 		Log.d(TAG, HelperUtil.getStackName());
 
@@ -188,6 +248,14 @@ public class AppDataUtil implements LogTagIF {
 		}
 	}
 
+	/**
+	 * 指定されたディレクトリにアプリのアイコンを書き出す
+	 * 
+	 * @param toDir
+	 *            出力先ディレクトリ
+	 * @param appData
+	 *            アイコンを出力するアプリ
+	 */
 	@SuppressWarnings("unused")
 	private static void writeIconImage(File toDir, AppData appData) {
 		Log.d(TAG, HelperUtil.getStackName());
@@ -212,6 +280,15 @@ public class AppDataUtil implements LogTagIF {
 		}
 	}
 
+	/**
+	 * DBから読み込んだデータを通常のアプリのデータに変換する。
+	 * 
+	 * @param context
+	 * @param insLogModel
+	 *            DBから読み込んだデータ
+	 * @return アプリデータ
+	 * @throws NameNotFoundException
+	 */
 	public static AppData convert(Context context, InstallLogModel insLogModel)
 			throws NameNotFoundException {
 		AppData appData = convert(context, insLogModel.getPackageName());
@@ -236,6 +313,15 @@ public class AppDataUtil implements LogTagIF {
 		return appData;
 	}
 
+	/**
+	 * 指定されたパッケージに関する情報を読み取りアプリのデータに組み立て返す
+	 * 
+	 * @param context
+	 * @param packageName
+	 *            パッケージ名
+	 * @return アプリデータ
+	 * @throws NameNotFoundException
+	 */
 	public static AppData convert(Context context, String packageName)
 			throws NameNotFoundException {
 
@@ -248,6 +334,18 @@ public class AppDataUtil implements LogTagIF {
 		return convert(pm, pInfo, appInfo);
 	}
 
+	/**
+	 * 指定された情報を元にアプリのデータに組み立て返す
+	 * 
+	 * @param pm
+	 *            PackageManager
+	 * @param pInfo
+	 *            対象アプリのPackageInfo
+	 * @param appInfo
+	 *            対象アプリのApplicationInfo
+	 * @return アプリデータ
+	 * @throws NameNotFoundException
+	 */
 	public static AppData convert(PackageManager pm, PackageInfo pInfo,
 			ApplicationInfo appInfo) throws NameNotFoundException {
 		AppData appData = new AppData();
@@ -267,6 +365,15 @@ public class AppDataUtil implements LogTagIF {
 		return appData;
 	}
 
+	/**
+	 * 2つのアプリリストを突き合わせアプリの差分リストを作成し、返す
+	 * 
+	 * @param srcList
+	 *            比較元となるアプリリスト
+	 * @param destList
+	 *            比較先となるアプリリスト
+	 * @return 突き合わせた結果のアプリ差分リスト
+	 */
 	public static List<AppDiffData> zipAppData(List<AppData> srcList,
 			List<AppData> destList) {
 		srcList = srcList != null ? srcList : new ArrayList<AppData>();
@@ -359,6 +466,12 @@ public class AppDataUtil implements LogTagIF {
 		return diffList;
 	}
 
+	/**
+	 * アイコン表示用のサイズを設定ファイルより取得し返します。
+	 * 
+	 * @param context
+	 * @return アイコンの表示サイズ
+	 */
 	public static int getIconSize(Context context) {
 		return context.getResources().getInteger(R.attr.icon_size_px);
 	}

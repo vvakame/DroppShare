@@ -13,6 +13,11 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
+/**
+ * アプリデータをキャッシュから読み込む共通処理と画面への反映部分を実装したAsyncTask
+ * 
+ * @author vvakame
+ */
 public abstract class DroppBaseAsynkTask extends
 		AsyncTask<Boolean, AppData, List<AppData>> implements LogTagIF {
 

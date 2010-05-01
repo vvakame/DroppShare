@@ -23,11 +23,17 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
+/**
+ * 指定されたデータファイルの内容を表示するActivity
+ * 
+ * @author vvakame
+ */
 public class DroppViewerActivity extends Activity implements LogTagIF {
+	/** 受け付けるデータタイプ */
+	public static final String TYPE = "application/droppshare";
 
 	private final OnClickListenerImpl mEventImpl = new OnClickListenerImpl();
 
@@ -146,26 +152,6 @@ public class DroppViewerActivity extends Activity implements LogTagIF {
 			break;
 		default:
 			break;
-		}
-	}
-
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus) {
-		super.onWindowFocusChanged(hasFocus);
-
-		ListView listView = (ListView) findViewById(R.id.list);
-
-		for (int i = 0; i < listView.getChildCount(); i++) {
-			View view = listView.getChildAt(i);
-
-			View parent = view.findViewById(R.id.boss);
-			ImageView label = null;
-			label = (ImageView) view.findViewById(R.id.side_1);
-			label.setMinimumHeight(parent.getHeight());
-			label.forceLayout();
-			label = (ImageView) view.findViewById(R.id.side_2);
-			label.setMinimumHeight(parent.getHeight());
-			label.forceLayout();
 		}
 	}
 

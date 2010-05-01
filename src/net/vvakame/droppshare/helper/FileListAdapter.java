@@ -11,6 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+/**
+ * List<File>をListViewなどに表示するためのAdapter
+ * 
+ * @author vvakame
+ */
 public class FileListAdapter extends ArrayAdapter<File> {
 
 	private Context mContext = null;

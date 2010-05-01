@@ -13,9 +13,16 @@ import android.util.Log;
 import android.view.Window;
 import android.widget.TextView;
 
+/**
+ * market://に対応していないアプリから文字列を受け取りMarketへのリンクを貼るActivity
+ * 
+ * @author vvakame
+ */
 public class DroppRedirectActivity extends Activity implements LogTagIF {
 
 	private static String marketProtcol = "market://";
+
+	/** marketスキーマと認められる文字列に合致する正規表現 */
 	private static final Pattern MARKET_PATTERN = Pattern
 			.compile("market://(search|details)?[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+");
 

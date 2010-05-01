@@ -6,6 +6,11 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
+/**
+ * 設定用Activity
+ * 
+ * @author vvakame
+ */
 public class PreferencesActivity extends PreferenceActivity {
 
 	@Override

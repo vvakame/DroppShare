@@ -5,7 +5,12 @@ public class HelperUtil {
 	private static final String EXCLUDE_CLASS = HelperUtil.class
 			.getCanonicalName();
 
-	// 実行中のメソッド名を取得します
+	/**
+	 * 呼び出し元のメソッド名を取得し返します。<BR>
+	 * MY_PACKAGE_PREFIX に先頭一致するパッケージが取得されます。
+	 * 
+	 * @return メソッド名
+	 */
 	public static String getMethodName() {
 		StackTraceElement[] stacks = Thread.currentThread().getStackTrace();
 
@@ -20,7 +25,12 @@ public class HelperUtil {
 		return null;
 	}
 
-	// 実行中のクラス名とメソッド名を取得します
+	/**
+	 * 呼び出し元のクラス名とメソッド名、行番号を取得し返します。<BR>
+	 * MY_PACKAGE_PREFIX に先頭一致するパッケージが取得されます。
+	 * 
+	 * @return クラス名#メソッド名/L行番号
+	 */
 	public static String getStackName() {
 		StackTraceElement[] stacks = Thread.currentThread().getStackTrace();
 
@@ -43,6 +53,13 @@ public class HelperUtil {
 		return null;
 	}
 
+	/**
+	 * 例外の発生箇所と例外の内容を取得し返します。
+	 * 
+	 * @param e
+	 *            文字列化したい例外
+	 * @return クラス名#メソッド名/L行番号, 例外クラス名=メッセージ
+	 */
 	public static String getExceptionLog(Exception e) {
 		String ret = getStackName() + ", " + e.getClass().getSimpleName() + "="
 				+ e.getMessage();
