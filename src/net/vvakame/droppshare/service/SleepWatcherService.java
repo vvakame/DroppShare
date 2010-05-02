@@ -9,6 +9,11 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.util.Log;
 
+/**
+ * 画面ON/OFFのReceiverを蹴ったり止めたりするService
+ * 
+ * @author vvakame
+ */
 public class SleepWatcherService extends Service implements LogTagIF {
 
 	public static final String REGIST_FLG = "regist_flg";

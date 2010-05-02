@@ -4,6 +4,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * インストールログのDBとのIF用データモデル
+ * 
+ * @author vvakame
+ */
 public class InstallLogModel {
 
 	private static final String DATE_PATTERN = "yyyy/MM/dd HH:mm:ss SSS";

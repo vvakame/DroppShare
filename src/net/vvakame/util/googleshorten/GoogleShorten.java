@@ -11,15 +11,12 @@ import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * URIのgoo.gl短縮をやってくれるライブラリ
+ * 
+ * @author vvakame
+ */
 public class GoogleShorten {
-	/*
-	 * public static void main(String[] args) { String shorten = null; try {
-	 * shorten = new GoogleShorten()
-	 * .getShorten("http://twitter.com/vvakame/status/11158898974"); shorten =
-	 * new GoogleShorten().getShorten("market://test"); } catch
-	 * (ShortenFailedException e) { e.printStackTrace(); }
-	 * System.out.println(shorten); }
-	 */
 
 	private int c(int... args) {
 		int l = 0;

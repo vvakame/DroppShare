@@ -14,6 +14,11 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+/**
+ * バックグラウンドでキャッシュを作成するためのService
+ * 
+ * @author vvakame
+ */
 public class CreateCacheService extends Service implements LogTagIF {
 
 	private DroppInstalledAsynkTask mInstalledAsyncTask = null;

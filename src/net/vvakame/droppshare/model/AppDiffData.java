@@ -1,5 +1,10 @@
 package net.vvakame.droppshare.model;
 
+/**
+ * あるアプリのデータ差分を保持するためのクラス
+ * 
+ * @author vvakame
+ */
 public class AppDiffData {
 	private AppData srcAppData = null;
 	private AppData destAppData = null;

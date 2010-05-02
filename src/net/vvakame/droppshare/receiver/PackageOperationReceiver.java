@@ -18,6 +18,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 
+/**
+ * パッケージ操作に関わるBroadcastを受けるReceiver
+ * 
+ * @author vvakame
+ */
 public class PackageOperationReceiver extends BroadcastReceiver implements
 		LogTagIF {
 

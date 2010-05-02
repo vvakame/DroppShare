@@ -10,6 +10,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+/**
+ * 画面ON/OFFのBroadcastを受け取るReceiver
+ * 
+ * @author vvakame
+ */
 public class SleepSignalReceiver extends BroadcastReceiver implements LogTagIF {
 
 	@Override

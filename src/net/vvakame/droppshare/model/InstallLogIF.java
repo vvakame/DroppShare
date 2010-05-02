@@ -2,6 +2,11 @@ package net.vvakame.droppshare.model;
 
 import android.content.Context;
 
+/**
+ * インストールログ保存用クラスのための定数値保持IF
+ * 
+ * @author vvakame
+ */
 public interface InstallLogIF {
 	public static final String DB_NAME = "install_log.db";
 

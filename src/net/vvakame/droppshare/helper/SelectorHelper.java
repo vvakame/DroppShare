@@ -14,6 +14,11 @@ import java.util.List;
 import android.content.Context;
 import android.content.res.AssetManager;
 
+/**
+ * DroppSelectorActivityのヘルパ
+ * 
+ * @author vvakame
+ */
 public class SelectorHelper {
 	public static final String DEFAULT = "generatedWatching.txt";
 	public static final String MANUAL = "manuallyWatching.txt";
@@ -88,6 +93,11 @@ public class SelectorHelper {
 		return fileList;
 	}
 
+	/**
+	 * 渡されたファイルの内容を読んで返す
+	 * 
+	 * @return 読み込み先ファイルパスのリスト
+	 */
 	private static List<String> parseFile(FileInputStream fin) {
 		InputStreamReader isr = new InputStreamReader(fin);
 		BufferedReader br = new BufferedReader(isr);

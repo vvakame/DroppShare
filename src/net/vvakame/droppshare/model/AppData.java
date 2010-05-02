@@ -12,6 +12,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+/**
+ * アプリデータ保持用データモデル
+ * 
+ * @author vvakame
+ */
 public class AppData implements Serializable {
 	private static final long serialVersionUID = 4L;
 	public static final int COMPRESS_QUALITY = 100;
@@ -127,6 +132,11 @@ public class AppData implements Serializable {
 		return getClass().getName() + "@" + packageName;
 	}
 
+	/**
+	 * BitmapDrawableをSerializeするための変換用ラッパ
+	 * 
+	 * @author vvakame
+	 */
 	private class SerializableBitmapWrapper implements Serializable {
 		private static final long serialVersionUID = AppData.serialVersionUID;
 
