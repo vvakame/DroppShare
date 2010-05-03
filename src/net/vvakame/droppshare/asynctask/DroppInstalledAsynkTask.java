@@ -85,7 +85,7 @@ public class DroppInstalledAsynkTask extends DroppBaseAsynkTask implements
 				try {
 					pInfo = pm.getPackageInfo(appInfo.packageName,
 							PackageManager.GET_ACTIVITIES);
-					appData = AppDataUtil.convert(pm, pInfo, appInfo);
+					appData = AppDataUtil.convert(mContext, pm, pInfo, appInfo);
 				} catch (NameNotFoundException e) {
 					Log.d(TAG, HelperUtil.getExceptionLog(e));
 					continue;

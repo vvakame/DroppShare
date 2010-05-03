@@ -2,20 +2,19 @@
 <RelativeLayout android:layout_width="fill_parent"
 	android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
 	android:gravity="top|left" android:paddingRight="4dip">
-	<ImageView android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:id="@+id/application_icon"
-		android:src="@drawable/icon" android:scaleType="fitXY"
-		android:adjustViewBounds="true" android:layout_alignParentTop="true"
-		android:layout_alignParentLeft="true">
-	</ImageView>
+	<ImageView android:id="@+id/application_icon" android:src="@drawable/icon"
+		android:layout_width="@android:dimen/app_icon_size"
+		android:layout_height="@android:dimen/app_icon_size"
+		android:scaleType="fitXY" android:layout_alignParentTop="true"
+		android:layout_alignParentLeft="true" />
 	<TextView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:text="application name"
 		android:id="@+id/application_name" android:layout_toRightOf="@+id/application_icon"
 		android:textSize="20dip" android:textColor="@color/app_name"
-		android:layout_marginLeft="5dip"></TextView>
+		android:layout_marginLeft="5dip" />
 	<TextView android:layout_height="wrap_content"
 		android:layout_width="wrap_content" android:id="@+id/application_description"
 		android:text="application description" android:layout_below="@+id/application_name"
 		android:layout_toRightOf="@+id/application_icon" android:textSize="12dip"
-		android:layout_marginLeft="10dip"></TextView>
+		android:layout_marginLeft="10dip" />
 </RelativeLayout>

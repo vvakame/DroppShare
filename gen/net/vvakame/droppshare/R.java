@@ -18,7 +18,6 @@ public final class R {
         public static final int uri_types=0x7f060000;
     }
     public static final class attr {
-        public static final int icon_size_px=0x7f010000;
     }
     public static final class color {
         public static final int app_name=0x7f070000;

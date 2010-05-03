@@ -86,11 +86,6 @@ public class AppDiffAdapter extends ArrayAdapter<AppDiffData> {
 				.findViewById(R.id.application_icon);
 		if (iconView != null) {
 			iconView.setImageDrawable(master.getIcon());
-			int size = mContext.getResources().getInteger(R.attr.icon_size_px);
-			iconView.setMinimumHeight(size);
-			iconView.setMinimumWidth(size);
-			iconView.setMaxHeight(size);
-			iconView.setMaxWidth(size);
 		}
 
 		// アプリ名

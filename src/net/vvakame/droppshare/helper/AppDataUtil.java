@@ -30,8 +30,12 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PaintDrawable;
 import android.os.Environment;
 import android.util.Log;
 
@@ -46,6 +50,11 @@ public class AppDataUtil implements LogTagIF {
 			.getExternalStorageDirectory(), "DroppShare/");
 	public static final File CACHE_DIR = new File(EX_STRAGE, "caches/");
 
+	private static final Rect sOldBounds = new Rect();
+	private static Canvas sCanvas = new Canvas();
+
+	public static int sIconWidth = -1;
+	public static int sIconHeight = -1;
 	public static final int COMPRESS_QUALITY = 100;
 
 	/**
@@ -77,15 +86,89 @@ public class AppDataUtil implements LogTagIF {
 	 *            リサイズ元Bitmap
 	 * @return リサイズ後Bitmap
 	 */
-	public static Bitmap getResizedBitmapDrawable(Context context,
-			Bitmap origBitmap) {
-		int newWidth = getIconSize(context);
-		int newHeight = getIconSize(context);
+	public static BitmapDrawable getResizedBitmapDrawable(Context context,
+			Drawable icon) {
+		if (sIconWidth == -1) {
+			sIconWidth = (int) context.getResources().getDimension(
+					android.R.dimen.app_icon_size);
+			sIconHeight = sIconWidth;
+		}
 
-		Bitmap resizedBitmap = Bitmap.createBitmap(origBitmap, 0, 0, newWidth,
-				newHeight);
+		int width = sIconWidth;
+		int height = sIconHeight;
 
-		return resizedBitmap;
+		// 下処理
+		if (icon instanceof PaintDrawable) {
+			PaintDrawable painter = (PaintDrawable) icon;
+			painter.setIntrinsicWidth(width);
+			painter.setIntrinsicHeight(height);
+
+		} else if (icon instanceof BitmapDrawable) {
+			BitmapDrawable bitmapDrawable = (BitmapDrawable) icon;
+			Bitmap bitmap = bitmapDrawable.getBitmap();
+			if (bitmap.getDensity() == Bitmap.DENSITY_NONE) {
+				bitmapDrawable.setTargetDensity(context.getResources()
+						.getDisplayMetrics());
+			}
+		}
+
+		int iconWidth = icon.getIntrinsicWidth();
+		int iconHeight = icon.getIntrinsicHeight();
+		Bitmap thumb = null;
+		if (width > 0 && height > 0) {
+			if (width < iconWidth || height < iconHeight) {
+				// 縮小するパターン
+
+				final float ratio = (float) iconWidth / iconHeight;
+				if (iconWidth > iconHeight) {
+					height = (int) (width / ratio);
+				} else if (iconHeight > iconWidth) {
+					width = (int) (height * ratio);
+				}
+
+				final Bitmap.Config c = icon.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
+						: Bitmap.Config.RGB_565;
+
+				thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
+				final Canvas canvas = sCanvas;
+				canvas.setBitmap(thumb);
+				sOldBounds.set(icon.getBounds());
+				final int x = (sIconWidth - width) / 2;
+				final int y = (sIconHeight - height) / 2;
+				icon.setBounds(x, y, x + width, y + height);
+				icon.draw(canvas);
+				icon.setBounds(sOldBounds);
+
+			} else if (iconWidth < width && iconHeight < height) {
+				// 拡大するパターン(真ん中に描画)
+
+				final Bitmap.Config c = Bitmap.Config.ARGB_8888;
+				thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
+				final Canvas canvas = sCanvas;
+				canvas.setBitmap(thumb);
+				sOldBounds.set(icon.getBounds());
+				final int x = (width - iconWidth) / 2;
+				final int y = (height - iconHeight) / 2;
+				icon.setBounds(x, y, x + iconWidth, y + iconHeight);
+				icon.draw(canvas);
+				icon.setBounds(sOldBounds);
+			} else {
+				// 同じとき
+
+				final Bitmap.Config c = Bitmap.Config.ARGB_8888;
+				thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
+				final Canvas canvas = sCanvas;
+				canvas.setBitmap(thumb);
+				sOldBounds.set(icon.getBounds());
+				icon.setBounds(0, 0, iconWidth, iconHeight);
+				icon.draw(canvas);
+				icon.setBounds(sOldBounds);
+			}
+		}
+
+		BitmapDrawable bDrawable = thumb == null ? null : new BitmapDrawable(
+				thumb);
+		return bDrawable;
 	}
 
 	/**
@@ -331,7 +414,7 @@ public class AppDataUtil implements LogTagIF {
 		PackageInfo pInfo = pm.getPackageInfo(packageName,
 				PackageManager.GET_UNINSTALLED_PACKAGES);
 
-		return convert(pm, pInfo, appInfo);
+		return convert(context, pm, pInfo, appInfo);
 	}
 
 	/**
@@ -346,15 +429,16 @@ public class AppDataUtil implements LogTagIF {
 	 * @return アプリデータ
 	 * @throws NameNotFoundException
 	 */
-	public static AppData convert(PackageManager pm, PackageInfo pInfo,
-			ApplicationInfo appInfo) throws NameNotFoundException {
+	public static AppData convert(Context context, PackageManager pm,
+			PackageInfo pInfo, ApplicationInfo appInfo)
+			throws NameNotFoundException {
 		AppData appData = new AppData();
 
 		String packageName = pInfo.packageName;
 		CharSequence appName = pm.getApplicationLabel(appInfo);
 		CharSequence description = appInfo.loadDescription(pm);
 		String versionName = pInfo.versionName;
-		Drawable icon = appInfo.loadIcon(pm);
+		Drawable icon = getResizedBitmapDrawable(context, appInfo.loadIcon(pm));
 
 		appData.setPackageName(packageName);
 		appData.setDescription(description);
@@ -473,7 +557,8 @@ public class AppDataUtil implements LogTagIF {
 	 * @return アイコンの表示サイズ
 	 */
 	public static int getIconSize(Context context) {
-		return context.getResources().getInteger(R.attr.icon_size_px);
+		return (int) context.getResources().getDimension(
+				android.R.dimen.app_icon_size);
 	}
 
 	// v0.5→v0.6でキャッシュの構成を変更したのでお掃除コードを仕込む 暫く残す

@@ -50,11 +50,6 @@ public class AppDataAdapter extends ArrayAdapter<AppData> {
 				.findViewById(R.id.application_icon);
 		if (iconView != null) {
 			iconView.setImageDrawable(getItem(position).getIcon());
-			int size = mContext.getResources().getInteger(R.attr.icon_size_px);
-			iconView.setMinimumHeight(size);
-			iconView.setMinimumWidth(size);
-			iconView.setMaxHeight(size);
-			iconView.setMaxWidth(size);
 		}
 
 		// アプリ名
