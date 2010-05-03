@@ -10,15 +10,14 @@ import java.util.List;
 
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
+import net.vvakame.droppshare.helper.ActivityHelper;
 import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.FileListAdapter;
 import net.vvakame.droppshare.helper.LogTagIF;
+import net.vvakame.droppshare.helper.OpenIntentIF;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -103,40 +102,12 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 			intent.putExtra(BUTTON_TEXT,
 					getString(R.string.add_dir_button_text));
 
-			ResolveInfo resolveInfo = getPackageManager().resolveActivity(
-					intent, REQUEST_PICK_DIR);
+			boolean canResolve = ActivityHelper.canResolveActivity(this,
+					intent, "IO File Manager", "org.openintents.filemanager");
 
-			// IO File Managerなどがインストールされていればそのまま処理
-			if (resolveInfo != null) {
+			if (canResolve) {
 				startActivityForResult(intent, REQUEST_PICK_DIR);
-				break;
 			}
-
-			// なければ、MarketにOI File Managerが取得しにいくか聞く。
-			AlertDialog.Builder diagBldr = new AlertDialog.Builder(this);
-			diagBldr.setTitle(getString(R.string.not_resolve_pick_dir_title));
-			diagBldr
-					.setMessage(getString(R.string.not_resolve_pick_dir_message));
-			diagBldr.setPositiveButton(getString(R.string.go_market),
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Intent intent = new Intent(Intent.ACTION_VIEW);
-							intent
-									.setData(Uri
-											.parse("market://details?id=org.openintents.filemanager"));
-							startActivity(intent);
-						}
-					});
-			diagBldr.setNegativeButton(getString(R.string.ignore),
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-						}
-					});
-			diagBldr.setCancelable(true);
-			diagBldr.create();
-			diagBldr.show();
 
 			break;
 

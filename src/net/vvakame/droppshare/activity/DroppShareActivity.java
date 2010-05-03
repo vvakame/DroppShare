@@ -7,10 +7,13 @@ import net.vvakame.droppshare.R;
 import net.vvakame.droppshare.asynctask.DroppHistoryAsynkTask;
 import net.vvakame.droppshare.asynctask.DroppInstalledAsynkTask;
 import net.vvakame.droppshare.asynctask.DroppRecentlyUsedAsynkTask;
+import net.vvakame.droppshare.helper.ActivityHelper;
 import net.vvakame.droppshare.helper.AppDataAdapter;
 import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.Func;
 import net.vvakame.droppshare.helper.LogTagIF;
+import net.vvakame.droppshare.helper.SimejiIF;
+import net.vvakame.droppshare.helper.ZXingIF;
 import net.vvakame.droppshare.model.AppData;
 import net.vvakame.util.googleshorten.GoogleShorten;
 import net.vvakame.util.googleshorten.GoogleShorten.ShortenFailedException;
@@ -32,13 +35,15 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 
 /**
  * アプリ一覧からみんなと共有したいアプリを選ぶActivity
  * 
  * @author vvakame
  */
-public class DroppShareActivity extends Activity implements SimejiIF, LogTagIF {
+public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF,
+		ZXingIF {
 
 	private AppDataAdapter mInstalledAdapter = null;
 	private AppDataAdapter mHistoryAdapter = null;
@@ -46,7 +51,8 @@ public class DroppShareActivity extends Activity implements SimejiIF, LogTagIF {
 	private View mProgressBar = null;
 	private View mAppNotExistView = null;
 
-	private OnItemClickListener mEventImpl = null;
+	private OnItemClickListener mClickEventImpl = null;
+	private OnItemLongClickListener mLongClickEventImpl = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -89,11 +95,14 @@ public class DroppShareActivity extends Activity implements SimejiIF, LogTagIF {
 
 		tabHost.setCurrentTab(0);
 
+		EventNormalImpl impl = null;
 		if (isCalledBySimeji()) {
-			mEventImpl = new EventSimejiImpl();
+			impl = new EventSimejiImpl();
 		} else {
-			mEventImpl = new EventNormalImpl();
+			impl = new EventNormalImpl();
 		}
+		mClickEventImpl = impl;
+		mLongClickEventImpl = impl;
 
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mProgressBar = inflater.inflate(R.layout.progress_bar, null);
@@ -103,19 +112,22 @@ public class DroppShareActivity extends Activity implements SimejiIF, LogTagIF {
 		ListView listView = (ListView) findViewById(R.id.installed_list);
 		listView.addFooterView(mProgressBar);
 		listView.setAdapter(mInstalledAdapter);
-		listView.setOnItemClickListener(mEventImpl);
+		listView.setOnItemClickListener(mClickEventImpl);
+		listView.setOnItemLongClickListener(mLongClickEventImpl);
 
 		mHistoryAdapter = new AppDataAdapter(this, R.layout.history_view);
 		listView = (ListView) findViewById(R.id.history_list);
 		listView.addFooterView(mProgressBar);
 		listView.setAdapter(mHistoryAdapter);
-		listView.setOnItemClickListener(mEventImpl);
+		listView.setOnItemClickListener(mClickEventImpl);
+		listView.setOnItemLongClickListener(mLongClickEventImpl);
 
 		mRecentAdapter = new AppDataAdapter(this, R.layout.recent_view);
 		listView = (ListView) findViewById(R.id.recent_list);
 		listView.addFooterView(mProgressBar);
 		listView.setAdapter(mRecentAdapter);
-		listView.setOnItemClickListener(mEventImpl);
+		listView.setOnItemClickListener(mClickEventImpl);
+		listView.setOnItemLongClickListener(mLongClickEventImpl);
 
 		startReadingData(false);
 	}
@@ -150,7 +162,7 @@ public class DroppShareActivity extends Activity implements SimejiIF, LogTagIF {
 			listView.removeFooterView(mProgressBar);
 		}
 		listView.addFooterView(mProgressBar);
-		listView.setOnItemClickListener(mEventImpl);
+		listView.setOnItemClickListener(mClickEventImpl);
 
 		mHistoryAdapter.clear();
 		listView = (ListView) findViewById(R.id.history_list);
@@ -158,7 +170,7 @@ public class DroppShareActivity extends Activity implements SimejiIF, LogTagIF {
 			listView.removeFooterView(mProgressBar);
 		}
 		listView.addFooterView(mProgressBar);
-		listView.setOnItemClickListener(mEventImpl);
+		listView.setOnItemClickListener(mClickEventImpl);
 
 		mRecentAdapter.clear();
 		listView = (ListView) findViewById(R.id.recent_list);
@@ -166,7 +178,7 @@ public class DroppShareActivity extends Activity implements SimejiIF, LogTagIF {
 			listView.removeFooterView(mProgressBar);
 		}
 		listView.addFooterView(mProgressBar);
-		listView.setOnItemClickListener(mEventImpl);
+		listView.setOnItemClickListener(mClickEventImpl);
 
 		mInstalledFunc = new Func<List<AppData>>() {
 			@Override
@@ -300,7 +312,8 @@ public class DroppShareActivity extends Activity implements SimejiIF, LogTagIF {
 		}
 	}
 
-	class EventNormalImpl implements OnItemClickListener {
+	class EventNormalImpl implements OnItemClickListener,
+			OnItemLongClickListener {
 
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -320,9 +333,37 @@ public class DroppShareActivity extends Activity implements SimejiIF, LogTagIF {
 
 			startActivityForResult(data, 0);
 		}
+
+		@Override
+		public boolean onItemLongClick(AdapterView<?> parent, View view,
+				int position, long id) {
+			Log.d(TAG, HelperUtil.getStackName());
+
+			AppDataAdapter adapter = pickAppDataAdapter(parent);
+			if (adapter.getCount() <= 0) {
+				return false;
+			}
+			AppData appData = adapter.getItem(position);
+
+			Intent data = new Intent();
+			data.setAction(ACTION_ENCODE);
+			data.putExtra(ENCODE_TYPE, ENCODE_TYPE_TEXT);
+			data.putExtra(ENCODE_DATA, AppDataUtil
+					.getHttpUriFromAppData(appData));
+
+			boolean canResolve = ActivityHelper.canResolveActivity(
+					DroppShareActivity.this, data,
+					getString(R.string.zxing_app_name),
+					"com.google.zxing.client.android");
+			if (canResolve) {
+				startActivity(data);
+			}
+
+			return true;
+		}
 	}
 
-	class EventSimejiImpl implements OnItemClickListener {
+	class EventSimejiImpl extends EventNormalImpl {
 
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,

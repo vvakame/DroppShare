@@ -1,4 +1,4 @@
-package net.vvakame.droppshare.activity;
+package net.vvakame.droppshare.helper;
 
 /**
  * OpenIntent回りの定数をまとめたIF

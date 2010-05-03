@@ -40,8 +40,8 @@
 
 	<string name="add_dir">ディレクトリの追加</string>
 
-	<string name="not_resolve_pick_dir_title">OI File Managerが必要です。</string>
-	<string name="not_resolve_pick_dir_message">Marketからダウンロードしますか？</string>
+	<string name="cant_resolve_intent_title">%sが必要です。</string>
+	<string name="cant_resolve_intent_message">Marketからダウンロードしますか？</string>
 	<string name="go_market">する</string>
 	<string name="ignore">やめとく</string>
 
@@ -53,4 +53,5 @@
 	<string name="now_matchting_data">データ突き合わせ中…</string>
 	<string name="wait_a_moment">頑張ってます…</string>
 
+	<string name="zxing_app_name">QRコード作成ライブラリ</string>
 </resources>

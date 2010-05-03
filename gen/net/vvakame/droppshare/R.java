@@ -91,6 +91,8 @@ public final class R {
         public static final int app_name=0x7f080000;
         public static final int app_not_exists=0x7f08000a;
         public static final int cache_refresh=0x7f08000b;
+        public static final int cant_resolve_intent_message=0x7f08001d;
+        public static final int cant_resolve_intent_title=0x7f08001c;
         public static final int create_cache_automatically=0x7f080012;
         public static final int create_cache_automatically_summary=0x7f080013;
         public static final int files_not_exists=0x7f080020;
@@ -102,8 +104,6 @@ public final class R {
         public static final int message_added_summary=0x7f080016;
         public static final int message_added_title=0x7f080015;
         public static final int message_replaced=0x7f080018;
-        public static final int not_resolve_pick_dir_message=0x7f08001d;
-        public static final int not_resolve_pick_dir_title=0x7f08001c;
         public static final int now_matchting_data=0x7f080023;
         public static final int paste_uri_type=0x7f08000e;
         public static final int paste_uri_type_summary=0x7f08000f;
@@ -120,6 +120,7 @@ public final class R {
         public static final int uri_shorten_failure=0x7f080009;
         public static final int uri_shorten_summary=0x7f080011;
         public static final int wait_a_moment=0x7f080024;
+        public static final int zxing_app_name=0x7f080025;
     }
     public static final class xml {
         public static final int pref=0x7f050000;
