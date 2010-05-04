@@ -78,8 +78,8 @@ public class MenuDialogActivity extends Activity implements LogTagIF, ZXingIF {
 						getString(R.string.zxing_package));
 				if (canResolve) {
 					startActivity(data);
+					finish();
 				}
-				finish();
 
 				break;
 
