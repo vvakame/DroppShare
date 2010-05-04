@@ -3,12 +3,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 	android:summary="test">
 	<ListPreference android:entries="@array/uri_types"
-		android:entryValues="@array/uri_types" android:key="uti_types"
-		android:title="@string/paste_uri_type" android:summary="@string/paste_uri_type_summary"
-		android:defaultValue="http" />
+		android:entryValues="@array/uri_types" android:title="@string/paste_uri_type"
+		android:summary="@string/paste_uri_type_summary" android:defaultValue="http"
+		android:key="uri_types" />
 	<CheckBoxPreference android:key="uri_shorten"
 		android:title="@string/uri_shorten" android:summary="@string/uri_shorten_summary"
-		android:defaultValue="true" />
+		android:defaultValue="true" android:disableDependentsState="true"
+		android:dependency="uri_types" />
 	<CheckBoxPreference android:key="create_cache_automatically"
 		android:defaultValue="false" android:title="@string/create_cache_automatically"
 		android:summary="@string/create_cache_automatically_summary" />
