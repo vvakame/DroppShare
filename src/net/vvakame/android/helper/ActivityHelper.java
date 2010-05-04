@@ -1,4 +1,4 @@
-package net.vvakame.droppshare.helper;
+package net.vvakame.android.helper;
 
 import net.vvakame.droppshare.R;
 import android.app.AlertDialog;
@@ -35,6 +35,19 @@ public class ActivityHelper {
 		}
 	};
 
+	/**
+	 * 指定のIntentがNotActivityFoundExceptionにならずに使えるか調べる<BR>
+	 * 処理できるアプリが存在しない場合指定のアプリをダウンロードさせる
+	 * 
+	 * @param context
+	 * @param intent
+	 *            処理できるか調べたいIntent
+	 * @param appName
+	 *            処理できなかったときダウンロードさせるアプリの名前
+	 * @param packageName
+	 *            処理できなかったときダウンロードさせるアプリのpackage名
+	 * @return 処理できるならtrue, 処理できないならfalse
+	 */
 	public static boolean canResolveActivity(Context context, Intent intent,
 			String appName, String packageName) {
 		sContext = context;

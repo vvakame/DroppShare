@@ -8,9 +8,9 @@ import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.List;
 
+import net.vvakame.android.helper.ActivityHelper;
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.helper.ActivityHelper;
 import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.FileListAdapter;
 import net.vvakame.droppshare.helper.LogTagIF;
@@ -103,7 +103,8 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 					getString(R.string.add_dir_button_text));
 
 			boolean canResolve = ActivityHelper.canResolveActivity(this,
-					intent, "IO File Manager", "org.openintents.filemanager");
+					intent, getString(R.string.oi_file_manager_app_name),
+					getString(R.string.oi_file_manager_package));
 
 			if (canResolve) {
 				startActivityForResult(intent, REQUEST_PICK_DIR);

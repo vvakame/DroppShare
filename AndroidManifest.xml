@@ -40,6 +40,8 @@
 				<data android:mimeType="application/droppshare" />
 			</intent-filter>
 		</activity>
+		<activity android:name=".activity.MenuDialogActivity"
+			android:theme="@android:style/Theme.Dialog"></activity>
 		<activity android:name=".activity.PreferencesActivity"></activity>
 
 		<service android:name=".service.CreateCacheService"></service>

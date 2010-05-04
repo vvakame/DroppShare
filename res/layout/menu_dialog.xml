@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical" android:padding="5dip">
+
+	<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/http"
+		android:text="@string/http_schema" android:textSize="20dip"
+		android:layout_margin="5dip" android:textColor="@color/strong" />
+	<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/market"
+		android:text="@string/market_schema" android:textSize="20dip"
+		android:layout_margin="5dip" android:textColor="@color/strong" />
+	<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/googl"
+		android:text="@string/googl_shorten" android:textSize="20dip"
+		android:layout_margin="5dip" android:textColor="@color/strong" />
+	<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/qr_code"
+		android:text="@string/qr_code" android:textSize="20dip"
+		android:layout_margin="5dip" android:textColor="@color/strong" />
+</LinearLayout>

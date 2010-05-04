@@ -7,13 +7,11 @@ import net.vvakame.droppshare.R;
 import net.vvakame.droppshare.asynctask.DroppHistoryAsynkTask;
 import net.vvakame.droppshare.asynctask.DroppInstalledAsynkTask;
 import net.vvakame.droppshare.asynctask.DroppRecentlyUsedAsynkTask;
-import net.vvakame.droppshare.helper.ActivityHelper;
 import net.vvakame.droppshare.helper.AppDataAdapter;
 import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.Func;
 import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.helper.SimejiIF;
-import net.vvakame.droppshare.helper.ZXingIF;
 import net.vvakame.droppshare.model.AppData;
 import net.vvakame.util.googleshorten.GoogleShorten;
 import net.vvakame.util.googleshorten.GoogleShorten.ShortenFailedException;
@@ -42,8 +40,10 @@ import android.widget.AdapterView.OnItemLongClickListener;
  * 
  * @author vvakame
  */
-public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF,
-		ZXingIF {
+public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF {
+
+	public static final int SEND = 0;
+	public static final int MENU_DIALOG = 1;
 
 	private AppDataAdapter mInstalledAdapter = null;
 	private AppDataAdapter mHistoryAdapter = null;
@@ -144,6 +144,29 @@ public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF,
 		Log.d(TAG, HelperUtil.getStackName());
 
 		super.onActivityResult(requestCode, resultCode, data);
+
+		if (requestCode == MENU_DIALOG && resultCode == RESULT_OK) {
+			int result = data.getIntExtra(MenuDialogActivity.RESULT, -1);
+			AppData appData = (AppData) data
+					.getSerializableExtra(MenuDialogActivity.APP_DATA);
+
+			switch (result) {
+			case R.id.http:
+			case R.id.market:
+			case R.id.googl:
+				String message = genPassionateMessage(appData, result);
+				if (isCalledBySimeji()) {
+					pushToSimeji(message);
+				} else {
+					callSender(message);
+				}
+
+				break;
+
+			default:
+				break;
+			}
+		}
 	}
 
 	private Func<List<AppData>> mInstalledFunc = null;
@@ -270,13 +293,24 @@ public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF,
 		return ret;
 	}
 
-	private String genPassionateMessage(AppData appData) {
+	private String genPassionateMessage(AppData appData, int... overrideOption) {
+		int option = -1;
+		if (overrideOption.length == 1) {
+			option = overrideOption[0];
+		}
+		boolean http = option == R.id.http;
+		boolean market = option == R.id.market;
+		boolean googl = option == R.id.http;
+		boolean hasOption = http || market || googl;
+
 		String message = PreferencesActivity.getMessageTemplate(this);
 
 		String uri = null;
-		if (PreferencesActivity.isHttp(this)) {
-			uri = AppDataUtil.getHttpUriFromAppData(appData);
-			if (PreferencesActivity.isUriShorten(this)) {
+		if (hasOption) {
+			if (http) {
+				uri = AppDataUtil.getHttpUriFromAppData(appData);
+			} else if (googl) {
+				uri = AppDataUtil.getHttpUriFromAppData(appData);
 				try {
 					uri = new GoogleShorten().getShorten(uri);
 				} catch (ShortenFailedException e) {
@@ -284,9 +318,24 @@ public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF,
 					Toast.makeText(this, R.string.uri_shorten_failure,
 							Toast.LENGTH_LONG);
 				}
+			} else {
+				uri = AppDataUtil.getMarketUriFromAppData(appData);
 			}
 		} else {
-			uri = AppDataUtil.getMarketUriFromAppData(appData);
+			if (PreferencesActivity.isHttp(this)) {
+				uri = AppDataUtil.getHttpUriFromAppData(appData);
+				if (PreferencesActivity.isUriShorten(this)) {
+					try {
+						uri = new GoogleShorten().getShorten(uri);
+					} catch (ShortenFailedException e) {
+						// こけた場合はどーしようか
+						Toast.makeText(this, R.string.uri_shorten_failure,
+								Toast.LENGTH_LONG);
+					}
+				}
+			} else {
+				uri = AppDataUtil.getMarketUriFromAppData(appData);
+			}
 		}
 
 		message = message.replace("$app", appData.getAppName());
@@ -312,6 +361,22 @@ public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF,
 		}
 	}
 
+	private void callSender(String message) {
+		Intent data = new Intent();
+		data.setAction(Intent.ACTION_SEND);
+		data.setType("text/plain");
+		data.putExtra(Intent.EXTRA_TEXT, message);
+
+		startActivityForResult(data, SEND);
+	}
+
+	private void pushToSimeji(String message) {
+		Intent data = new Intent();
+		data.putExtra(REPLACE_KEY, message);
+		setResult(RESULT_OK, data);
+		finish();
+	}
+
 	class EventNormalImpl implements OnItemClickListener,
 			OnItemLongClickListener {
 
@@ -326,12 +391,7 @@ public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF,
 			}
 			AppData appData = adapter.getItem(position);
 
-			Intent data = new Intent();
-			data.setAction(Intent.ACTION_SEND);
-			data.setType("text/plain");
-			data.putExtra(Intent.EXTRA_TEXT, genPassionateMessage(appData));
-
-			startActivityForResult(data, 0);
+			callSender(genPassionateMessage(appData));
 		}
 
 		@Override
@@ -345,19 +405,10 @@ public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF,
 			}
 			AppData appData = adapter.getItem(position);
 
-			Intent data = new Intent();
-			data.setAction(ACTION_ENCODE);
-			data.putExtra(ENCODE_TYPE, ENCODE_TYPE_TEXT);
-			data.putExtra(ENCODE_DATA, AppDataUtil
-					.getHttpUriFromAppData(appData));
-
-			boolean canResolve = ActivityHelper.canResolveActivity(
-					DroppShareActivity.this, data,
-					getString(R.string.zxing_app_name),
-					"com.google.zxing.client.android");
-			if (canResolve) {
-				startActivity(data);
-			}
+			Intent intent = new Intent(DroppShareActivity.this,
+					MenuDialogActivity.class);
+			intent.putExtra(MenuDialogActivity.APP_DATA, appData);
+			startActivityForResult(intent, MENU_DIALOG);
 
 			return true;
 		}
@@ -376,13 +427,6 @@ public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF,
 			AppData appData = adapter.getItem(position);
 
 			pushToSimeji(genPassionateMessage(appData));
-		}
-
-		private void pushToSimeji(String result) {
-			Intent data = new Intent();
-			data.putExtra(REPLACE_KEY, result);
-			setResult(RESULT_OK, data);
-			finish();
 		}
 	}
 

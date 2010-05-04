@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">DroppShare</string>
+	<!-- For DroppShareActivity -->
 	<string name="app_description">おすすめアプリを友達におすすめるアプリ</string>
-	<string name="redirect_name">Redirect to Market</string>
-
-	<string name="installed">Installed</string>
-	<string name="history">History</string>
-	<string name="recent">RecentlyUsed</string>
 
 	<string name="added">インストール</string>
 	<string name="replaced">アップデート</string>
@@ -14,10 +9,16 @@
 	<string name="uri_shorten_failure">URIの圧縮に失敗しました…</string>
 	<string name="app_not_exists">該当アプリがありませんでした。</string>
 
+	<string name="http_schema">http:// 形式で貼付け</string>
+	<string name="market_schema">market:// 形式で貼付け</string>
+	<string name="googl_shorten">goo.gl短縮して貼付け</string>
+	<string name="qr_code">QRコードの表示</string>
+
 	<string name="cache_refresh">キャッシュ最新化</string>
 	<string name="show_selector">セレクタ</string>
 	<string name="preferences">設定</string>
 
+	<!-- For PreferenceActivity -->
 	<string name="paste_uri_type">URI貼付け形式</string>
 	<string name="paste_uri_type_summary">どの形式で伝えるかを選びます。</string>
 	<string name="uri_shorten">URIの圧縮</string>
@@ -26,32 +27,33 @@
 	<string name="create_cache_automatically">キャッシュの自動生成</string>
 	<string name="create_cache_automatically_summary">Xperiaではチェックを外したほうが快適です。</string>
 
-	<string name="redirect_market_summary">market:// 表記をMarketへのリンクに変換します。</string>
-
 	<string name="message_added_title">インストール時のメッセージ形式</string>
 	<string name="message_added_summary">$app, $market, $version, $description
 		と記述すると置き換えられます。</string>
-	<string name="message_added">$app $version $description AndroidOnly→$market
-		#droppshare</string>
-	<string name="message_replaced">$app - AndroidOnly→$market #droppshare</string>
 
+	<!-- For DroppRedirectActivity -->
+	<string name="redirect_market_summary">market:// 表記をMarketへのリンクに変換します。</string>
+
+	<!-- For DroppViewerActivity -->
 	<string name="read_failure_src">比較元ファイルの読み込みに失敗しました…</string>
 	<string name="read_failure_dest">比較先ファイルの読み込みに失敗しました…</string>
 
-	<string name="add_dir">ディレクトリの追加</string>
+	<string name="now_matchting_data">データ突き合わせ中…</string>
+	<string name="wait_a_moment">頑張ってます…</string>
 
-	<string name="cant_resolve_intent_title">%sが必要です。</string>
-	<string name="cant_resolve_intent_message">Marketからダウンロードしますか？</string>
-	<string name="go_market">する</string>
-	<string name="ignore">やめとく</string>
+	<!-- For DroppSelectorActivity -->
+	<string name="add_dir">ディレクトリの追加</string>
 
 	<string name="files_not_exists">droppファイルが見つかりませんでした。</string>
 
 	<string name="add_dir_title">droppファイルのあるディレクトリは？</string>
 	<string name="add_dir_button_text">このディレクトリです！</string>
 
-	<string name="now_matchting_data">データ突き合わせ中…</string>
-	<string name="wait_a_moment">頑張ってます…</string>
+	<!-- For ActivityHelper -->
+	<string name="cant_resolve_intent_title">%sが必要です。</string>
+	<string name="cant_resolve_intent_message">Marketからダウンロードしますか？</string>
+	<string name="go_market">する</string>
+	<string name="ignore">やめとく</string>
 
 	<string name="zxing_app_name">QRコード作成ライブラリ</string>
 </resources>
