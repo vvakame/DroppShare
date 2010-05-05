@@ -1,4 +1,4 @@
-package net.vvakame.util.googleshorten;
+package net.vvakame.util.shorten;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  * 
  * @author vvakame
  */
-public class GoogleShorten {
+public class GoogleShorten implements ShortenAgent {
 
 	private int c(int... args) {
 		int l = 0;
@@ -136,17 +136,5 @@ public class GoogleShorten {
 		}
 
 		return shorten;
-	}
-
-	public class ShortenFailedException extends Exception {
-		private static final long serialVersionUID = 1L;
-
-		public ShortenFailedException() {
-			super();
-		}
-
-		public ShortenFailedException(Throwable arg0) {
-			super(arg0);
-		}
 	}
 }

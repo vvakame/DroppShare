@@ -15,6 +15,7 @@ public final class R {
         public static final int overshoot=0x7f040003;
     }
     public static final class array {
+        public static final int shorten_type=0x7f060001;
         public static final int uri_types=0x7f060000;
     }
     public static final class attr {

@@ -22,7 +22,7 @@
 	<string name="paste_uri_type">URI貼付け形式</string>
 	<string name="paste_uri_type_summary">どの形式で伝えるかを選びます。</string>
 	<string name="uri_shorten">URIの圧縮</string>
-	<string name="uri_shorten_summary">可能であればURIを圧縮します(goo.gl)</string>
+	<string name="uri_shorten_summary">可能であればURIを圧縮します</string>
 
 	<string name="create_cache_automatically">キャッシュの自動生成</string>
 	<string name="create_cache_automatically_summary">Xperiaではチェックを外したほうが快適です。</string>

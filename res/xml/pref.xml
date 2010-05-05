@@ -6,10 +6,9 @@
 		android:entryValues="@array/uri_types" android:title="@string/paste_uri_type"
 		android:summary="@string/paste_uri_type_summary" android:defaultValue="http"
 		android:key="uri_types" />
-	<CheckBoxPreference android:key="uri_shorten"
-		android:title="@string/uri_shorten" android:summary="@string/uri_shorten_summary"
-		android:defaultValue="true" android:disableDependentsState="true"
-		android:dependency="uri_types" />
+	<ListPreference android:key="uri_shorten" android:title="@string/uri_shorten"
+		android:summary="@string/uri_shorten_summary" android:defaultValue="none"
+		android:entries="@array/shorten_type" android:entryValues="@array/shorten_type" />
 	<CheckBoxPreference android:key="create_cache_automatically"
 		android:defaultValue="false" android:title="@string/create_cache_automatically"
 		android:summary="@string/create_cache_automatically_summary" />

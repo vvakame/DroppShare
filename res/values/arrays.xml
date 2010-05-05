@@ -4,4 +4,10 @@
 		<item>http</item>
 		<item>market</item>
 	</string-array>
+
+	<string-array name="shorten_type">
+		<item>none</item>
+		<item>goo.gl</item>
+		<item>bit.ly</item>
+	</string-array>
 </resources>

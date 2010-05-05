@@ -29,7 +29,7 @@
 	<string name="paste_uri_type">URI format</string>
 	<string name="paste_uri_type_summary">Which do you like? http or market</string>
 	<string name="uri_shorten">URI shorten</string>
-	<string name="uri_shorten_summary">Do you want URI shorten?(goo.gl)</string>
+	<string name="uri_shorten_summary">Do you want URI shorten?</string>
 
 	<string name="create_cache_automatically">Create cache automatically</string>
 	<string name="create_cache_automatically_summary">Automatically create the background.</string>

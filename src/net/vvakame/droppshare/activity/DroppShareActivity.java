@@ -13,8 +13,10 @@ import net.vvakame.droppshare.helper.Func;
 import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.helper.SimejiIF;
 import net.vvakame.droppshare.model.AppData;
-import net.vvakame.util.googleshorten.GoogleShorten;
-import net.vvakame.util.googleshorten.GoogleShorten.ShortenFailedException;
+import net.vvakame.util.shorten.GoogleShorten;
+import net.vvakame.util.shorten.ShortenAgent;
+import net.vvakame.util.shorten.ShortenFactory;
+import net.vvakame.util.shorten.ShortenFailedException;
 import android.app.Activity;
 import android.app.LocalActivityManager;
 import android.content.Context;
@@ -324,14 +326,15 @@ public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF {
 		} else {
 			if (PreferencesActivity.isHttp(this)) {
 				uri = AppDataUtil.getHttpUriFromAppData(appData);
-				if (PreferencesActivity.isUriShorten(this)) {
-					try {
-						uri = new GoogleShorten().getShorten(uri);
-					} catch (ShortenFailedException e) {
-						// こけた場合はどーしようか
-						Toast.makeText(this, R.string.uri_shorten_failure,
-								Toast.LENGTH_LONG);
-					}
+				ShortenAgent shorten = ShortenFactory
+						.getShortenAgent(PreferencesActivity
+								.getUriShortenAgent(this));
+				try {
+					uri = shorten.getShorten(uri);
+				} catch (ShortenFailedException e) {
+					// こけた場合はどーしようか
+					Toast.makeText(this, R.string.uri_shorten_failure,
+							Toast.LENGTH_LONG);
 				}
 			} else {
 				uri = AppDataUtil.getMarketUriFromAppData(appData);
