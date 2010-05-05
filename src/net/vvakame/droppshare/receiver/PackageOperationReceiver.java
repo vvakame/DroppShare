@@ -63,15 +63,19 @@ public class PackageOperationReceiver extends BroadcastReceiver implements
 
 		// 操作されたパッケージの情報をDBに書く
 		// 一意性制約とconflict時の挙動の定義で同一アプリ同一バージョンの情報が重複しないようにしている
+		int versionCode = -1;
 		String versionName = null;
 		try {
-			versionName = context.getPackageManager().getPackageInfo(
-					appInfo.packageName, PackageManager.GET_ACTIVITIES).versionName;
+			pInfo = context.getPackageManager().getPackageInfo(
+					appInfo.packageName, PackageManager.GET_ACTIVITIES);
+			versionCode = pInfo.versionCode;
+			versionName = pInfo.versionName;
 		} catch (NameNotFoundException e) {
 			// 握りつぶす
 		}
 		InstallLogModel model = new InstallLogModel();
 		model.setPackageName(packageName);
+		model.setVersionCode(versionCode);
 		model.setVersionName(versionName);
 		model.setActionType(action);
 		model.setProcessDate(new Date());

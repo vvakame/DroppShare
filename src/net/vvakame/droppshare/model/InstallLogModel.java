@@ -15,6 +15,7 @@ public class InstallLogModel {
 
 	private Long rowId = null;
 	private String packageName;
+	private int versionCode = -1;
 	private String versionName;
 	private String actionType;
 	private Date processDate;
@@ -46,6 +47,14 @@ public class InstallLogModel {
 
 	public void setPackageName(String packageName) {
 		this.packageName = packageName;
+	}
+
+	public int getVersionCode() {
+		return versionCode;
+	}
+
+	public void setVersionCode(int versionCode) {
+		this.versionCode = versionCode;
 	}
 
 	public String getVersionName() {

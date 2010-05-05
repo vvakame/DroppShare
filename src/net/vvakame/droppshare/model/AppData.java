@@ -18,12 +18,13 @@ import android.graphics.drawable.Drawable;
  * @author vvakame
  */
 public class AppData implements Serializable {
-	private static final long serialVersionUID = 4L;
+	public static final long serialVersionUID = 5L;
 	public static final int COMPRESS_QUALITY = 100;
 
 	private String appName = null;
 	private String packageName = null;
 	private String description = null;
+	private int versionCode = -1;
 	private String versionName = null;
 	private transient Drawable icon = null;
 	private String action = null;
@@ -59,6 +60,14 @@ public class AppData implements Serializable {
 
 	public void setDescription(CharSequence description) {
 		this.description = toString(description);
+	}
+
+	public int getVersionCode() {
+		return versionCode;
+	}
+
+	public void setVersionCode(int versionCode) {
+		this.versionCode = versionCode;
 	}
 
 	public String getVersionName() {

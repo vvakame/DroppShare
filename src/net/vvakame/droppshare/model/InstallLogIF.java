@@ -10,13 +10,14 @@ import android.content.Context;
 public interface InstallLogIF {
 	public static final String DB_NAME = "install_log.db";
 
-	public static final int DB_VERSION = 1;
+	public static final int DB_VERSION = 2;
 	public static final int DB_MODE = Context.MODE_PRIVATE;
 
 	public static final String TABLE_NAME = "install_log";
 
 	public static final String COLUMN_ID = "_id";
 	public static final String COLUMN_PACKAGE_NAME = "package_name";
+	public static final String COLUMN_VERSION_CODE = "version_code";
 	public static final String COLUMN_VERSION_NAME = "version_name";
 	public static final String COLUMN_ACTION_TYPE = "action_type";
 	public static final String COLUMN_PROCESS_DATE = "process_date";

@@ -10,11 +10,14 @@ import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
+import org.xmlpull.v1.XmlSerializer;
 
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
@@ -38,6 +41,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Environment;
 import android.util.Log;
+import android.util.Xml;
 
 /**
  * AppData回りの付帯処理
@@ -297,6 +301,52 @@ public class AppDataUtil implements LogTagIF {
 		}
 	}
 
+	public static String writeXmlCache(Context context, String fileName,
+			List<AppData> appDataList) {
+
+		XmlSerializer serializer = Xml.newSerializer();
+		StringWriter writer = new StringWriter();
+		try {
+			serializer.setOutput(writer);
+			serializer.startDocument("UTF-8", true);
+			serializer.startTag("", "DroppShare");
+			serializer.attribute("", "version", String
+					.valueOf(AppData.serialVersionUID));
+
+			for (AppData appData : appDataList) {
+				serializer.startTag("", "AppData");
+
+				serializer.startTag("", "appName");
+				serializer.text(appData.getAppName());
+				serializer.endTag("", "appName");
+
+				serializer.startTag("", "packageName");
+				serializer.text(appData.getPackageName());
+				serializer.endTag("", "packageName");
+
+				serializer.startTag("", "description");
+				serializer.text(appData.getDescription());
+				serializer.endTag("", "description");
+
+				serializer.startTag("", "versionName");
+				serializer.text(appData.getVersionName());
+				serializer.endTag("", "versionName");
+
+				serializer.startTag("", "uniqName");
+				serializer.text(appData.getUniqName());
+				serializer.endTag("", "uniqName");
+
+				serializer.endTag("", "AppData");
+			}
+			serializer.endTag("", "DroppShare");
+			serializer.endDocument();
+
+			return writer.toString();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	/**
 	 * 指定されたキャッシュを削除する
 	 * 
@@ -376,6 +426,7 @@ public class AppDataUtil implements LogTagIF {
 			throws NameNotFoundException {
 		AppData appData = convert(context, insLogModel.getPackageName());
 
+		int versionCode = insLogModel.getVersionCode();
 		String versionName = insLogModel.getVersionName();
 		String action = insLogModel.getActionType();
 		Date processDate = insLogModel.getProcessDate();
@@ -389,6 +440,7 @@ public class AppDataUtil implements LogTagIF {
 			action = context.getString(R.string.removed);
 		}
 
+		appData.setVersionCode(versionCode);
 		appData.setVersionName(versionName);
 		appData.setAction(action);
 		appData.setProcessDate(processDate);
@@ -437,12 +489,14 @@ public class AppDataUtil implements LogTagIF {
 		String packageName = pInfo.packageName;
 		CharSequence appName = pm.getApplicationLabel(appInfo);
 		CharSequence description = appInfo.loadDescription(pm);
+		int versionCode = pInfo.versionCode;
 		String versionName = pInfo.versionName;
 		Drawable icon = getResizedBitmapDrawable(context, appInfo.loadIcon(pm));
 
 		appData.setPackageName(packageName);
 		appData.setDescription(description);
 		appData.setAppName(appName);
+		appData.setVersionCode(versionCode);
 		appData.setVersionName(versionName);
 		appData.setIcon(icon);
 

@@ -26,11 +26,14 @@ public class InstallLogDao implements InstallLogIF, LogTagIF {
 		private static final String DB_CREATE = "create table " + TABLE_NAME
 				+ " (" + COLUMN_ID
 				+ " integer primary key autoincrement not null,"
-				+ COLUMN_PACKAGE_NAME + " text not null," + COLUMN_VERSION_NAME
+				+ COLUMN_PACKAGE_NAME + " text not null," + COLUMN_VERSION_CODE
+				+ " integer not null," + COLUMN_VERSION_NAME
 				+ " text not null," + COLUMN_ACTION_TYPE + " text not null,"
 				+ COLUMN_PROCESS_DATE + " text not null, UNIQUE ("
-				+ COLUMN_PACKAGE_NAME + ", " + COLUMN_VERSION_NAME
+				+ COLUMN_PACKAGE_NAME + ", " + COLUMN_VERSION_CODE
 				+ ") ON CONFLICT REPLACE )";
+
+		private static final String DB_DROP = "drop table " + TABLE_NAME;
 
 		public DBHelper(Context con) {
 			super(con, DB_NAME, null, DB_VERSION);
@@ -43,7 +46,10 @@ public class InstallLogDao implements InstallLogIF, LogTagIF {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			// まだ、ない。
+			if (oldVersion == 1 && newVersion == 2) {
+				db.execSQL(DB_DROP);
+				db.execSQL(DB_CREATE);
+			}
 		}
 	}
 
@@ -59,6 +65,7 @@ public class InstallLogDao implements InstallLogIF, LogTagIF {
 		try {
 			ContentValues values = new ContentValues();
 			values.put(COLUMN_PACKAGE_NAME, model.getPackageName());
+			values.put(COLUMN_VERSION_CODE, model.getVersionCode());
 			values.put(COLUMN_VERSION_NAME, model.getVersionName());
 			values.put(COLUMN_ACTION_TYPE, model.getActionType());
 			values.put(COLUMN_PROCESS_DATE, model.getProcessDateString());
@@ -148,12 +155,14 @@ public class InstallLogDao implements InstallLogIF, LogTagIF {
 
 		int rowId = cursor.getColumnIndex(COLUMN_ID);
 		int packageName = cursor.getColumnIndex(COLUMN_PACKAGE_NAME);
+		int versionCode = cursor.getColumnIndex(COLUMN_VERSION_CODE);
 		int versionName = cursor.getColumnIndex(COLUMN_VERSION_NAME);
 		int actionType = cursor.getColumnIndex(COLUMN_ACTION_TYPE);
 		int processDate = cursor.getColumnIndex(COLUMN_PROCESS_DATE);
 
 		model.setRowId(cursor.getLong(rowId));
 		model.setPackageName(cursor.getString(packageName));
+		model.setVersionCode(cursor.getInt(versionCode));
 		model.setVersionName(cursor.getString(versionName));
 		model.setActionType(cursor.getString(actionType));
 		model.setProcessDate(cursor.getString(processDate));
