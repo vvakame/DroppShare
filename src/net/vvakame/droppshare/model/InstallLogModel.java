@@ -93,6 +93,7 @@ public class InstallLogModel {
 		stb.append("{");
 		stb.append("rowId=").append(rowId).append(", ");
 		stb.append("packageName=").append(packageName).append(", ");
+		stb.append("versionCode=").append(versionCode).append(", ");
 		stb.append("versionName=").append(versionName).append(", ");
 		stb.append("actionType=").append(actionType).append(", ");
 		stb.append("processDate=").append(processDate).append("");

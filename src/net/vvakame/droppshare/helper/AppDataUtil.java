@@ -1,28 +1,13 @@
 package net.vvakame.droppshare.helper;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InvalidClassException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.StreamCorruptedException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.xmlpull.v1.XmlSerializer;
-
-import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.asynctask.DroppHistoryAsynkTask;
-import net.vvakame.droppshare.asynctask.DroppInstalledAsynkTask;
 import net.vvakame.droppshare.model.AppData;
 import net.vvakame.droppshare.model.AppDiffData;
 import net.vvakame.droppshare.model.InstallLogModel;
@@ -40,8 +25,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Environment;
-import android.util.Log;
-import android.util.Xml;
 
 /**
  * AppData回りの付帯処理
@@ -52,14 +35,12 @@ public class AppDataUtil implements LogTagIF {
 
 	public static final File EX_STRAGE = new File(Environment
 			.getExternalStorageDirectory(), "DroppShare/");
-	public static final File CACHE_DIR = new File(EX_STRAGE, "caches/");
 
 	private static final Rect sOldBounds = new Rect();
 	private static Canvas sCanvas = new Canvas();
 
-	public static int sIconWidth = -1;
-	public static int sIconHeight = -1;
-	public static final int COMPRESS_QUALITY = 100;
+	private static int sIconWidth = -1;
+	private static int sIconHeight = -1;
 
 	/**
 	 * AppDataからMarketへのhttpによるURIを作成する。
@@ -86,20 +67,34 @@ public class AppDataUtil implements LogTagIF {
 	 * アイコンを適正サイズにリサイズする。
 	 * 
 	 * @param context
-	 * @param origBitmap
-	 *            リサイズ元Bitmap
-	 * @return リサイズ後Bitmap
+	 * @param icon
+	 *            リサイズ元アイコン
+	 * @return リサイズ後アイコン
 	 */
 	public static BitmapDrawable getResizedBitmapDrawable(Context context,
 			Drawable icon) {
 		if (sIconWidth == -1) {
-			sIconWidth = (int) context.getResources().getDimension(
-					android.R.dimen.app_icon_size);
+			sIconWidth = getIconSize(context);
 			sIconHeight = sIconWidth;
 		}
 
-		int width = sIconWidth;
-		int height = sIconHeight;
+		return getResizedBitmapDrawable(context, icon, sIconWidth, sIconHeight);
+	}
+
+	/**
+	 * アイコンを適正サイズにリサイズする。
+	 * 
+	 * @param context
+	 * @param icon
+	 *            リサイズ元アイコン
+	 * @param width
+	 *            リサイズ後アイコン幅
+	 * @param height
+	 *            リサイズ後アイコン高さ
+	 * @return
+	 */
+	public static BitmapDrawable getResizedBitmapDrawable(Context context,
+			Drawable icon, int width, int height) {
 
 		// 下処理
 		if (icon instanceof PaintDrawable) {
@@ -173,244 +168,6 @@ public class AppDataUtil implements LogTagIF {
 		BitmapDrawable bDrawable = thumb == null ? null : new BitmapDrawable(
 				thumb);
 		return bDrawable;
-	}
-
-	/**
-	 * 指定されたキャッシュが存在するか調べる
-	 * 
-	 * @param fileName
-	 *            調べたいキャッシュファイル名
-	 * @return 存在する場合はtrue, 存在しない場合はfalseを返す。
-	 */
-	public static boolean isExistCache(String fileName) {
-		File cacheFile = new File(CACHE_DIR, fileName);
-
-		return cacheFile.exists();
-	}
-
-	/**
-	 * 指定されたキャッシュを読み込み返す
-	 * 
-	 * @param fileName
-	 *            読み込むキャッシュファイル
-	 * @return アプリ一覧
-	 * @throws InvalidClassException
-	 * @throws ClassNotFoundException
-	 */
-	public static List<AppData> readSerializedCaches(String fileName)
-			throws InvalidClassException, ClassNotFoundException {
-
-		File cacheFile = new File(CACHE_DIR, fileName);
-		return readSerializedCaches(cacheFile);
-	}
-
-	/**
-	 * 指定されたキャッシュを読み込み返す
-	 * 
-	 * @param cacheFile
-	 *            読み込むキャッシュファイル
-	 * @return アプリリスト
-	 * @throws InvalidClassException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<AppData> readSerializedCaches(File cacheFile)
-			throws InvalidClassException, ClassNotFoundException {
-		Log.d(TAG, HelperUtil.getStackName() + ", file="
-				+ cacheFile.getAbsolutePath());
-
-		List<AppData> appDataList = null;
-		ObjectInputStream in = null;
-		try {
-			FileInputStream fin = new FileInputStream(cacheFile);
-			in = new ObjectInputStream(fin);
-			appDataList = (List<AppData>) in.readObject();
-
-		} catch (InvalidClassException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
-			throw e;
-		} catch (ClassCastException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
-		} catch (ClassNotFoundException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
-			throw e;
-		} catch (StreamCorruptedException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
-		} catch (IOException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					Log.d(TAG, HelperUtil.getExceptionLog(e));
-				}
-			}
-		}
-
-		return appDataList;
-	}
-
-	/**
-	 * キャッシュを指定されたファイル名で作成する
-	 * 
-	 * @param context
-	 * @param fileName
-	 *            作成するキャッシュファイル名
-	 * @param appDataList
-	 *            キャッシュ化したいアプリリスト
-	 */
-	public static void writeSerializedCache(Context context, String fileName,
-			List<AppData> appDataList) {
-		Log.d(TAG, HelperUtil.getStackName() + ", file=" + fileName);
-
-		// v0.5→v0.6 のキャッシュ構成変更でゴミを残さないためのコード。暫く残す。
-		deleteOldCache(context);
-
-		ObjectOutputStream out = null;
-		try {
-			File tmpCache = new File(CACHE_DIR, fileName + ".tmp");
-			File cache = new File(CACHE_DIR, fileName);
-
-			CACHE_DIR.mkdirs();
-			FileOutputStream fout = new FileOutputStream(tmpCache);
-			out = new ObjectOutputStream(fout);
-			out.writeObject(appDataList);
-			out.flush();
-
-			// 旧キャッシュの削除とすげ替え
-			if (cache.exists()) {
-				cache.delete();
-			}
-			tmpCache.renameTo(cache);
-
-		} catch (InvalidClassException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
-		} catch (NotSerializableException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
-		} catch (IOException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
-		} finally {
-			if (out != null) {
-				try {
-					out.close();
-				} catch (IOException e) {
-					Log.d(TAG, HelperUtil.getExceptionLog(e));
-				}
-			}
-		}
-	}
-
-	public static String writeXmlCache(Context context, String fileName,
-			List<AppData> appDataList) {
-
-		XmlSerializer serializer = Xml.newSerializer();
-		StringWriter writer = new StringWriter();
-		try {
-			serializer.setOutput(writer);
-			serializer.startDocument("UTF-8", true);
-			serializer.startTag("", "DroppShare");
-			serializer.attribute("", "version", String
-					.valueOf(AppData.serialVersionUID));
-
-			for (AppData appData : appDataList) {
-				serializer.startTag("", "AppData");
-
-				serializer.startTag("", "appName");
-				serializer.text(appData.getAppName());
-				serializer.endTag("", "appName");
-
-				serializer.startTag("", "packageName");
-				serializer.text(appData.getPackageName());
-				serializer.endTag("", "packageName");
-
-				serializer.startTag("", "description");
-				serializer.text(appData.getDescription());
-				serializer.endTag("", "description");
-
-				serializer.startTag("", "versionName");
-				serializer.text(appData.getVersionName());
-				serializer.endTag("", "versionName");
-
-				serializer.startTag("", "uniqName");
-				serializer.text(appData.getUniqName());
-				serializer.endTag("", "uniqName");
-
-				serializer.endTag("", "AppData");
-			}
-			serializer.endTag("", "DroppShare");
-			serializer.endDocument();
-
-			return writer.toString();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	/**
-	 * 指定されたキャッシュを削除する
-	 * 
-	 * @param fileName
-	 *            削除するキャッシュファイル
-	 */
-	public static void deleteCache(String fileName) {
-		Log.d(TAG, HelperUtil.getStackName());
-
-		File cacheFile = new File(CACHE_DIR, fileName);
-		if (cacheFile.exists()) {
-			cacheFile.delete();
-		}
-	}
-
-	/**
-	 * キャッシュファイルを全て削除する
-	 */
-	public static void deleteOwnCache() {
-		Log.d(TAG, HelperUtil.getStackName());
-
-		File cacheFile = null;
-
-		cacheFile = new File(CACHE_DIR, DroppInstalledAsynkTask.CACHE_FILE);
-		if (cacheFile.exists()) {
-			cacheFile.delete();
-		}
-
-		cacheFile = new File(CACHE_DIR, DroppHistoryAsynkTask.CACHE_FILE);
-		if (cacheFile.exists()) {
-			cacheFile.delete();
-		}
-	}
-
-	/**
-	 * 指定されたディレクトリにアプリのアイコンを書き出す
-	 * 
-	 * @param toDir
-	 *            出力先ディレクトリ
-	 * @param appData
-	 *            アイコンを出力するアプリ
-	 */
-	@SuppressWarnings("unused")
-	private static void writeIconImage(File toDir, AppData appData) {
-		Log.d(TAG, HelperUtil.getStackName());
-
-		if (appData == null || appData.getIcon() == null) {
-			return;
-		} else if (!(appData.getIcon() instanceof BitmapDrawable)) {
-			Log.d(TAG, HelperUtil.getStackName() + " "
-					+ appData.getIcon().getClass().getSimpleName());
-			return;
-		}
-
-		BitmapDrawable bitmapDrawable = (BitmapDrawable) appData.getIcon();
-		try {
-			File iconFile = new File(toDir, appData.getUniqName() + ".png");
-			FileOutputStream fout = new FileOutputStream(iconFile);
-
-			bitmapDrawable.getBitmap().compress(Bitmap.CompressFormat.PNG,
-					COMPRESS_QUALITY, fout);
-		} catch (FileNotFoundException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
-		}
 	}
 
 	/**
@@ -613,31 +370,5 @@ public class AppDataUtil implements LogTagIF {
 	public static int getIconSize(Context context) {
 		return (int) context.getResources().getDimension(
 				android.R.dimen.app_icon_size);
-	}
-
-	// v0.5→v0.6でキャッシュの構成を変更したのでお掃除コードを仕込む 暫く残す
-	private static void deleteOldCache(Context context) {
-		Log.d(TAG, HelperUtil.getStackName());
-
-		File cacheDir = new File(context.getFilesDir(), "cache/");
-		if (cacheDir.exists()) {
-			File[] cacheFiles = cacheDir.listFiles();
-			if (cacheFiles != null) {
-				for (File oldCache : cacheFiles) {
-					oldCache.delete();
-				}
-			}
-			cacheDir.delete();
-		}
-		File tmpDir = new File(context.getFilesDir(), "tmp/");
-		if (tmpDir.exists()) {
-			File[] cacheFiles = tmpDir.listFiles();
-			if (cacheFiles != null) {
-				for (File oldCache : cacheFiles) {
-					oldCache.delete();
-				}
-			}
-			tmpDir.delete();
-		}
 	}
 }

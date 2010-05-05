@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.helper.AppDataUtil;
+import net.vvakame.droppshare.helper.CacheUtil;
 import net.vvakame.droppshare.helper.Func;
 import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.model.AppData;
@@ -66,7 +67,7 @@ public class DroppHistoryAsynkTask extends DroppBaseAsynkTask implements
 				}
 			}
 
-			AppDataUtil.writeSerializedCache(mContext, CACHE_FILE, appDataList);
+			CacheUtil.writeSerializedCache(mContext, CACHE_FILE, appDataList);
 		}
 
 		Log.d(TAG, HelperUtil.getStackName() + ", get=" + appDataList.size());

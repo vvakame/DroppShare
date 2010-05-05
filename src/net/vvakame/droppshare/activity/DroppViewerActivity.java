@@ -9,6 +9,7 @@ import net.vvakame.droppshare.R;
 import net.vvakame.droppshare.asynctask.DroppInstalledAsynkTask;
 import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.AppDiffAdapter;
+import net.vvakame.droppshare.helper.CacheUtil;
 import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.model.AppData;
 import net.vvakame.droppshare.model.AppDiffData;
@@ -97,7 +98,7 @@ public class DroppViewerActivity extends Activity implements LogTagIF {
 
 				List<AppData> srcList = null;
 				try {
-					srcList = AppDataUtil
+					srcList = CacheUtil
 							.readSerializedCaches(DroppInstalledAsynkTask.CACHE_FILE);
 				} catch (InvalidClassException e) {
 					mProgHandler.sendEmptyMessage(MESSAGE_FAILURE_SRC);
@@ -107,7 +108,7 @@ public class DroppViewerActivity extends Activity implements LogTagIF {
 
 				List<AppData> destList = null;
 				try {
-					destList = AppDataUtil.readSerializedCaches(destFile);
+					destList = CacheUtil.readSerializedCaches(destFile);
 				} catch (InvalidClassException e) {
 					mProgHandler.sendEmptyMessage(MESSAGE_FAILURE_DEST);
 				} catch (ClassNotFoundException e) {

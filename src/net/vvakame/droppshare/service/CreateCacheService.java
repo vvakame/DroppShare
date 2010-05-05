@@ -5,7 +5,7 @@ import java.util.List;
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.asynctask.DroppHistoryAsynkTask;
 import net.vvakame.droppshare.asynctask.DroppInstalledAsynkTask;
-import net.vvakame.droppshare.helper.AppDataUtil;
+import net.vvakame.droppshare.helper.CacheUtil;
 import net.vvakame.droppshare.helper.Func;
 import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.model.AppData;
@@ -28,7 +28,7 @@ public class CreateCacheService extends Service implements LogTagIF {
 	public void onStart(Intent intent, int startId) {
 		Log.d(TAG, HelperUtil.getStackName());
 
-		if (AppDataUtil.isExistCache(DroppInstalledAsynkTask.CACHE_FILE)) {
+		if (CacheUtil.isExistCache(DroppInstalledAsynkTask.CACHE_FILE)) {
 			// Installedのキャッシュがあれば両方あるということにしちゃう
 			return;
 		}

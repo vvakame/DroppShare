@@ -4,7 +4,7 @@ import java.util.Date;
 
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.activity.PreferencesActivity;
-import net.vvakame.droppshare.helper.AppDataUtil;
+import net.vvakame.droppshare.helper.CacheUtil;
 import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.model.InstallLogDao;
 import net.vvakame.droppshare.model.InstallLogModel;
@@ -59,7 +59,7 @@ public class PackageOperationReceiver extends BroadcastReceiver implements
 		}
 
 		// キャッシュ再構成のためとりあえず消しておく
-		AppDataUtil.deleteOwnCache();
+		CacheUtil.deleteOwnCache();
 
 		// 操作されたパッケージの情報をDBに書く
 		// 一意性制約とconflict時の挙動の定義で同一アプリ同一バージョンの情報が重複しないようにしている

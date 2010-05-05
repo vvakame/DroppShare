@@ -11,7 +11,7 @@ import java.util.List;
 import net.vvakame.android.helper.ActivityHelper;
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.helper.AppDataUtil;
+import net.vvakame.droppshare.helper.CacheUtil;
 import net.vvakame.droppshare.helper.FileListAdapter;
 import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.helper.OpenIntentIF;
@@ -69,7 +69,7 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 		installWatchingFile(this);
 
 		// /sdcard/DroppShare/caches
-		addFileSet(AppDataUtil.CACHE_DIR);
+		addFileSet(CacheUtil.CACHE_DIR);
 
 		// ファイルから読み込んじゃうのぜ！！
 		List<String> dirList = readWatchingFile();

@@ -1,5 +1,7 @@
 package net.vvakame.android.helper;
 
+import java.io.File;
+
 public class HelperUtil {
 	private static final String MY_PACKAGE_PREFIX = "net.vvakame";
 	private static final String EXCLUDE_CLASS = HelperUtil.class
@@ -64,5 +66,29 @@ public class HelperUtil {
 		String ret = getStackName() + ", " + e.getClass().getSimpleName() + "="
 				+ e.getMessage();
 		return ret;
+	}
+
+	/**
+	 * 指定されたディレクトリを再起的に削除します。
+	 * 
+	 * @param target
+	 *            削除対象ディレクトリ
+	 */
+	public static void deleteDir(File target) {
+		if (target.exists() == false) {
+			return;
+		}
+
+		if (target.isFile()) {
+			target.delete();
+		}
+
+		if (target.isDirectory()) {
+			File[] files = target.listFiles();
+			for (int i = 0; i < files.length; i++) {
+				deleteDir(files[i]);
+			}
+			target.delete();
+		}
 	}
 }
