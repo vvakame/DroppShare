@@ -26,6 +26,11 @@ public class ZipUtil {
 		new ZipDecompresser().unzip(file);
 	}
 
+	public static void unzip(File file, File toDir) throws ZipException,
+			IOException {
+		new ZipDecompresser().unzip(file, toDir);
+	}
+
 	public static class ZipDecompresser {
 		public void unzip(File file) throws ZipException, IOException {
 

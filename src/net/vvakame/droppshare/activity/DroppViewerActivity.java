@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.InvalidClassException;
 import java.util.List;
 
+import net.vvakame.android.helper.Closure;
+import net.vvakame.android.helper.DrivenHandler;
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
 import net.vvakame.droppshare.asynctask.DroppInstalledAsynkTask;
@@ -11,6 +13,7 @@ import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.AppDiffAdapter;
 import net.vvakame.droppshare.helper.CacheUtil;
 import net.vvakame.droppshare.helper.LogTagIF;
+import net.vvakame.droppshare.helper.XmlUtil;
 import net.vvakame.droppshare.model.AppData;
 import net.vvakame.droppshare.model.AppDiffData;
 import android.app.Activity;
@@ -19,8 +22,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -40,44 +41,15 @@ public class DroppViewerActivity extends Activity implements LogTagIF {
 
 	private static final int DIALOG_PROGRESS = 1;
 
-	private static final int MESSAGE_MATCHING = 1;
-	private static final int MESSAGE_FAILURE_SRC = 2;
-	private static final int MESSAGE_FAILURE_DEST = 3;
+	private static final int MESSAGE_START_PROGRESS = 1;
+	private static final int MESSAGE_FINISH_PROGRESS = 2;
+	private static final int MESSAGE_FAILURE_SRC = 3;
+	private static final int MESSAGE_FAILURE_DEST = 4;
 
-	private boolean mDone = false;
 	private ProgressDialog mProgDialog = null;
 	private AppDiffAdapter mDiffAdapter = null;
 
-	private Handler mProgHandler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
-			switch (msg.what) {
-			case MESSAGE_MATCHING:
-				if (mDone) {
-					ListView listView = (ListView) findViewById(R.id.list);
-					listView.setAdapter(mDiffAdapter);
-					listView.setOnItemClickListener(mEventImpl);
-
-					dismissDialog(DIALOG_PROGRESS);
-				} else {
-					mProgHandler.sendEmptyMessageDelayed(MESSAGE_MATCHING, 100);
-				}
-
-				break;
-			case MESSAGE_FAILURE_SRC:
-				// TODO not tested
-				mProgDialog.setMessage(getString(R.string.read_failure_src));
-				break;
-			case MESSAGE_FAILURE_DEST:
-				// TODO not tested
-				mProgDialog.setMessage(getString(R.string.read_failure_dest));
-				break;
-			default:
-				break;
-			}
-		}
-	};
+	private DrivenHandler mHandler = new DrivenHandler(this, DIALOG_PROGRESS);
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -87,12 +59,35 @@ public class DroppViewerActivity extends Activity implements LogTagIF {
 
 		setContentView(R.layout.viewer);
 
-		showDialog(DIALOG_PROGRESS);
-		mProgHandler.sendEmptyMessage(MESSAGE_MATCHING);
+		Closure cloMain = new Closure() {
+			public void exec() {
+				ListView listView = (ListView) findViewById(R.id.list);
+				listView.setAdapter(mDiffAdapter);
+				listView.setOnItemClickListener(mEventImpl);
+			}
+		};
+
+		Closure cloSrcFail = new Closure() {
+			public void exec() {
+				mProgDialog.setMessage(getString(R.string.read_failure_src));
+			}
+		};
+		Closure cloDestFail = new Closure() {
+			public void exec() {
+				mProgDialog.setMessage(getString(R.string.read_failure_dest));
+			}
+		};
+
+		mHandler.pushEventWithShowDialog(MESSAGE_START_PROGRESS, null);
+		mHandler.pushEvent(MESSAGE_FAILURE_SRC, cloSrcFail);
+		mHandler.pushEvent(MESSAGE_FAILURE_DEST, cloDestFail);
+		mHandler.pushEventWithDissmiss(MESSAGE_FINISH_PROGRESS, cloMain);
 
 		new Thread() {
 			@Override
 			public void run() {
+				mHandler.sendEmptyMessage(MESSAGE_START_PROGRESS);
+
 				Intent intent = getIntent();
 				File destFile = new File(intent.getData().getPath());
 
@@ -101,26 +96,21 @@ public class DroppViewerActivity extends Activity implements LogTagIF {
 					srcList = CacheUtil
 							.readSerializedCaches(DroppInstalledAsynkTask.CACHE_FILE);
 				} catch (InvalidClassException e) {
-					mProgHandler.sendEmptyMessage(MESSAGE_FAILURE_SRC);
+					mHandler.sendEmptyMessage(MESSAGE_FAILURE_SRC);
 				} catch (ClassNotFoundException e) {
-					mProgHandler.sendEmptyMessage(MESSAGE_FAILURE_SRC);
+					mHandler.sendEmptyMessage(MESSAGE_FAILURE_SRC);
 				}
 
 				List<AppData> destList = null;
-				try {
-					destList = CacheUtil.readSerializedCaches(destFile);
-				} catch (InvalidClassException e) {
-					mProgHandler.sendEmptyMessage(MESSAGE_FAILURE_DEST);
-				} catch (ClassNotFoundException e) {
-					mProgHandler.sendEmptyMessage(MESSAGE_FAILURE_DEST);
-				}
+				destList = XmlUtil.readXmlCache(DroppViewerActivity.this,
+						destFile);
 
 				List<AppDiffData> diffList = AppDataUtil.zipAppData(srcList,
 						destList);
 				mDiffAdapter = new AppDiffAdapter(DroppViewerActivity.this,
 						R.layout.diff_view, diffList);
 
-				mDone = true;
+				mHandler.sendEmptyMessage(MESSAGE_FINISH_PROGRESS);
 			}
 
 		}.start();

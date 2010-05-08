@@ -36,7 +36,7 @@ public final class R {
         public static final int icon=0x7f020001;
     }
     public static final class id {
-        public static final int add_dir=0x7f0a001f;
+        public static final int add_dir=0x7f0a0020;
         public static final int application_action=0x7f0a000b;
         public static final int application_description=0x7f0a0006;
         public static final int application_icon=0x7f0a0003;
@@ -48,6 +48,7 @@ public final class R {
         public static final int dirs_layout=0x7f0a001a;
         public static final int file_icon=0x7f0a0009;
         public static final int file_name=0x7f0a000a;
+        public static final int gen_drozip=0x7f0a001f;
         public static final int googl=0x7f0a0017;
         public static final int history=0x7f0a0011;
         public static final int history_list=0x7f0a0012;
@@ -90,12 +91,9 @@ public final class R {
         public static final int selector=0x7f090001;
     }
     public static final class string {
-        /**  For DroppSelectorActivity 
- For DroppSelectorActivity 
-         */
-        public static final int add_dir=0x7f080020;
-        public static final int add_dir_button_text=0x7f080022;
-        public static final int add_dir_title=0x7f080021;
+        public static final int add_dir=0x7f080021;
+        public static final int add_dir_button_text=0x7f080024;
+        public static final int add_dir_title=0x7f080023;
         public static final int added=0x7f080006;
         /**  For DroppShareActivity 
          */
@@ -105,27 +103,32 @@ public final class R {
         public static final int app_name=0x7f080000;
         public static final int app_not_exists=0x7f08000a;
         public static final int cache_refresh=0x7f08000f;
-        public static final int cant_resolve_intent_message=0x7f080025;
+        public static final int cant_resolve_intent_message=0x7f080027;
         /**  For ActivityHelper 
  For ActivityHelper 
          */
-        public static final int cant_resolve_intent_title=0x7f080024;
+        public static final int cant_resolve_intent_title=0x7f080026;
         public static final int create_cache_automatically=0x7f080016;
         public static final int create_cache_automatically_summary=0x7f080017;
-        public static final int files_not_exists=0x7f080023;
-        public static final int go_market=0x7f080026;
+        public static final int files_not_exists=0x7f080025;
+        /**  For DroppSelectorActivity 
+ For DroppSelectorActivity 
+         */
+        public static final int gen_drozip=0x7f080020;
+        public static final int go_market=0x7f080028;
         public static final int googl_shorten=0x7f08000d;
         public static final int history=0x7f080004;
         public static final int http_schema=0x7f08000b;
-        public static final int ignore=0x7f080027;
+        public static final int ignore=0x7f080029;
         public static final int installed=0x7f080003;
         public static final int market_schema=0x7f08000c;
         public static final int message_added=0x7f08001a;
         public static final int message_added_summary=0x7f080019;
         public static final int message_added_title=0x7f080018;
+        public static final int now_compress_data=0x7f080022;
         public static final int now_matchting_data=0x7f08001e;
-        public static final int oi_file_manager_app_name=0x7f080028;
-        public static final int oi_file_manager_package=0x7f080029;
+        public static final int oi_file_manager_app_name=0x7f08002a;
+        public static final int oi_file_manager_package=0x7f08002b;
         /**  For PreferenceActivity 
  For PreferenceActivity 
          */
@@ -151,8 +154,8 @@ public final class R {
         public static final int uri_shorten_failure=0x7f080009;
         public static final int uri_shorten_summary=0x7f080015;
         public static final int wait_a_moment=0x7f08001f;
-        public static final int zxing_app_name=0x7f08002a;
-        public static final int zxing_package=0x7f08002b;
+        public static final int zxing_app_name=0x7f08002c;
+        public static final int zxing_package=0x7f08002d;
     }
     public static final class xml {
         public static final int pref=0x7f050000;

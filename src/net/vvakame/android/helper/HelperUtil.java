@@ -1,6 +1,10 @@
 package net.vvakame.android.helper;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 
 public class HelperUtil {
 	private static final String MY_PACKAGE_PREFIX = "net.vvakame";
@@ -90,5 +94,13 @@ public class HelperUtil {
 			}
 			target.delete();
 		}
+	}
+
+	public static void copyFile(File src, File dest) throws IOException {
+		FileChannel srcChannel = new FileInputStream(src).getChannel();
+		FileChannel destChannel = new FileOutputStream(dest).getChannel();
+		srcChannel.transferTo(0, srcChannel.size(), destChannel);
+		srcChannel.close();
+		destChannel.close();
 	}
 }

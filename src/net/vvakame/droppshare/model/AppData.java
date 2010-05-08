@@ -18,7 +18,7 @@ import android.graphics.drawable.Drawable;
  * @author vvakame
  */
 public class AppData implements Serializable {
-	public static final long serialVersionUID = 5L;
+	public static final long serialVersionUID = 6L;
 	public static final int COMPRESS_QUALITY = 100;
 
 	private String appName = null;
@@ -103,7 +103,7 @@ public class AppData implements Serializable {
 	}
 
 	public String getUniqName() {
-		return this.appName + "_" + this.packageName;
+		return packageName + "_v" + String.valueOf(versionCode);
 	}
 
 	private void writeObject(ObjectOutputStream out) throws IOException {

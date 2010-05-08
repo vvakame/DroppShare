@@ -51,7 +51,10 @@
 	<string name="wait_a_moment">Wait a moment...</string>
 
 	<!-- For DroppSelectorActivity -->
+	<string name="gen_drozip">Generate Drozip</string>
 	<string name="add_dir">Add directory</string>
+
+	<string name="now_compress_data">Compress App data</string>
 
 	<string name="add_dir_title">Where is dropp files?</string>
 	<string name="add_dir_button_text">This directory is!</string>

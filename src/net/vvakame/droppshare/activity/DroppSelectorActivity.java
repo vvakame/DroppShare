@@ -7,15 +7,22 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import net.vvakame.android.helper.ActivityHelper;
+import net.vvakame.android.helper.Closure;
+import net.vvakame.android.helper.DrivenHandler;
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.helper.CacheUtil;
+import net.vvakame.droppshare.asynctask.DroppInstalledAsynkTask;
 import net.vvakame.droppshare.helper.FileListAdapter;
 import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.helper.OpenIntentIF;
+import net.vvakame.droppshare.helper.XmlUtil;
+import net.vvakame.droppshare.model.AppData;
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -42,11 +49,16 @@ import android.widget.AdapterView.OnItemLongClickListener;
 public class DroppSelectorActivity extends Activity implements LogTagIF,
 		OpenIntentIF {
 	/** 探すデータファイルの拡張子 */
-	private static final String SUFFIX = ".dropp";
+	private static final String SUFFIX = ".drozip";
 
 	private static final int REQUEST_PICK_DIR = 0;
 
-	/** ".dropp"なファイルを探すフィルタ */
+	private static final int DIALOG_PROGRESS = 1;
+
+	private static final int MESSAGE_START_PROGRESS = 1;
+	private static final int MESSAGE_FINISH_PROGRESS = 2;
+
+	/** ".drozip"なファイルを探すフィルタ */
 	private static final FilenameFilter sDroppFilter = new FilenameFilter() {
 		@Override
 		public boolean accept(File dir, String filename) {
@@ -56,6 +68,10 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 
 	private final OnItemClickListenerImpl mClickEventImpl = new OnItemClickListenerImpl();
 	private final OnItemLongClickListenerImpl mLongClickEventImpl = new OnItemLongClickListenerImpl();
+
+	private ProgressDialog mProgDialog = null;
+	private final DrivenHandler mHandler = new DrivenHandler(this,
+			DIALOG_PROGRESS);
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -69,7 +85,18 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 		installWatchingFile(this);
 
 		// /sdcard/DroppShare/caches
-		addFileSet(CacheUtil.CACHE_DIR);
+		if (!XmlUtil.DATA_DIR.exists()) {
+			XmlUtil.DATA_DIR.mkdirs();
+		}
+
+		init();
+	}
+
+	private void init() {
+		LinearLayout layout = (LinearLayout) findViewById(R.id.dirs_layout);
+		layout.removeAllViews();
+
+		addFileSet(XmlUtil.DATA_DIR);
 
 		// ファイルから読み込んじゃうのぜ！！
 		List<String> dirList = readWatchingFile();
@@ -92,6 +119,45 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 		boolean ret = true;
 		Intent intent = null;
 		switch (item.getItemId()) {
+		case R.id.gen_drozip:
+
+			Closure clo = new Closure() {
+				@Override
+				public void exec() {
+					init();
+				}
+			};
+
+			mHandler.pushEventWithShowDialog(MESSAGE_START_PROGRESS, null);
+			mHandler.pushEventWithDissmiss(MESSAGE_FINISH_PROGRESS, clo);
+
+			new Thread() {
+				@Override
+				public void run() {
+					mHandler.sendEmptyMessage(MESSAGE_START_PROGRESS);
+
+					// 同期実行
+					DroppInstalledAsynkTask async = new DroppInstalledAsynkTask(
+							DroppSelectorActivity.this, null);
+
+					List<AppData> appList = null;
+					try {
+						appList = async.execute(false).get();
+					} catch (InterruptedException e) {
+						Log.d(TAG, HelperUtil.getExceptionLog(e));
+					} catch (ExecutionException e) {
+						Log.d(TAG, HelperUtil.getExceptionLog(e));
+					}
+
+					XmlUtil.writeXmlCache(DroppSelectorActivity.this,
+							"archive", appList);
+
+					mHandler.sendEmptyMessage(MESSAGE_FINISH_PROGRESS);
+				}
+			}.start();
+
+			break;
+
 		case R.id.add_dir:
 
 			intent = new Intent(ACTION_PICK_DIRECTORY);
@@ -132,6 +198,36 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 				String path = data.getData().getPath();
 				addFileSet(path);
 			}
+		}
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DIALOG_PROGRESS:
+			mProgDialog = new ProgressDialog(this);
+			onPrepareDialog(id, mProgDialog);
+
+			return mProgDialog;
+		default:
+			break;
+		}
+		return null;
+	}
+
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		switch (id) {
+		case DIALOG_PROGRESS:
+			ProgressDialog progDialog = (ProgressDialog) dialog;
+			progDialog.setTitle(getString(R.string.now_compress_data));
+			progDialog.setMessage(getString(R.string.wait_a_moment));
+			progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			progDialog.setCancelable(false);
+
+			break;
+		default:
+			break;
 		}
 	}
 

@@ -86,6 +86,8 @@ public abstract class DroppBaseAsynkTask extends
 		Log.d(TAG, HelperUtil.getStackName());
 		super.onPostExecute(appDataList);
 
-		mFunc.func(appDataList);
+		if (mFunc != null) {
+			mFunc.func(appDataList);
+		}
 	}
 }
