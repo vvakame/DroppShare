@@ -21,19 +21,19 @@ import android.widget.ArrayAdapter;
  * 
  * @author vvakame
  */
-public class DroppHistoryAsynkTask extends DroppBaseAsynkTask implements
+public class DroppHistoryAsyncTask extends DroppBaseAsyncTask implements
 		LogTagIF {
 
 	public static final String CACHE_FILE = "history.dropp";
 
-	public DroppHistoryAsynkTask(Context context,
+	public DroppHistoryAsyncTask(Context context,
 			ArrayAdapter<AppData> adapter, Func<List<AppData>> postExecFunc) {
 		super(context, adapter, postExecFunc);
 
 		Log.d(TAG, HelperUtil.getStackName());
 	}
 
-	public DroppHistoryAsynkTask(Context context,
+	public DroppHistoryAsyncTask(Context context,
 			Func<List<AppData>> postExecFunc) {
 		super(context, postExecFunc);
 

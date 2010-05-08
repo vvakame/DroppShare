@@ -4,9 +4,9 @@ import java.util.List;
 
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.asynctask.DroppHistoryAsynkTask;
-import net.vvakame.droppshare.asynctask.DroppInstalledAsynkTask;
-import net.vvakame.droppshare.asynctask.DroppRecentlyUsedAsynkTask;
+import net.vvakame.droppshare.asynctask.DroppHistoryAsyncTask;
+import net.vvakame.droppshare.asynctask.DroppInstalledAsyncTask;
+import net.vvakame.droppshare.asynctask.DroppRecentlyUsedAsyncTask;
 import net.vvakame.droppshare.helper.AppDataAdapter;
 import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.Func;
@@ -229,7 +229,7 @@ public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF {
 				if (arg == null || arg.size() == 0) {
 					listView.addFooterView(mAppNotExistView);
 				}
-				new DroppRecentlyUsedAsynkTask(DroppShareActivity.this,
+				new DroppRecentlyUsedAsyncTask(DroppShareActivity.this,
 						mRecentAdapter, mRecentFunc).execute();
 			}
 		};
@@ -244,12 +244,12 @@ public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF {
 				if (arg == null || arg.size() == 0) {
 					listView.addFooterView(mAppNotExistView);
 				}
-				new DroppInstalledAsynkTask(DroppShareActivity.this,
+				new DroppInstalledAsyncTask(DroppShareActivity.this,
 						mInstalledAdapter, mInstalledFunc).execute(mClearFlag);
 			}
 		};
 
-		new DroppHistoryAsynkTask(DroppShareActivity.this, mHistoryAdapter,
+		new DroppHistoryAsyncTask(DroppShareActivity.this, mHistoryAdapter,
 				mHistoryFunc).execute(mClearFlag);
 	}
 

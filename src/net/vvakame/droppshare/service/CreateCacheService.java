@@ -3,8 +3,8 @@ package net.vvakame.droppshare.service;
 import java.util.List;
 
 import net.vvakame.android.helper.HelperUtil;
-import net.vvakame.droppshare.asynctask.DroppHistoryAsynkTask;
-import net.vvakame.droppshare.asynctask.DroppInstalledAsynkTask;
+import net.vvakame.droppshare.asynctask.DroppHistoryAsyncTask;
+import net.vvakame.droppshare.asynctask.DroppInstalledAsyncTask;
 import net.vvakame.droppshare.helper.CacheUtil;
 import net.vvakame.droppshare.helper.Func;
 import net.vvakame.droppshare.helper.LogTagIF;
@@ -21,18 +21,18 @@ import android.util.Log;
  */
 public class CreateCacheService extends Service implements LogTagIF {
 
-	private DroppInstalledAsynkTask mInstalledAsyncTask = null;
-	private DroppHistoryAsynkTask mHistoryAsyncTask = null;
+	private DroppInstalledAsyncTask mInstalledAsyncTask = null;
+	private DroppHistoryAsyncTask mHistoryAsyncTask = null;
 
 	@Override
 	public void onStart(Intent intent, int startId) {
 		Log.d(TAG, HelperUtil.getStackName());
 
-		if (CacheUtil.isExistCache(DroppInstalledAsynkTask.CACHE_FILE)) {
+		if (CacheUtil.isExistCache(DroppInstalledAsyncTask.CACHE_FILE)) {
 			// Installedのキャッシュがあれば両方あるということにしちゃう
 			return;
 		}
-		mHistoryAsyncTask = new DroppHistoryAsynkTask(this,
+		mHistoryAsyncTask = new DroppHistoryAsyncTask(this,
 				new Func<List<AppData>>() {
 					@Override
 					public void func(List<AppData> arg) {
@@ -40,7 +40,7 @@ public class CreateCacheService extends Service implements LogTagIF {
 					}
 				});
 
-		mInstalledAsyncTask = new DroppInstalledAsynkTask(this,
+		mInstalledAsyncTask = new DroppInstalledAsyncTask(this,
 				new Func<List<AppData>>() {
 					@Override
 					public void func(List<AppData> arg) {

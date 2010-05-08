@@ -18,14 +18,14 @@ import android.widget.ArrayAdapter;
  * 
  * @author vvakame
  */
-public abstract class DroppBaseAsynkTask extends
+public abstract class DroppBaseAsyncTask extends
 		AsyncTask<Boolean, AppData, List<AppData>> implements LogTagIF {
 
 	protected Context mContext = null;
 	protected ArrayAdapter<AppData> mAdapter = null;
 	protected Func<List<AppData>> mFunc = null;
 
-	public DroppBaseAsynkTask(Context context, ArrayAdapter<AppData> adapter,
+	public DroppBaseAsyncTask(Context context, ArrayAdapter<AppData> adapter,
 			Func<List<AppData>> postExecFunc) {
 		super();
 
@@ -35,7 +35,7 @@ public abstract class DroppBaseAsynkTask extends
 		mFunc = postExecFunc;
 	}
 
-	public DroppBaseAsynkTask(Context context, Func<List<AppData>> postExecFunc) {
+	public DroppBaseAsyncTask(Context context, Func<List<AppData>> postExecFunc) {
 		super();
 
 		Log.d(TAG, HelperUtil.getStackName());

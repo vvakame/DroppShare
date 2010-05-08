@@ -12,8 +12,8 @@ import java.io.StreamCorruptedException;
 import java.util.List;
 
 import net.vvakame.android.helper.HelperUtil;
-import net.vvakame.droppshare.asynctask.DroppHistoryAsynkTask;
-import net.vvakame.droppshare.asynctask.DroppInstalledAsynkTask;
+import net.vvakame.droppshare.asynctask.DroppHistoryAsyncTask;
+import net.vvakame.droppshare.asynctask.DroppInstalledAsyncTask;
 import net.vvakame.droppshare.model.AppData;
 import android.content.Context;
 import android.util.Log;
@@ -171,12 +171,12 @@ public class CacheUtil implements LogTagIF {
 
 		File cacheFile = null;
 
-		cacheFile = new File(CACHE_DIR, DroppInstalledAsynkTask.CACHE_FILE);
+		cacheFile = new File(CACHE_DIR, DroppInstalledAsyncTask.CACHE_FILE);
 		if (cacheFile.exists()) {
 			cacheFile.delete();
 		}
 
-		cacheFile = new File(CACHE_DIR, DroppHistoryAsynkTask.CACHE_FILE);
+		cacheFile = new File(CACHE_DIR, DroppHistoryAsyncTask.CACHE_FILE);
 		if (cacheFile.exists()) {
 			cacheFile.delete();
 		}

@@ -24,13 +24,13 @@ import android.widget.ArrayAdapter;
  * 
  * @author vvakame
  */
-public class DroppRecentlyUsedAsynkTask extends DroppBaseAsynkTask implements
+public class DroppRecentlyUsedAsyncTask extends DroppBaseAsyncTask implements
 		LogTagIF {
 
 	/** 表示するアプリの最大量 */
 	private static final int MAX_NUM = 30;
 
-	public DroppRecentlyUsedAsynkTask(Context context,
+	public DroppRecentlyUsedAsyncTask(Context context,
 			ArrayAdapter<AppData> adapter, Func<List<AppData>> postExecFunc) {
 		super(context, adapter, postExecFunc);
 
@@ -38,7 +38,7 @@ public class DroppRecentlyUsedAsynkTask extends DroppBaseAsynkTask implements
 	}
 
 	@Deprecated
-	public DroppRecentlyUsedAsynkTask(Context context,
+	public DroppRecentlyUsedAsyncTask(Context context,
 			Func<List<AppData>> postExecFunc) {
 		super(context, postExecFunc);
 

@@ -14,7 +14,7 @@ import net.vvakame.android.helper.Closure;
 import net.vvakame.android.helper.DrivenHandler;
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.asynctask.DroppInstalledAsynkTask;
+import net.vvakame.droppshare.asynctask.DroppInstalledAsyncTask;
 import net.vvakame.droppshare.helper.FileListAdapter;
 import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.helper.OpenIntentIF;
@@ -137,7 +137,7 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 					mHandler.sendEmptyMessage(MESSAGE_START_PROGRESS);
 
 					// 同期実行
-					DroppInstalledAsynkTask async = new DroppInstalledAsynkTask(
+					DroppInstalledAsyncTask async = new DroppInstalledAsyncTask(
 							DroppSelectorActivity.this, null);
 
 					List<AppData> appList = null;
