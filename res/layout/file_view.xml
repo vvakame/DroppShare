@@ -2,13 +2,13 @@
 <RelativeLayout android:layout_width="fill_parent"
 	android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
 	android:gravity="top|left" android:layout_marginBottom="3dip"
-	android:layout_marginTop="3dip">
+	android:layout_marginTop="3dip" android:padding="5dip">
 	<ImageView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:scaleType="fitXY"
 		android:adjustViewBounds="true" android:layout_alignParentLeft="true"
 		android:id="@+id/file_icon" android:src="@drawable/droid"
-		android:maxHeight="32px" android:maxWidth="32px" android:minHeight="32px"
-		android:minWidth="32px" android:layout_centerVertical="true">
+		android:layout_centerVertical="true" android:maxHeight="32dip"
+		android:maxWidth="32dip" android:minHeight="32dip" android:minWidth="32dip">
 	</ImageView>
 	<TextView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_toRightOf="@+id/file_icon"

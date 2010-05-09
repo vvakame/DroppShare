@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="wrap_content" android:layout_width="fill_parent">
+	<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="@string/app_name"
+		android:layout_centerInParent="true" android:layout_alignParentLeft="true"
+		android:textStyle="bold" android:textColor="#ffffffff"
+		android:textSize="14sp" android:shadowRadius="2.75"
+		android:shadowColor="#bb000000">
+	</TextView>
+	<ImageView android:id="@+id/gen_drozip" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:scaleType="fitXY"
+		android:adjustViewBounds="true" android:src="@drawable/droid"
+		android:layout_centerVertical="true" android:layout_alignParentRight="true"
+		android:maxHeight="32dip" android:maxWidth="32dip" android:minHeight="32dip"
+		android:minWidth="32dip">
+	</ImageView>
+</RelativeLayout>

@@ -34,7 +34,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -47,7 +50,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
  * @author vvakame
  */
 public class DroppSelectorActivity extends Activity implements LogTagIF,
-		OpenIntentIF {
+		OpenIntentIF, OnClickListener {
 	/** 探すデータファイルの拡張子 */
 	private static final String SUFFIX = ".drozip";
 
@@ -79,7 +82,15 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 
 		super.onCreate(savedInstanceState);
 
+		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+
 		setContentView(R.layout.selector);
+
+		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
+				R.layout.selector_titlebar);
+
+		ImageView button = (ImageView) findViewById(R.id.gen_drozip);
+		button.setOnClickListener(this);
 
 		// ファイルの作成
 		installWatchingFile(this);
@@ -121,40 +132,7 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 		switch (item.getItemId()) {
 		case R.id.gen_drozip:
 
-			Closure clo = new Closure() {
-				@Override
-				public void exec() {
-					init();
-				}
-			};
-
-			mHandler.pushEventWithShowDialog(MESSAGE_START_PROGRESS, null);
-			mHandler.pushEventWithDissmiss(MESSAGE_FINISH_PROGRESS, clo);
-
-			new Thread() {
-				@Override
-				public void run() {
-					mHandler.sendEmptyMessage(MESSAGE_START_PROGRESS);
-
-					// 同期実行
-					DroppInstalledAsyncTask async = new DroppInstalledAsyncTask(
-							DroppSelectorActivity.this, null);
-
-					List<AppData> appList = null;
-					try {
-						appList = async.execute(false).get();
-					} catch (InterruptedException e) {
-						Log.d(TAG, HelperUtil.getExceptionLog(e));
-					} catch (ExecutionException e) {
-						Log.d(TAG, HelperUtil.getExceptionLog(e));
-					}
-
-					XmlUtil.writeXmlCache(DroppSelectorActivity.this,
-							"archive", appList);
-
-					mHandler.sendEmptyMessage(MESSAGE_FINISH_PROGRESS);
-				}
-			}.start();
+			genDrozip();
 
 			break;
 
@@ -271,6 +249,48 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 			droppList.setOnItemClickListener(mClickEventImpl);
 			droppList.setOnItemLongClickListener(mLongClickEventImpl);
 		}
+	}
+
+	private void genDrozip() {
+		Closure clo = new Closure() {
+			@Override
+			public void exec() {
+				init();
+			}
+		};
+
+		mHandler.pushEventWithShowDialog(MESSAGE_START_PROGRESS, null);
+		mHandler.pushEventWithDissmiss(MESSAGE_FINISH_PROGRESS, clo);
+
+		new Thread() {
+			@Override
+			public void run() {
+				mHandler.sendEmptyMessage(MESSAGE_START_PROGRESS);
+
+				// 同期実行
+				DroppInstalledAsyncTask async = new DroppInstalledAsyncTask(
+						DroppSelectorActivity.this, null);
+
+				List<AppData> appList = null;
+				try {
+					appList = async.execute(false).get();
+				} catch (InterruptedException e) {
+					Log.d(TAG, HelperUtil.getExceptionLog(e));
+				} catch (ExecutionException e) {
+					Log.d(TAG, HelperUtil.getExceptionLog(e));
+				}
+
+				XmlUtil.writeXmlCache(DroppSelectorActivity.this, "archive",
+						appList);
+
+				mHandler.sendEmptyMessage(MESSAGE_FINISH_PROGRESS);
+			}
+		}.start();
+	}
+
+	@Override
+	public void onClick(View v) {
+		genDrozip();
 	}
 
 	private class OnItemClickListenerImpl implements OnItemClickListener {
