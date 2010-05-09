@@ -71,7 +71,7 @@ public class PreferencesActivity extends PreferenceActivity implements
 	public static String getUriShortenAgent(Context con) {
 		String key = URI_SHORTEN;
 		return PreferenceManager.getDefaultSharedPreferences(con).getString(
-				key, "none");
+				key, "goo.gl");
 	}
 
 	public static boolean isAllowAutoCache(Context con) {
