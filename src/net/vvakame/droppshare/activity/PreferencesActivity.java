@@ -86,4 +86,18 @@ public class PreferencesActivity extends PreferenceActivity implements
 		return PreferenceManager.getDefaultSharedPreferences(con).getString(
 				key, messageTemplate);
 	}
+
+	public static String getDrozipName(Context con) {
+		String key = "drozip_name";
+		return PreferenceManager.getDefaultSharedPreferences(con).getString(
+				key, "archive");
+	}
+
+	public static boolean setDrozipName(Context con, String name) {
+		String key = "drozip_name";
+		Editor editor = PreferenceManager.getDefaultSharedPreferences(con)
+				.edit();
+		editor.putString(key, name);
+		return editor.commit();
+	}
 }

@@ -21,9 +21,11 @@ import net.vvakame.droppshare.helper.OpenIntentIF;
 import net.vvakame.droppshare.helper.XmlUtil;
 import net.vvakame.droppshare.model.AppData;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +39,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -132,7 +135,7 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 		switch (item.getItemId()) {
 		case R.id.gen_drozip:
 
-			genDrozip();
+			askFilename();
 
 			break;
 
@@ -251,7 +254,53 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 		}
 	}
 
+	private void askFilename() {
+		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+		View layout = inflater.inflate(R.layout.ask_filename, null);
+
+		EditText text = (EditText) layout.findViewById(R.id.name);
+		text.setText(PreferencesActivity.getDrozipName(this));
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(getString(R.string.gen_drozip_title));
+		builder.setView(layout);
+
+		builder.setPositiveButton(getString(R.string.gen_drozip_positive),
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						AlertDialog alDialog = (AlertDialog) dialog;
+						EditText text = (EditText) alDialog.getWindow()
+								.findViewById(R.id.name);
+						String value = text.getText().toString();
+
+						if ("".equals(value)) {
+							return;
+						}
+
+						PreferencesActivity.setDrozipName(
+								DroppSelectorActivity.this, value);
+						dialog.dismiss();
+
+						genDrozip();
+					}
+				});
+
+		builder.setNegativeButton(getString(R.string.gen_drozip_negative),
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+		builder.setCancelable(true);
+
+		AlertDialog alertDialog = builder.create();
+		alertDialog.show();
+	}
+
 	private void genDrozip() {
+
 		Closure clo = new Closure() {
 			@Override
 			public void exec() {
@@ -280,7 +329,9 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 					Log.d(TAG, HelperUtil.getExceptionLog(e));
 				}
 
-				XmlUtil.writeXmlCache(DroppSelectorActivity.this, "archive",
+				XmlUtil.writeXmlCache(DroppSelectorActivity.this,
+						PreferencesActivity
+								.getDrozipName(DroppSelectorActivity.this),
 						appList);
 
 				mHandler.sendEmptyMessage(MESSAGE_FINISH_PROGRESS);
@@ -290,7 +341,7 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 
 	@Override
 	public void onClick(View v) {
-		genDrozip();
+		askFilename();
 	}
 
 	private class OnItemClickListenerImpl implements OnItemClickListener {

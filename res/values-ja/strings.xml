@@ -45,6 +45,10 @@
 	<string name="gen_drozip">drozip作成</string>
 	<string name="add_dir">ディレクトリの追加</string>
 
+	<string name="gen_drozip_title">ファイル名？</string>
+	<string name="gen_drozip_positive">作成</string>
+	<string name="gen_drozip_negative">やめる</string>
+
 	<string name="now_compress_data">アプリ一覧圧縮中…</string>
 
 	<string name="files_not_exists">droppファイルが見つかりませんでした。</string>
