@@ -19,7 +19,6 @@ public final class R {
         public static final int uri_types=0x7f060000;
     }
     public static final class attr {
-        public static final int xml_icon_size=0x7f010000;
     }
     public static final class color {
         public static final int app_name=0x7f070000;
@@ -155,6 +154,12 @@ public final class R {
         public static final int redirect_name=0x7f080002;
         public static final int removed=0x7f080008;
         public static final int replaced=0x7f080007;
+        /**  For XmlUtil 
+ For XmlUtil 
+ For XmlUtil 
+ For XmlUtil 
+         */
+        public static final int screen_dpi=0x7f080031;
         public static final int show_selector=0x7f080010;
         public static final int uri_shorten=0x7f080014;
         public static final int uri_shorten_failure=0x7f080009;

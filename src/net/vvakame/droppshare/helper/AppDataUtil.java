@@ -78,29 +78,11 @@ public class AppDataUtil implements LogTagIF {
 			sIconHeight = sIconWidth;
 		}
 
-		return getResizedBitmapDrawable(context, icon, sIconWidth, sIconHeight);
-	}
-
-	/**
-	 * アイコンを適正サイズにリサイズする。
-	 * 
-	 * @param context
-	 * @param icon
-	 *            リサイズ元アイコン
-	 * @param width
-	 *            リサイズ後アイコン幅
-	 * @param height
-	 *            リサイズ後アイコン高さ
-	 * @return
-	 */
-	public static BitmapDrawable getResizedBitmapDrawable(Context context,
-			Drawable icon, int width, int height) {
-
 		// 下処理
 		if (icon instanceof PaintDrawable) {
 			PaintDrawable painter = (PaintDrawable) icon;
-			painter.setIntrinsicWidth(width);
-			painter.setIntrinsicHeight(height);
+			painter.setIntrinsicWidth(sIconWidth);
+			painter.setIntrinsicHeight(sIconHeight);
 
 		} else if (icon instanceof BitmapDrawable) {
 			BitmapDrawable bitmapDrawable = (BitmapDrawable) icon;
@@ -111,10 +93,13 @@ public class AppDataUtil implements LogTagIF {
 			}
 		}
 
+		int width = sIconWidth;
+		int height = sIconHeight;
+
 		int iconWidth = icon.getIntrinsicWidth();
 		int iconHeight = icon.getIntrinsicHeight();
 		Bitmap thumb = null;
-		if (width > 0 && height > 0) {
+		if (sIconWidth > 0 && sIconHeight > 0) {
 			if (width < iconWidth || height < iconHeight) {
 				// 縮小するパターン
 
@@ -139,10 +124,10 @@ public class AppDataUtil implements LogTagIF {
 				icon.setBounds(sOldBounds);
 
 			} else if (iconWidth < width && iconHeight < height) {
-				// 拡大するパターン(真ん中に描画)
+				// 拡大するパターン
 
 				final Bitmap.Config c = Bitmap.Config.ARGB_8888;
-				thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
+				thumb = Bitmap.createBitmap(width, height, c);
 				final Canvas canvas = sCanvas;
 				canvas.setBitmap(thumb);
 				sOldBounds.set(icon.getBounds());
@@ -155,7 +140,7 @@ public class AppDataUtil implements LogTagIF {
 				// 同じとき
 
 				final Bitmap.Config c = Bitmap.Config.ARGB_8888;
-				thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
+				thumb = Bitmap.createBitmap(width, height, c);
 				final Canvas canvas = sCanvas;
 				canvas.setBitmap(thumb);
 				sOldBounds.set(icon.getBounds());

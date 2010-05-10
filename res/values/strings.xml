@@ -75,4 +75,7 @@
 	<string name="oi_file_manager_package">org.openintents.filemanager</string>
 	<string name="zxing_app_name">QR code generater</string>
 	<string name="zxing_package">com.google.zxing.client.android</string>
+
+	<!-- For XmlUtil -->
+	<string name="screen_dpi">unknown</string>
 </resources>

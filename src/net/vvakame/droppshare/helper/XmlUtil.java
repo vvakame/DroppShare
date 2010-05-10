@@ -33,6 +33,7 @@ public class XmlUtil implements LogTagIF {
 
 	private static final String DROPP_SHARE = "DroppShare";
 	private static final String VERSION = "version";
+	private static final String SCREEN = "screen";
 	private static final String APP_DATA = "AppData";
 	private static final String APP_NAME = "appName";
 	private static final String PACKAGE_NAME = "packageName";
@@ -59,7 +60,7 @@ public class XmlUtil implements LogTagIF {
 		HelperUtil.deleteDir(WORKING_DIR);
 		TEMP_DIR.mkdirs();
 
-		String result = createXml(appDataList);
+		String result = createXml(context, appDataList);
 		if (result == null) {
 			return;
 		}
@@ -121,14 +122,14 @@ public class XmlUtil implements LogTagIF {
 			Log.d(TAG, HelperUtil.getExceptionLog(e));
 			return null;
 		}
-		appList = readXml(fin);
+		appList = readXml(context, fin);
 
 		HelperUtil.deleteDir(WORKING_DIR);
 
 		return appList;
 	}
 
-	private static String createXml(List<AppData> appDataList) {
+	private static String createXml(Context context, List<AppData> appDataList) {
 		XmlSerializer serializer = Xml.newSerializer();
 		StringWriter writer = new StringWriter();
 		String result = null;
@@ -139,6 +140,8 @@ public class XmlUtil implements LogTagIF {
 			serializer.startTag("", DROPP_SHARE);
 			serializer.attribute("", VERSION, String
 					.valueOf(AppData.serialVersionUID));
+			serializer.attribute("", SCREEN, context
+					.getString(R.string.screen_dpi));
 
 			for (AppData appData : appDataList) {
 				serializer.startTag("", APP_DATA);
@@ -181,7 +184,7 @@ public class XmlUtil implements LogTagIF {
 		return result;
 	}
 
-	private static List<AppData> readXml(InputStream isr) {
+	private static List<AppData> readXml(Context context, InputStream isr) {
 		XmlPullParser xmlParser = Xml.newPullParser();
 		List<AppData> appList = null;
 
@@ -240,6 +243,8 @@ public class XmlUtil implements LogTagIF {
 									+ ".png");
 							BitmapDrawable icon = new BitmapDrawable(iconFile
 									.getAbsolutePath());
+							icon = AppDataUtil.getResizedBitmapDrawable(
+									context, icon);
 							appData.setIcon(icon);
 
 							appList.add(appData);
@@ -267,14 +272,12 @@ public class XmlUtil implements LogTagIF {
 
 	private static void writeIconImages(Context context, List<AppData> appList) {
 		PackageManager pm = context.getPackageManager();
-		int iconSize = context.getResources().getInteger(R.attr.xml_icon_size);
 
 		for (AppData appData : appList) {
 			try {
 				Drawable icon = pm.getApplicationIcon(appData.getPackageName());
 				BitmapDrawable bitmapDrawable = AppDataUtil
-						.getResizedBitmapDrawable(context, icon, iconSize,
-								iconSize);
+						.getResizedBitmapDrawable(context, icon);
 
 				writeBitmap(new File(ICON_DIR, appData.getUniqName() + ".png"),
 						bitmapDrawable.getBitmap());
