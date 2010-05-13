@@ -3,7 +3,6 @@
 	<!-- For DroppShareActivity -->
 	<string name="app_name">DroppShare</string>
 	<string name="app_description">Share your favorite app!</string>
-	<string name="redirect_name">Redirect to Market</string>
 
 	<string name="installed">Installed</string>
 	<string name="history">History</string>
@@ -41,6 +40,7 @@
 		#droppshare</string>
 
 	<!-- For DroppRedirectActivity -->
+	<string name="redirect_name">Redirect to Market</string>
 	<string name="redirect_market_summary">If detect market://. Auto link to market.</string>
 
 	<!-- For DroppViewerActivity -->
@@ -64,6 +64,9 @@
 	<string name="add_dir_button_text">This directory is!</string>
 
 	<string name="files_not_exists">"*.dropp" files not exists.</string>
+
+	<!-- For DroppHostingClientActivity -->
+	<string name="hosting_client_name">DroppHosting</string>
 
 	<!-- For ActivityHelper -->
 	<string name="cant_resolve_intent_title">Need %s</string>

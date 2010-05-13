@@ -10,10 +10,11 @@
 			android:layout_height="fill_parent" android:minWidth="5dip"
 			android:minHeight="50dip" android:background="@color/none" />
 	</LinearLayout>
-	<ImageView android:id="@+id/application_icon" android:src="@drawable/icon"
+	<ImageView android:id="@+id/application_icon"
 		android:layout_width="@android:dimen/app_icon_size"
 		android:layout_height="@android:dimen/app_icon_size"
-		android:scaleType="fitXY" android:layout_toRightOf="@+id/side_1_parent" />
+		android:scaleType="fitXY" android:layout_toRightOf="@+id/side_1_parent"
+		android:src="@drawable/droid" />
 	<TextView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:text="application name"
 		android:id="@+id/application_name" android:layout_toRightOf="@+id/application_icon"
