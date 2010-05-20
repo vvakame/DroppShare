@@ -41,7 +41,7 @@
 			</intent-filter>
 		</activity>
 		<activity android:name=".activity.DroppHostingClientActivity"
-			android:label="@string/hosting_client_name">
+			android:configChanges="orientation" android:label="@string/hosting_client_name">
 			<intent-filter>
 				<action android:name="android.intent.action.SEND" />
 				<category android:name="android.intent.category.DEFAULT" />
