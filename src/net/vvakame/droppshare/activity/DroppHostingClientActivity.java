@@ -9,18 +9,21 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.helper.TwitterOAuthAccessor;
+import net.vvakame.droppshare.model.OAuthData;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class DroppHostingClientActivity extends Activity implements LogTagIF {
@@ -33,8 +36,11 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 
 		super.onCreate(savedInstanceState);
 
-		Intent intent = new Intent(this, TwitterOAuthDialog.class);
-		startActivityForResult(intent, REQUEST_TWIT_INFO);
+		OAuthData oauth = restoreOAuth();
+		if (oauth == null) {
+			Intent intent = new Intent(this, TwitterOAuthDialog.class);
+			startActivityForResult(intent, REQUEST_TWIT_INFO);
+		}
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -45,10 +51,10 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 				String password = data
 						.getStringExtra(TwitterOAuthDialog.PASSWORD);
 
-				Map<String, String> drphostCode = null;
 				try {
-					drphostCode = TwitterOAuthAccessor.getAuthorizedData(name,
-							password);
+					OAuthData oath = TwitterOAuthAccessor.getAuthorizedData(
+							name, password);
+					saveOAuth(oath);
 				} catch (IllegalStateException e) {
 					throw e;
 				} catch (IOException e) {
@@ -56,14 +62,29 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 				} catch (XmlPullParserException e) {
 					throw new IllegalStateException(e);
 				}
-
-				// TODO これから頑張って作り込むところ
-				drphostCode.toString();
-
 			} else if (resultCode == RESULT_CANCELED) {
 				finish();
 			}
 		}
+	}
+
+	private void saveOAuth(OAuthData oauth) {
+		Editor editor = PreferenceManager.getDefaultSharedPreferences(this)
+				.edit();
+		editor.putString("screen_name", oauth.getScreenName());
+		editor.putInt("oauth_hashcode", oauth.getOauthHashCode());
+		editor.commit();
+	}
+
+	private OAuthData restoreOAuth() {
+		SharedPreferences pref = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		OAuthData oauth = new OAuthData();
+		oauth.setScreenName(pref.getString("screen_name", null));
+		oauth.setOauthHashCode(pref.getInt("oauth_hashcode", 0));
+
+		return oauth.getScreenName() != null && oauth.getOauthHashCode() != 0 ? oauth
+				: null;
 	}
 
 	public void pool(Bundle savedInstanceState) {
@@ -153,5 +174,4 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 			Log.e(TAG, HelperUtil.getExceptionLog(e));
 		}
 	}
-
 }

@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.vvakame.droppshare.model.OAuthData;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -36,11 +38,9 @@ import android.util.Xml;
 
 public class TwitterOAuthAccessor {
 
-	public static Map<String, String> getAuthorizedData(String screenName,
-			String password) throws ClientProtocolException, IOException,
-			IllegalStateException, XmlPullParserException {
-		Map<String, String> tokens = null;
-
+	public static OAuthData getAuthorizedData(String screenName, String password)
+			throws ClientProtocolException, IOException, IllegalStateException,
+			XmlPullParserException {
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpContext localContext = new BasicHttpContext();
 		CookieStore cookieStore = new BasicCookieStore();
@@ -56,8 +56,8 @@ public class TwitterOAuthAccessor {
 			throw new IllegalStateException(res.getStatusLine()
 					.getReasonPhrase());
 		}
-		tokens = TwitterOAuthAccessor.parseTwitterLogin(res.getEntity()
-				.getContent());
+		Map<String, String> tokens = TwitterOAuthAccessor.parseTwitterLogin(res
+				.getEntity().getContent());
 
 		// サーバ側にユーザ名とパスワード投げる
 		HttpPost post = new HttpPost("https://twitter.com/oauth/authenticate");
@@ -89,8 +89,15 @@ public class TwitterOAuthAccessor {
 			throw new IllegalStateException(res.getStatusLine()
 					.getReasonPhrase());
 		}
-		return TwitterOAuthAccessor.parseDrphostPage(res.getEntity()
-				.getContent());
+
+		Map<String, String> oauthMap = TwitterOAuthAccessor
+				.parseDrphostPage(res.getEntity().getContent());
+
+		OAuthData oauth = new OAuthData();
+		oauth.setScreenName(oauthMap.get("screenName"));
+		oauth.setOauthHashCode(Integer.parseInt(oauthMap.get("oauthHashcode")));
+
+		return oauth;
 	}
 
 	public static Map<String, String> parseTwitterLogin(InputStream isr)
