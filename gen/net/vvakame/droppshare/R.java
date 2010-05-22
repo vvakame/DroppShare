@@ -33,10 +33,11 @@ public final class R {
     public static final class drawable {
         public static final int at_yanzm_presents=0x7f020000;
         public static final int droid=0x7f020001;
-        public static final int wrapping_droid=0x7f020002;
+        public static final int twitter=0x7f020002;
+        public static final int wrapping_droid=0x7f020003;
     }
     public static final class id {
-        public static final int add_dir=0x7f0a0021;
+        public static final int add_dir=0x7f0a0025;
         public static final int application_action=0x7f0a000c;
         public static final int application_description=0x7f0a0007;
         public static final int application_icon=0x7f0a0004;
@@ -44,7 +45,8 @@ public final class R {
         public static final int application_process_date=0x7f0a000d;
         public static final int application_version_name=0x7f0a000e;
         public static final int boss=0x7f0a0001;
-        public static final int cache_refresh=0x7f0a001e;
+        public static final int cache_refresh=0x7f0a0022;
+        public static final int cancel_button=0x7f0a0020;
         public static final int dirs_layout=0x7f0a001b;
         public static final int file_icon=0x7f0a000a;
         public static final int file_name=0x7f0a000b;
@@ -53,17 +55,20 @@ public final class R {
         public static final int history=0x7f0a0012;
         public static final int history_list=0x7f0a0013;
         public static final int http=0x7f0a0016;
+        public static final int icon=0x7f0a001d;
         public static final int installed=0x7f0a0010;
         public static final int installed_list=0x7f0a0011;
-        public static final int list=0x7f0a001d;
+        public static final int list=0x7f0a0021;
         public static final int market=0x7f0a0017;
         public static final int name=0x7f0a0000;
-        public static final int preferences=0x7f0a0020;
+        public static final int ok_button=0x7f0a001f;
+        public static final int password=0x7f0a001e;
+        public static final int preferences=0x7f0a0024;
         public static final int qr_code=0x7f0a0019;
         public static final int receive_text=0x7f0a001a;
         public static final int recent_list=0x7f0a0015;
         public static final int recently_used=0x7f0a0014;
-        public static final int show_selector=0x7f0a001f;
+        public static final int show_selector=0x7f0a0023;
         public static final int side_1=0x7f0a0003;
         public static final int side_1_parent=0x7f0a0002;
         public static final int side_2=0x7f0a0006;
@@ -87,7 +92,8 @@ public final class R {
         public static final int redirect_to_market=0x7f03000c;
         public static final int selector=0x7f03000d;
         public static final int selector_titlebar=0x7f03000e;
-        public static final int viewer=0x7f03000f;
+        public static final int twitter_dialog=0x7f03000f;
+        public static final int viewer=0x7f030010;
     }
     public static final class menu {
         public static final int main=0x7f090000;
@@ -106,11 +112,12 @@ public final class R {
         public static final int app_name=0x7f080000;
         public static final int app_not_exists=0x7f080009;
         public static final int cache_refresh=0x7f08000e;
-        public static final int cant_resolve_intent_message=0x7f08002b;
+        public static final int cancel=0x7f08002e;
+        public static final int cant_resolve_intent_message=0x7f080030;
         /**  For ActivityHelper 
  For ActivityHelper 
          */
-        public static final int cant_resolve_intent_title=0x7f08002a;
+        public static final int cant_resolve_intent_title=0x7f08002f;
         public static final int create_cache_automatically=0x7f080015;
         public static final int create_cache_automatically_summary=0x7f080016;
         public static final int files_not_exists=0x7f080028;
@@ -121,23 +128,29 @@ public final class R {
         public static final int gen_drozip_negative=0x7f080024;
         public static final int gen_drozip_positive=0x7f080023;
         public static final int gen_drozip_title=0x7f080022;
-        public static final int go_market=0x7f08002c;
+        public static final int go_market=0x7f080031;
         public static final int googl_shorten=0x7f08000c;
         public static final int history=0x7f080003;
         /**  For DroppHostingClientActivity 
          */
         public static final int hosting_client_name=0x7f080029;
         public static final int http_schema=0x7f08000a;
-        public static final int ignore=0x7f08002d;
+        public static final int ignore=0x7f080032;
         public static final int installed=0x7f080002;
         public static final int market_schema=0x7f08000b;
         public static final int message_added=0x7f080019;
         public static final int message_added_summary=0x7f080018;
         public static final int message_added_title=0x7f080017;
+        public static final int name_hint=0x7f08002b;
         public static final int now_compress_data=0x7f080025;
         public static final int now_matchting_data=0x7f08001e;
-        public static final int oi_file_manager_app_name=0x7f08002e;
-        public static final int oi_file_manager_package=0x7f08002f;
+        /**  For TwitterOAuthDialog 
+         */
+        public static final int oauth_title=0x7f08002a;
+        public static final int oi_file_manager_app_name=0x7f080033;
+        public static final int oi_file_manager_package=0x7f080034;
+        public static final int ok=0x7f08002d;
+        public static final int pass_hint=0x7f08002c;
         /**  For PreferenceActivity 
  For PreferenceActivity 
          */
@@ -164,14 +177,14 @@ public final class R {
  For XmlUtil 
  For XmlUtil 
          */
-        public static final int screen_dpi=0x7f080032;
+        public static final int screen_dpi=0x7f080037;
         public static final int show_selector=0x7f08000f;
         public static final int uri_shorten=0x7f080013;
         public static final int uri_shorten_failure=0x7f080008;
         public static final int uri_shorten_summary=0x7f080014;
         public static final int wait_a_moment=0x7f08001f;
-        public static final int zxing_app_name=0x7f080030;
-        public static final int zxing_package=0x7f080031;
+        public static final int zxing_app_name=0x7f080035;
+        public static final int zxing_package=0x7f080036;
     }
     public static final class xml {
         public static final int pref=0x7f050000;

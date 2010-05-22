@@ -68,6 +68,13 @@
 	<!-- For DroppHostingClientActivity -->
 	<string name="hosting_client_name">DroppHosting</string>
 
+	<!-- For TwitterOAuthDialog -->
+	<string name="oauth_title">Twitter OAuth Login</string>
+	<string name="name_hint">Enter your screen name.</string>
+	<string name="pass_hint">Enter your password.</string>
+	<string name="ok">OK</string>
+	<string name="cancel">Cancel</string>
+
 	<!-- For ActivityHelper -->
 	<string name="cant_resolve_intent_title">Need %s</string>
 	<string name="cant_resolve_intent_message">Do you want download it from Market?</string>
