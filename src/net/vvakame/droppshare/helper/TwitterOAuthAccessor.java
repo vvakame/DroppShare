@@ -41,6 +41,7 @@ public class TwitterOAuthAccessor {
 	public static OAuthData getAuthorizedData(String screenName, String password)
 			throws ClientProtocolException, IOException, IllegalStateException,
 			XmlPullParserException {
+		// API Level 8 AndroidHttpClient に変更できるものならしたほうがよさそう
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpContext localContext = new BasicHttpContext();
 		CookieStore cookieStore = new BasicCookieStore();
