@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,11 +18,15 @@ public class HttpPostMultipartWrapper {
 	private static final String LINE_END = "\r\n";
 	private static final String TWO_HYPHENS = "--";
 	private static final String BOUNDARY = "-drozipQawsedrftgyhujikolp";
-	private static final String DATA_END = TWO_HYPHENS + LINE_END;
+	private static final String DATA_END = TWO_HYPHENS + BOUNDARY + TWO_HYPHENS
+			+ LINE_END;
 
 	private URL mUrl = null;
 	private HttpURLConnection mCon = null;
 	private DataOutputStream mDos = null;
+
+	// Debug用
+	// private LoggingOutputStream mDos = null;
 
 	public HttpPostMultipartWrapper(String url) throws MalformedURLException {
 		this(new URL(url));
@@ -45,17 +50,12 @@ public class HttpPostMultipartWrapper {
 			mCon.setRequestMethod("POST");
 			mCon.setRequestProperty("Connection", "Keep-Alive");
 
-			/*
-			 * mCon.setRequestProperty("Content-Type",
-			 * "multipart/form-data;boundary=" + BOUNDARY);
-			 */
-
-			mCon.setRequestProperty("Content-Type", "multipart/mixed;boundary="
-					+ BOUNDARY);
+			mCon.setRequestProperty("Content-Type",
+					"multipart/form-data;boundary=" + BOUNDARY);
 
 			mDos = new DataOutputStream(mCon.getOutputStream());
-
-			elementEnd();
+			// mDos = new LoggingOutputStream(new File(
+			// "/sdcard/DroppShare/post.log"));
 		}
 	}
 
@@ -63,6 +63,7 @@ public class HttpPostMultipartWrapper {
 		mDos.writeBytes(DATA_END);
 		mDos.flush();
 		mDos.close();
+		mDos = null;
 	}
 
 	public String readResponse() throws IOException {
@@ -83,22 +84,19 @@ public class HttpPostMultipartWrapper {
 		return mCon.getInputStream();
 	}
 
-	private void elementEnd() throws IOException {
+	private void elementStart() throws IOException {
 		mDos.writeBytes(TWO_HYPHENS + BOUNDARY + LINE_END);
 	}
 
 	public void pushString(String name, String value) throws IOException {
 		connect();
+		elementStart();
 
 		mDos.writeBytes("Content-Disposition: form-data; name=\"" + name + "\""
 				+ LINE_END);
 		mDos.writeBytes(LINE_END);
 		mDos.writeBytes(value);
 		mDos.writeBytes(LINE_END);
-
-		elementEnd();
-
-		mDos.flush();
 	}
 
 	public void pushString(String name, int value) throws IOException {
@@ -113,6 +111,7 @@ public class HttpPostMultipartWrapper {
 	public void pushFile(String name, String fileName, File file)
 			throws FileNotFoundException, IOException {
 		connect();
+		elementStart();
 
 		int bytesRead;
 		int bytesAvailable;
@@ -122,9 +121,9 @@ public class HttpPostMultipartWrapper {
 
 		FileInputStream fileInputStream = new FileInputStream(file);
 
-		mDos
-				.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\""
-						+ fileName + "\"" + LINE_END);
+		mDos.writeBytes("Content-Disposition: form-data; "
+				+ "name=\"uploadedfile\"; filename=\"" + fileName + "\""
+				+ LINE_END);
 		mDos.writeBytes("Content-Type: application/octet-stream" + LINE_END);
 		mDos.writeBytes(LINE_END);
 
@@ -142,9 +141,17 @@ public class HttpPostMultipartWrapper {
 
 		mDos.writeBytes(LINE_END);
 
-		elementEnd();
-
 		fileInputStream.close();
-		mDos.flush();
+	}
+
+	@SuppressWarnings("unused")
+	private class LoggingOutputStream extends FileOutputStream {
+		public LoggingOutputStream(File file) throws FileNotFoundException {
+			super(file, false);
+		}
+
+		public void writeBytes(String str) throws IOException {
+			write(str.getBytes());
+		}
 	}
 }
