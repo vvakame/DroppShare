@@ -69,7 +69,7 @@ public class AppDataAdapter extends ArrayAdapter<AppData> {
 		// バージョン名
 		TextView appVerText = (TextView) convertView
 				.findViewById(R.id.application_version_name);
-		if (appVerText != null) {
+		if (appVerText != null && getItem(position).getVersionName() != null) {
 			appVerText.setText(getItem(position).getVersionName());
 		}
 

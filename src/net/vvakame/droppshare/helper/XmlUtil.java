@@ -164,7 +164,8 @@ public class XmlUtil implements LogTagIF {
 				serializer.endTag("", VERSION_CODE);
 
 				serializer.startTag("", VERSION_NAME);
-				serializer.text(appData.getVersionName());
+				String versionName = appData.getVersionName();
+				serializer.text(versionName != null ? versionName : "");
 				serializer.endTag("", VERSION_NAME);
 
 				serializer.endTag("", APP_DATA);
