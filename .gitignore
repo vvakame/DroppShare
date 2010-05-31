@@ -1,4 +1,4 @@
 .*.swp
-.settings/
+.DS_Store
 bin/
 

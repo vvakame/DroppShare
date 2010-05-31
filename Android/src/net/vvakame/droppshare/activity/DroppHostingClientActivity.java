@@ -36,13 +36,13 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 		if (oauth == null) {
 			Intent intent = new Intent(this, TwitterOAuthDialog.class);
 			startActivityForResult(intent, REQUEST_TWIT_INFO);
-		}
-
-		try {
-			pool(oauth);
-		} catch (IOException e) {
-			Log.e(TAG, HelperUtil.getExceptionLog(e));
-			// TODO エラー処理ちゃんとする
+		} else {
+			try {
+				pool(oauth);
+			} catch (IOException e) {
+				Log.e(TAG, HelperUtil.getExceptionLog(e));
+				// TODO エラー処理ちゃんとする
+			}
 		}
 	}
 
@@ -91,6 +91,9 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 	}
 
 	public void pool(OAuthData oauth) throws IOException {
+		if (oauth == null) {
+			throw new IllegalArgumentException("Not authorized twitter oauth.");
+		}
 
 		Intent intent = getIntent();
 		Uri fileUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
