@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>Hello DroppHosting</title>
+</head>
+
+<body>
+<h1>Hello DroppHosting!</h1>
+
+<table>
+	<tr>
+		<td colspan="2" style="font-weight: bold;">Available Servlets:</td>
+	</tr>
+	<tr>
+		<td>
+			<form method="post" enctype="multipart/form-data" action="/upload">
+				<input type="text" name="screen_name" value="vvakame"><br>
+				<input type="text" name="oauth_hashcode" value="01234567"><br>
+				<input type="file" name="drozip"><br>
+				<input type="submit">
+			</form>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<form method="get" action="/view">
+				<input type="text" name="u" value="vvakame"><br>
+				<input type="text" name="format" value="xml"><br>
+				<input type="submit">
+			</form>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="/twitter">oauth</a>
+		</td>
+	</tr>
+</table>
+</body>
+</html>

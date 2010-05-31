@@ -1,0 +1,102 @@
+/* convert http://sass-lang.com/try.html */
+/* formatter http://www.codebeautifier.com/ */
+
+$bg-color: #cee4ae
+$border-color: #47885e
+$holder-color: #93ca76
+$main-color: #d6e9ca
+$app-color: #f0fbcf
+$icon-border: #000000
+
+$max-width: 600px
+$header-padding: 20px
+$footer-padding: 10px
+
+$space: 2px
+$margin-little: 5px
+$border: solid 1px $border-color
+
+$icon-size: 48px
+
+@mixin center
+	margin: 0 auto
+
+@mixin border($color=$border-color)
+	border: solid 1px $color
+
+@mixin clearfix
+	content: ""
+	display: block
+	height: 0
+	visibility: hidden
+	clear: both 
+
+body 
+	background-color: $bg-color
+
+a 
+	text-decoration: none
+
+#header
+	@include center
+	@include border
+	max-width: $max-width - $header-padding * 2
+	margin-bottom: $space
+	padding: $header-padding
+	background-color: $holder-color
+	font-size: x-large
+
+#main 
+	@include center
+	@include border
+	max-width: $max-width
+	background-color: $main-color
+	padding-bottom: $space
+
+#footer 
+	@include center
+	@include border
+	max-width: $max-width - $footer-padding * 2
+	margin-top: $space
+	padding: $footer-padding
+	background-color: $holder-color
+	text-align: right
+	font-size: small
+
+.app 
+	@include border
+	margin: $space $space 0px $space
+	padding: $space
+	background-color: $app-color
+
+.app:after
+	@include clearfix
+
+.icon 
+	margin: 0px 10px 0px 0px
+	float : left
+
+.iconImage
+	@include border($icon-border)
+	display: block
+	width: $icon-size
+	height: $icon-size
+
+.appName 
+	margin-top: $margin-little
+	float: left
+
+.versionName 
+	margin: $margin-little 10px 0px 0px
+	float: right
+
+.link 
+	clear: right
+	font-size: small
+
+.description:before
+	@include clearfix
+
+.description 
+	margin-left: 60px
+

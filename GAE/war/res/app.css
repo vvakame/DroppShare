@@ -1,0 +1,80 @@
+body {
+	background-color: #cee4ae;
+}
+
+a {
+	text-decoration: none;
+}
+
+#header {
+	border: solid 1px #47885e;
+	max-width: 560px;
+	background-color: #93ca76;
+	font-size: x-large;
+	margin: 0 auto 2px;
+	padding: 20px;
+}
+
+#main {
+	border: solid 1px #47885e;
+	max-width: 600px;
+	background-color: #d6e9ca;
+	margin: 0 auto;
+	padding-bottom: 2px;
+}
+
+#footer {
+	border: solid 1px #47885e;
+	max-width: 580px;
+	background-color: #93ca76;
+	text-align: right;
+	font-size: small;
+	margin: 2px auto 0;
+	padding: 10px;
+}
+
+.app {
+	border: solid 1px #47885e;
+	background-color: #f0fbcf;
+	margin: 2px 2px 0;
+	padding: 2px;
+}
+
+.icon {
+	float: left;
+	margin: 0 10px 0 0;
+}
+
+.iconImage {
+	display: block;
+	border: solid 1px #000;
+	width: 48px;
+	height: 48px;
+}
+
+.appName {
+	margin-top: 5px;
+	float: left;
+}
+
+.versionName {
+	float: right;
+	margin: 5px 10px 0 0;
+}
+
+.link {
+	clear: right;
+	font-size: small;
+}
+
+.description {
+	margin-left: 60px;
+}
+
+.app:after,.description:before {
+	content: "";
+	display: block;
+	height: 0;
+	visibility: hidden;
+	clear: both;
+}

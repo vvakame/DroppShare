@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<?xml-stylesheet type="text/xsl" href="app.xsl" ?>
+<DroppShare>
+	<version>6</version>
+	<author>vvakame</author>
+	<AppData>
+		<appName>DroppShare</appName>
+		<packageName>net.vvakame.droppshare</packageName>
+		<description>おすすめアプリを友達におすすめるアプリ</description>
+		<versionCode>12</versionCode>
+		<versionName>for A3</versionName>
+	</AppData>
+	<AppData>
+		<appName>Twishroom</appName>
+		<packageName>net.vvakame.twishroom</packageName>
+		<description></description>
+		<versionCode>7</versionCode>
+		<versionName>0.7</versionName>
+	</AppData>
+</DroppShare>
