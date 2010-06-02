@@ -5,6 +5,16 @@
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	version="2.5">
 
+	<filter>
+		<filter-name>DroppShareFilter</filter-name>
+		<filter-class>net.vvakame.dropphosting.server.DroppShareFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>DroppShareFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 	<servlet>
 		<servlet-name>OAuthServlet</servlet-name>
 		<servlet-class>net.vvakame.dropphosting.server.OAuthServlet</servlet-class>

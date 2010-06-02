@@ -157,6 +157,10 @@ public class DrozipUploadServlet extends HttpServlet {
 			}
 		}
 
+		if (xmlData == null) {
+			throw new IllegalStateException(
+					"upload file is not include xml data!");
+		}
 		for (String key : xmlData.getAppMap().keySet()) {
 			Image icon = iconMap.get(key);
 			AppDataSrv app = xmlData.getAppMap().get(key);

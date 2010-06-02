@@ -3,6 +3,7 @@
 	<name>DroppHosting</name>
 	<comment></comment>
 	<projects>
+		<project>DroppShare</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
