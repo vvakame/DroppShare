@@ -8,19 +8,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.vvakame.dropphosting.model.IconData;
+import org.slim3.datastore.Datastore;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
+import net.vvakame.dropphosting.meta.IconDataMeta;
+import net.vvakame.dropphosting.model.IconData;
 
 public class IconDownloadServlet extends HttpServlet {
 	private static final long serialVersionUID = -7504558110741757404L;
 
+	@SuppressWarnings("unused")
 	private static final Logger log = Logger
 			.getLogger(IconDownloadServlet.class.getName());
 
@@ -37,49 +33,16 @@ public class IconDownloadServlet extends HttpServlet {
 			throw new IllegalArgumentException("file name is not included!");
 		}
 		String fileName = path.substring(path.lastIndexOf("/") + 1);
-		fileName.toString();
 
-		DatastoreService datastoreService = DatastoreServiceFactory
-				.getDatastoreService();
+		IconDataMeta iMeta = IconDataMeta.get();
+		IconData iconData = Datastore.query(iMeta).filter(
+				iMeta.fileName.equal(fileName)).asSingle();
 
-		IconData iconData;
-		try {
-			iconData = getIconImage(datastoreService, fileName);
-		} catch (EntityNotFoundException e) {
-			throw new ServletException(e);
-		}
+		// TODO 取れないときの処理
 
 		res.setContentType("image/png");
 		res.setHeader("Cache-Control", "max-age=" + 60 * 60 * 24 * 30); // 最高30日キャッシュ
 		res.setDateHeader("Last-Modified", iconData.getCreateAt().getTime());
 		res.getOutputStream().write(iconData.getIcon().getImageData());
-	}
-
-	private IconData getIconImage(DatastoreService datastoreService,
-			String iconName) throws EntityNotFoundException {
-		Query q = new Query("icon");
-		q.addFilter("iconNameWithHint", Query.FilterOperator.GREATER_THAN,
-				iconName);
-		FetchOptions fopt = FetchOptions.Builder.withOffset(0);
-		PreparedQuery pq = datastoreService.prepare(q);
-
-		Entity iconEntity = null;
-		try {
-			iconEntity = pq.asList(fopt).get(0);
-		} catch (IndexOutOfBoundsException e) {
-			log.info("can't find icon. Query, iconName=" + iconName);
-			throw new IllegalStateException("can't find icon. Query, iconName="
-					+ iconName);
-		}
-		String iconNameWithHint = (String) iconEntity
-				.getProperty("iconNameWithHint");
-		if (!iconNameWithHint.startsWith(iconName)) {
-			log.info("can't find icon. Query, iconName=" + iconName);
-			throw new IllegalStateException("can't find icon. Query, iconName="
-					+ iconName);
-		}
-		IconData iconData = IconData.getIconData(datastoreService, iconEntity);
-
-		return iconData;
 	}
 }

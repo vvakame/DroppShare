@@ -2,84 +2,115 @@ package net.vvakame.dropphosting.model;
 
 import java.util.Date;
 
-import com.google.appengine.api.datastore.Blob;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.images.Image;
-import com.google.appengine.api.images.ImagesServiceFactory;
+import org.slim3.datastore.Attribute;
+import org.slim3.datastore.Datastore;
+import org.slim3.datastore.Model;
 
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.images.Image;
+
+@Model
 public class IconData {
+
+	@Attribute(primaryKey = true)
+	private Key key = null;
+
+	private String packageName = null;
+	private String fileName = null;
+	@Attribute(lob = true)
 	private Image icon = null;
+	private Long width = null;
+	private Long height = null;
 	private String register = null;
 	private Date createAt = null;
-
-	@SuppressWarnings("unused")
-	private String screen = null;
-	private DroxmlData droData = null;
-	private AppDataSrv app = null;
 
 	public IconData() {
 	}
 
-	public IconData(DroxmlData droData, AppDataSrv app) {
-		icon = app.getIcon();
-		register = droData.getScreenName();
-
-		screen = droData.getScreen();
-		this.droData = droData;
-		this.app = app;
+	public void createKey() {
+		key = Datastore.createKey(IconData.class, packageName);
 	}
 
-	public Image getIcon() {
-		return icon;
+	public void setKey(Key key) {
+		this.key = key;
+	}
+
+	public Key getKey() {
+		return key;
+	}
+
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
+	}
+
+	public String getPackageName() {
+		return packageName;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 	public void setIcon(Image icon) {
 		this.icon = icon;
 	}
 
-	public String getRegister() {
-		return register;
+	public Image getIcon() {
+		return icon;
+	}
+
+	public void setWidth(Long width) {
+		this.width = width;
+	}
+
+	public Long getWidth() {
+		return width;
+	}
+
+	public void setHeight(Long height) {
+		this.height = height;
+	}
+
+	public Long getHeight() {
+		return height;
 	}
 
 	public void setRegister(String register) {
 		this.register = register;
 	}
 
-	public Date getCreateAt() {
-		return createAt;
+	public String getRegister() {
+		return register;
 	}
 
 	public void setCreateAt(Date createAt) {
 		this.createAt = createAt;
 	}
 
-	public Entity getEntity(Date createAt) {
-
-		Entity entity = new Entity("icon");
-		entity.setProperty("iconNameWithHint", app
-				.getIconNameWithScreenHint(droData));
-		entity.setProperty("binary", new Blob(icon.getImageData()));
-		entity.setProperty("register", droData.getScreenName());
-		entity.setProperty("createAt", createAt);
-		return entity;
+	public Date getCreateAt() {
+		return createAt;
 	}
 
-	public static IconData getIconData(DatastoreService datastoreService,
-			Entity entity) throws EntityNotFoundException {
-		IconData app = new IconData();
-		if (entity.hasProperty("binary")) {
-			Blob blob = (Blob) entity.getProperty("binary");
-			app.setIcon(ImagesServiceFactory.makeImage(blob.getBytes()));
+	public static void checkState(IconData iconData) {
+		if (iconData == null) {
+			throw new IllegalStateException("iconData is null");
 		}
-		if (entity.hasProperty("register")) {
-			app.setRegister((String) entity.getProperty("register"));
+		if (iconData.getPackageName() == null) {
+			throw new IllegalStateException("icon packageName is null");
+		} else if (iconData.getIcon() == null) {
+			throw new IllegalStateException("icon image is null");
+		} else if (iconData.getRegister() == null) {
+			throw new IllegalStateException("icon register is null");
+		} else if (iconData.getCreateAt() == null) {
+			throw new IllegalStateException("icon create at is null");
 		}
-		if (entity.hasProperty("createAt")) {
-			app.setCreateAt((Date) entity.getProperty("createAt"));
-		}
+		iconData.setHeight((long) iconData.getIcon().getHeight());
+		iconData.setWidth((long) iconData.getIcon().getWidth());
 
-		return app;
+		iconData.createKey();
 	}
 }

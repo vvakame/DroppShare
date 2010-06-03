@@ -17,12 +17,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import net.vvakame.dropphosting.model.DroxmlData;
+import net.vvakame.dropphosting.meta.VariantDataMeta;
+import net.vvakame.dropphosting.model.VariantData;
 
+import org.slim3.datastore.Datastore;
 import org.w3c.dom.Document;
-
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 
 public class DataDownloadServlet extends HttpServlet {
 	private static final long serialVersionUID = -7504558110741757404L;
@@ -38,11 +37,12 @@ public class DataDownloadServlet extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
 		// u screenName
-		// v variant (予定)
+		// v variant
 		// p packageName (予定)
 		// format
 
 		String u = req.getParameter("u");
+		String v = req.getParameter("v");
 		String format = req.getParameter("format");
 
 		if (u == null) {
@@ -51,15 +51,22 @@ public class DataDownloadServlet extends HttpServlet {
 			format = "html";
 		}
 
-		log.info("query data download, u=" + u + ", format=" + format);
+		if (v == null) {
+			v = "default";
+		}
 
-		DatastoreService datastoreService = DatastoreServiceFactory
-				.getDatastoreService();
+		log.info("query data download, u=" + u + ", variant=" + v + ", format="
+				+ format);
 
-		DroxmlData droData = DroxmlData.getDroxmlData(datastoreService, u);
+		VariantDataMeta vMeta = VariantDataMeta.get();
+		VariantData variantData = Datastore.query(vMeta).filter(
+				vMeta.screenName.equal(u), vMeta.variant.equal(v)).asSingle();
+		if (variantData == null) {
+			throw new IllegalArgumentException("drop data is not found!");
+		}
 
 		try {
-			Document document = droData.getDOMDocument();
+			Document document = variantData.getDOMDocument();
 			DOMSource src = new DOMSource(document);
 
 			TransformerFactory transFactory = TransformerFactory.newInstance();

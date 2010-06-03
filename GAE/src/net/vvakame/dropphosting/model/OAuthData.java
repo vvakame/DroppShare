@@ -1,9 +1,31 @@
 package net.vvakame.dropphosting.model;
 
+import org.slim3.datastore.Attribute;
+import org.slim3.datastore.Datastore;
+import org.slim3.datastore.Model;
+
+import com.google.appengine.api.datastore.Key;
+
+@Model
 public class OAuthData {
+
+	@Attribute(primaryKey = true)
+	private Key key = null;
 
 	private String screenName = null;
 	private Integer oauthHashCode = null;
+
+	public void createKey() {
+		key = Datastore.createKey(OAuthData.class, screenName);
+	}
+
+	public void setKey(Key key) {
+		this.key = key;
+	}
+
+	public Key getKey() {
+		return key;
+	}
 
 	public String getScreenName() {
 		return screenName;
@@ -29,5 +51,7 @@ public class OAuthData {
 		} else if (oauth.getOauthHashCode() == null) {
 			throw new IllegalArgumentException("OAuthHash is not included!");
 		}
+
+		oauth.createKey();
 	}
 }

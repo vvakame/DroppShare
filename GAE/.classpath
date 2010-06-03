@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xalan.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xml-apis.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/slim3-1.0.4.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

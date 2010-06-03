@@ -2,6 +2,7 @@ package net.vvakame.dropphosting.model;
 
 public class UploadData {
 	private OAuthData oauth = null;
+	private String variant = null;
 	private byte[] zipData = null;
 
 	public OAuthData getOauth() {
@@ -10,6 +11,14 @@ public class UploadData {
 
 	public void setOauth(OAuthData oauth) {
 		this.oauth = oauth;
+	}
+
+	public void setVariant(String variant) {
+		this.variant = variant;
+	}
+
+	public String getVariant() {
+		return variant;
 	}
 
 	public byte[] getZipData() {
@@ -27,6 +36,8 @@ public class UploadData {
 			throw new IllegalArgumentException("oauth data is not included!");
 		} else if (upData.getZipData() == null) {
 			throw new IllegalArgumentException("drozip data is not included!");
+		} else if (upData.getVariant() == null) {
+			upData.setVariant("default");
 		} else {
 			OAuthData.checkState(upData.getOauth());
 		}

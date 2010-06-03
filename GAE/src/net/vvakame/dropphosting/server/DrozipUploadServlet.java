@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,23 +23,22 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import net.vvakame.dropphosting.meta.AppDataSrvMeta;
+import net.vvakame.dropphosting.meta.IconDataMeta;
+import net.vvakame.dropphosting.meta.VariantDataMeta;
 import net.vvakame.dropphosting.model.AppDataSrv;
-import net.vvakame.dropphosting.model.DroxmlData;
 import net.vvakame.dropphosting.model.IconData;
 import net.vvakame.dropphosting.model.OAuthData;
 import net.vvakame.dropphosting.model.UploadData;
+import net.vvakame.dropphosting.model.VariantData;
 
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.slim3.datastore.Datastore;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesServiceFactory;
 
@@ -62,73 +58,76 @@ public class DrozipUploadServlet extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
 
-		DatastoreService datastoreService = DatastoreServiceFactory
-				.getDatastoreService();
-
 		// Uploadデータを受け取る
 		UploadData upData = getUploadFiles(req);
 		UploadData.chechState(upData);
 
 		// 受け取ったzipデータの展開とかする
-		DroxmlData droData = unzip(upData);
-		droData.setScreenName(upData.getOauth().getScreenName());
-		DroxmlData.checkState(droData);
+		VariantData variantData = unzip(upData);
+		variantData.constructState(upData);
+		VariantData.checkState(variantData);
 
-		try {
-			save(datastoreService, upData.getOauth(), droData);
-		} catch (EntityNotFoundException e) {
-			throw new ServletException(e);
-		}
+		save(upData.getOauth(), variantData);
 
 		res.setStatus(HttpServletResponse.SC_CREATED);
 		String url = req.getRequestURL().toString();
 		url = url.substring(0, url.lastIndexOf("/") + 1);
 
-		res.setHeader("Location", url + "view?u=" + droData.getScreenName());
+		res
+				.setHeader("Location", url + "view?u="
+						+ variantData.getScreenName());
 	}
 
-	private void save(DatastoreService datastoreService, OAuthData oauth,
-			DroxmlData droData) throws ServletException,
-			EntityNotFoundException {
+	private void save(OAuthData oauth, VariantData variantData)
+			throws ServletException {
 		log.info("start save droData");
-		Collection<AppDataSrv> appList = droData.getAppMap().values();
+		List<AppDataSrv> appList = variantData.getAppList();
 
 		// まだ整合性は気にしない
-		Date createAt = new Date();
 		for (AppDataSrv app : appList) {
-			String iconNameWithHint = app.getIconNameWithScreenHint(droData);
-			Query q = new Query("icon");
-			q.addFilter("fileName", Query.FilterOperator.EQUAL,
-					iconNameWithHint);
-			PreparedQuery pq = datastoreService.prepare(q);
-			if (pq.countEntities() == 0) {
-				// 未登録のアプリケーション
-				IconData iconData = new IconData(droData, app);
-				Entity entity = iconData.getEntity(createAt);
-				datastoreService.put(entity);
+			IconDataMeta iMeta = IconDataMeta.get();
+			IconData iconData = Datastore.query(iMeta).filter(
+					iMeta.packageName.equal(app.getPackageName())).asSingle();
+
+			IconData appIcon = app.getIconData();
+
+			// 現在持ってるのよりでかいサイズのが来たらDB差し替えたい
+			if (iconData == null || appIcon.getHeight() > iconData.getHeight()
+					&& appIcon.getHeight() <= 72 && appIcon.getWidth() <= 72) {
+
+				if (iconData != null) {
+					Datastore.delete(iconData.getKey());
+				}
+				Datastore.put(appIcon);
+			} else {
+				app.setIconData(iconData);
 			}
 		}
 
 		// トランザクション処理は多分いらない…はず
-		// TODO 古い重複データがあったらDELETEする処理を入れる
+		AppDataSrvMeta aMeta = AppDataSrvMeta.get();
+		List<Key> keys = Datastore.query(aMeta).filter(
+				aMeta.screenName.equal(variantData.getScreenName()),
+				aMeta.variant.equal(variantData.getVariant())).asKeyList();
+		Datastore.delete(keys);
 
-		List<Entity> eitityList = new ArrayList<Entity>();
-		for (AppDataSrv appData : appList) {
-			Entity entity = appData.getEntity(droData);
-			entity.setProperty("createAt", new Date());
-			eitityList.add(entity);
-		}
-		datastoreService.put(eitityList);
+		VariantDataMeta vMeta = VariantDataMeta.get();
+		keys = Datastore.query(vMeta).filter(
+				vMeta.screenName.equal(variantData.getScreenName()),
+				vMeta.variant.equal(variantData.getVariant())).asKeyList();
+		Datastore.delete(keys);
+
+		Datastore.put(variantData.getEntityList());
 
 		log.info("Yay! data save succeed...");
 	}
 
-	private DroxmlData unzip(UploadData upData) throws IOException {
+	private VariantData unzip(UploadData upData) throws IOException {
 		ByteArrayInputStream bain = new ByteArrayInputStream(upData
 				.getZipData());
 		ZipInputStream zin = new ZipInputStream(bain);
 
-		DroxmlData xmlData = null;
+		VariantData xmlData = null;
 		Map<String, Image> iconMap = new HashMap<String, Image>();
 
 		ZipEntry zen = null;
@@ -161,28 +160,30 @@ public class DrozipUploadServlet extends HttpServlet {
 			throw new IllegalStateException(
 					"upload file is not include xml data!");
 		}
-		for (String key : xmlData.getAppMap().keySet()) {
-			Image icon = iconMap.get(key);
-			AppDataSrv app = xmlData.getAppMap().get(key);
-			app.setIcon(icon);
+		for (AppDataSrv app : xmlData.getAppList()) {
+			Image icon = iconMap.get(app.getIconName());
+			IconData iconData = new IconData();
+			iconData.setIcon(icon);
+			app.setIconData(iconData);
+			app.setScreenName(upData.getOauth().getScreenName());
 		}
 
 		return xmlData;
 	}
 
-	private DroxmlData parseDroxml(String xml) throws XMLStreamException {
+	private VariantData parseDroxml(String xml) throws XMLStreamException {
 		XMLInputFactory factory = XMLInputFactory.newInstance();
 		XMLStreamReader reader = factory
 				.createXMLStreamReader(new StringReader(xml));
 
-		DroxmlData result = null;
+		VariantData result = null;
 		AppDataSrv app = null;
 
 		while (reader.hasNext()) {
 			String name = null;
 			switch (reader.getEventType()) {
 			case XMLStreamConstants.START_DOCUMENT:
-				result = new DroxmlData();
+				result = new VariantData();
 
 				break;
 
@@ -195,7 +196,7 @@ public class DrozipUploadServlet extends HttpServlet {
 						if ("version".equals(attrName)) {
 							result.setVersion(attrValue);
 						} else if ("screen".equals(attrName)) {
-							result.setScreen(attrValue);
+							// result.setScreen(attrValue);
 						}
 					}
 				} else if ("AppData".equals(name)) {
@@ -266,6 +267,8 @@ public class DrozipUploadServlet extends HttpServlet {
 					} else if ("oauth_hashcode".equals(name)) {
 						upData.getOauth().setOauthHashCode(
 								Integer.parseInt(value));
+					} else if ("variant".equals(name)) {
+						upData.setVariant(value);
 					}
 
 				} else {
