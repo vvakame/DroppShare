@@ -117,7 +117,8 @@ public class DrozipUploadServlet extends HttpServlet {
 				vMeta.variant.equal(variantData.getVariant())).asKeyList();
 		Datastore.delete(keys);
 
-		Datastore.put(variantData.getEntityList());
+		Datastore.put(variantData);
+		Datastore.put(variantData.getAppList());
 
 		log.info("Yay! data save succeed...");
 	}

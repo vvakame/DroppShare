@@ -1,6 +1,5 @@
 package net.vvakame.dropphosting.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,6 +10,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import net.vvakame.dropphosting.meta.AppDataSrvMeta;
 
 import org.slim3.datastore.Attribute;
+import org.slim3.datastore.Datastore;
 import org.slim3.datastore.InverseModelListRef;
 import org.slim3.datastore.Model;
 import org.w3c.dom.Document;
@@ -35,6 +35,13 @@ public class VariantData {
 
 	private String screenName = null;
 	private String variant = null;
+
+	public void createKey() {
+		if (key == null) {
+			key = Datastore.createKey(VariantData.class, screenName + "/"
+					+ variant);
+		}
+	}
 
 	public Key getKey() {
 		return key;
@@ -80,15 +87,6 @@ public class VariantData {
 		appListRef.getModelList().add(app);
 	}
 
-	public List<Object> getEntityList() {
-		List<Object> entities = new ArrayList<Object>();
-
-		entities.add(this);
-		entities.addAll(getAppList());
-
-		return entities;
-	}
-
 	public void constructState(UploadData upData) {
 		screenName = upData.getOauth().getScreenName();
 		variant = upData.getVariant();
@@ -116,6 +114,7 @@ public class VariantData {
 		for (AppDataSrv app : appList) {
 			AppDataSrv.checkState(app);
 		}
+		variantData.createKey();
 	}
 
 	public Document getDOMDocument() throws ParserConfigurationException {

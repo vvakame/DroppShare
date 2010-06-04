@@ -24,11 +24,10 @@ public class IconData {
 	private String register = null;
 	private Date createAt = null;
 
-	public IconData() {
-	}
-
 	public void createKey() {
-		key = Datastore.createKey(IconData.class, packageName);
+		if (key == null) {
+			key = Datastore.createKey(IconData.class, fileName);
+		}
 	}
 
 	public void setKey(Key key) {

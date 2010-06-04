@@ -3,6 +3,7 @@ package net.vvakame.dropphosting.model;
 import java.util.Date;
 
 import org.slim3.datastore.Attribute;
+import org.slim3.datastore.Datastore;
 import org.slim3.datastore.Model;
 import org.slim3.datastore.ModelRef;
 import org.w3c.dom.Document;
@@ -44,6 +45,18 @@ public class AppDataSrv {
 	private String description = null;
 	private int versionCode = -1;
 	private String versionName = null;
+
+	public void createKey() {
+		VariantData variant = variantRef.getModel();
+		if (variant == null) {
+			throw new IllegalStateException(
+					"app data, parent key is not included!");
+		} else if (key == null) {
+			variant.createKey();
+			key = Datastore.createKey(variant.getKey(), AppDataSrv.class,
+					packageName);
+		}
+	}
 
 	public void setKey(Key key) {
 		this.key = key;
@@ -176,6 +189,7 @@ public class AppDataSrv {
 					+ "Parent variant is not included!");
 		}
 		IconData.checkState(app.getIconData());
+		app.createKey();
 	}
 
 	public Element getDOMElement(Document document) {
