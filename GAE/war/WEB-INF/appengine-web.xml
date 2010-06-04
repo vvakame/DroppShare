@@ -5,6 +5,10 @@
 
 	<sessions-enabled>true</sessions-enabled>
 
+	<static-files>
+		<include path="/res/**" />
+	</static-files>
+
 	<!-- Configure java.util.logging -->
 	<system-properties>
 		<property name="java.util.logging.config.file" value="WEB-INF/logging.properties" />
