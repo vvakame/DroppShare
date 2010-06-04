@@ -54,4 +54,31 @@ public class OAuthData {
 
 		oauth.createKey();
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		OAuthData oauth = null;
+		if (obj == null) {
+			return false;
+		} else if (!(obj instanceof OAuthData)) {
+			return false;
+		}
+
+		oauth = (OAuthData) obj;
+		if (screenName == null && oauth.getScreenName() == null
+				&& oauthHashCode == null && oauth.getOauthHashCode() == null) {
+			return true;
+		} else if (screenName != null && oauthHashCode != null) {
+			return screenName.equals(oauth.getScreenName())
+					&& oauthHashCode.equals(oauth.getOauthHashCode());
+		} else if (screenName != null) {
+			return screenName.equals(oauth.getScreenName())
+					&& oauth.getOauthHashCode() == null;
+		} else if (oauthHashCode != null) {
+			return oauthHashCode.equals(oauth.getOauthHashCode())
+					&& oauth.getScreenName() == null;
+		}
+
+		return false;
+	}
 }

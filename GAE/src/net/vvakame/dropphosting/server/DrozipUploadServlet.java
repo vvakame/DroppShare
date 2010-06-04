@@ -9,7 +9,9 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -25,6 +27,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import net.vvakame.dropphosting.meta.AppDataSrvMeta;
 import net.vvakame.dropphosting.meta.IconDataMeta;
+import net.vvakame.dropphosting.meta.OAuthDataMeta;
 import net.vvakame.dropphosting.meta.VariantDataMeta;
 import net.vvakame.dropphosting.model.AppDataSrv;
 import net.vvakame.dropphosting.model.IconData;
@@ -45,10 +48,21 @@ import com.google.appengine.api.images.ImagesServiceFactory;
 public class DrozipUploadServlet extends HttpServlet {
 	private static final long serialVersionUID = -7504558110741757404L;
 
+	private static final String PROP_DROP = "dropp";
+	@SuppressWarnings("unused")
+	private static boolean DEBUG = false;
+
 	private static final int MAX_UPLOAD_SIZE = 2000000;
 
 	private static final Logger log = Logger
 			.getLogger(DrozipUploadServlet.class.getName());
+
+	public void init() throws ServletException {
+
+		ResourceBundle rb = ResourceBundle.getBundle(PROP_DROP, Locale
+				.getDefault());
+		DEBUG = Boolean.parseBoolean(rb.getString("debug_mode"));
+	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
@@ -60,6 +74,18 @@ public class DrozipUploadServlet extends HttpServlet {
 
 		// Uploadデータを受け取る
 		UploadData upData = getUploadFiles(req);
+		OAuthData upOauth = upData.getOauth();
+		OAuthDataMeta oMeta = OAuthDataMeta.get();
+		OAuthData dbOauth = Datastore.query(oMeta).filter(
+				oMeta.screenName.equal(upOauth.getScreenName())).asSingle();
+		if (dbOauth == null) {
+			throw new IllegalStateException(
+					"OAuth on Twitter still has not been authenticated!");
+		}
+		if (!dbOauth.equals(upOauth)) {
+			throw new IllegalStateException(
+					"Please try to authenticate once more...");
+		}
 		UploadData.chechState(upData);
 
 		// 受け取ったzipデータの展開とかする

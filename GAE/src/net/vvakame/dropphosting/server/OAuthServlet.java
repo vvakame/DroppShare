@@ -2,6 +2,7 @@ package net.vvakame.dropphosting.server;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -21,11 +22,15 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import net.vvakame.dropphosting.meta.OAuthDataMeta;
 import net.vvakame.dropphosting.model.OAuthData;
 
+import org.slim3.datastore.Datastore;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import com.google.appengine.api.datastore.Key;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -39,11 +44,14 @@ public class OAuthServlet extends HttpServlet {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
-	private static final String SESSION_TWITTER = "twitter";
+	private static final String PROP_TWITTER = "twitter";
 	private static final String SESSION_REQUEST_TOKEN = "requestToken";
 	private static final String SESSION_ACCESS_TOKEN = "accessToken";
 
 	private static final String PARAM_OAUTH_VERIFIER = "oauth_verifier";
+
+	private static final String PROP_DROP = "dropp";
+	private static boolean DEBUG = false;
 
 	private static String callbackUrl;
 	private static String consumerKey;
@@ -53,13 +61,16 @@ public class OAuthServlet extends HttpServlet {
 
 	public void init() throws ServletException {
 
-		ResourceBundle rb = ResourceBundle.getBundle(SESSION_TWITTER, Locale
+		ResourceBundle rb = ResourceBundle.getBundle(PROP_TWITTER, Locale
 				.getDefault());
 		callbackUrl = rb.getString("callback_url");
 		consumerKey = rb.getString("consumer_key");
 		consumerSecret = rb.getString("consumer_secret");
 
 		twiFac = new TwitterFactory();
+
+		rb = ResourceBundle.getBundle(PROP_DROP, Locale.getDefault());
+		DEBUG = Boolean.parseBoolean(rb.getString("debug_mode"));
 	}
 
 	protected void doGet(HttpServletRequest request,
@@ -75,7 +86,13 @@ public class OAuthServlet extends HttpServlet {
 		String userAgent = request.getHeader("User-Agent");
 		logger.info(userAgent);
 
-		if (accessToken != null) {
+		if (DEBUG) {
+			OAuthData data = new OAuthData();
+			data.setScreenName("vvakame");
+			data.setOauthHashCode(01234567);
+			saveOauth(data);
+			outputXml(response, data);
+		} else if (accessToken != null) {
 			// アクセストークン取得後の処理
 
 			Twitter twitter = twiFac.getOAuthAuthorizedInstance(consumerKey,
@@ -99,6 +116,7 @@ public class OAuthServlet extends HttpServlet {
 				return;
 			}
 
+			saveOauth(data);
 			outputXml(response, data);
 
 			return;
@@ -115,7 +133,7 @@ public class OAuthServlet extends HttpServlet {
 				RequestToken requestToken = twitter
 						.getOAuthRequestToken(callbackUrl);
 				session.setAttribute(SESSION_REQUEST_TOKEN, requestToken);
-				session.setAttribute(SESSION_TWITTER, twitter);
+				session.setAttribute(PROP_TWITTER, twitter);
 				response.sendRedirect(requestToken.getAuthenticationURL());
 
 			} catch (TwitterException e) {
@@ -131,8 +149,7 @@ public class OAuthServlet extends HttpServlet {
 
 			OAuthData data = null;
 			try {
-				Twitter twitter = (Twitter) session
-						.getAttribute(SESSION_TWITTER);
+				Twitter twitter = (Twitter) session.getAttribute(PROP_TWITTER);
 				if (twitter == null) {
 					clearSession(session);
 					throw new ServletException("Twitter instance was null!!!");
@@ -165,10 +182,19 @@ public class OAuthServlet extends HttpServlet {
 				return;
 			}
 
+			saveOauth(data);
 			outputXml(response, data);
 
 			return;
 		}
+	}
+
+	private void saveOauth(OAuthData data) {
+		OAuthDataMeta oMeta = OAuthDataMeta.get();
+		List<Key> keys = Datastore.query(oMeta).filter(
+				oMeta.screenName.equal(data.getScreenName())).asKeyList();
+		Datastore.delete(keys);
+		Datastore.put(data);
 	}
 
 	private void outputXml(HttpServletResponse response, OAuthData data)
@@ -212,7 +238,7 @@ public class OAuthServlet extends HttpServlet {
 
 	private void clearSession(HttpSession session) {
 
-		session.removeAttribute(SESSION_TWITTER);
+		session.removeAttribute(PROP_TWITTER);
 		session.removeAttribute(SESSION_ACCESS_TOKEN);
 		session.removeAttribute(SESSION_REQUEST_TOKEN);
 	}
