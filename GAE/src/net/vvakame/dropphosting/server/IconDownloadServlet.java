@@ -38,7 +38,10 @@ public class IconDownloadServlet extends HttpServlet {
 		IconData iconData = Datastore.query(iMeta).filter(
 				iMeta.fileName.equal(fileName)).asSingle();
 
-		// TODO 取れないときの処理
+		if (iconData == null) {
+			res.sendError(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
 
 		res.setContentType("image/png");
 		res.setHeader("Cache-Control", "max-age=" + 60 * 60 * 24 * 30); // 最高30日キャッシュ

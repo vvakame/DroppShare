@@ -62,7 +62,8 @@ public class DataDownloadServlet extends HttpServlet {
 		VariantData variantData = Datastore.query(vMeta).filter(
 				vMeta.screenName.equal(u), vMeta.variant.equal(v)).asSingle();
 		if (variantData == null) {
-			throw new IllegalArgumentException("drop data is not found!");
+			res.sendError(HttpServletResponse.SC_NOT_FOUND);
+			return;
 		}
 
 		try {

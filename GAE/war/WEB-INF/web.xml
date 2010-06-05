@@ -17,7 +17,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 
 	<filter>
 		<filter-name>DroppShareFilter</filter-name>
-		<filter-class>net.vvakame.dropphosting.server.DroppShareFilter</filter-class>
+		<filter-class>net.vvakame.dropphosting.filter.DroppShareFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>DroppShareFilter</filter-name>
