@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slim3.datastore.Datastore;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 
 import net.vvakame.dropphosting.meta.AppDataSrvMeta;
 import net.vvakame.dropphosting.meta.IconDataMeta;
@@ -37,6 +39,10 @@ public class AdminConsoleServlet extends HttpServlet {
 
 		if ("delete_icon".equals(req.getParameter("action"))) {
 			String fileName = req.getParameter("file_name");
+
+			MemcacheService memcache = MemcacheServiceFactory
+					.getMemcacheService();
+			memcache.delete(fileName);
 
 			IconDataMeta iMeta = IconDataMeta.get();
 			List<Key> keys = Datastore.query(iMeta).filter(

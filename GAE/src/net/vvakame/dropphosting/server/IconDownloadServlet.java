@@ -1,6 +1,8 @@
 package net.vvakame.dropphosting.server;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -10,15 +12,26 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slim3.datastore.Datastore;
 
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
+
 import net.vvakame.dropphosting.meta.IconDataMeta;
 import net.vvakame.dropphosting.model.IconData;
 
 public class IconDownloadServlet extends HttpServlet {
 	private static final long serialVersionUID = -7504558110741757404L;
 
-	@SuppressWarnings("unused")
+	private static final String PROP_DROP = "dropp";
+	private static boolean DEBUG = false;
+
 	private static final Logger log = Logger
 			.getLogger(IconDownloadServlet.class.getName());
+
+	public void init() throws ServletException {
+		ResourceBundle rb = ResourceBundle.getBundle(PROP_DROP, Locale
+				.getDefault());
+		DEBUG = Boolean.parseBoolean(rb.getString("debug_mode"));
+	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
@@ -34,9 +47,21 @@ public class IconDownloadServlet extends HttpServlet {
 		}
 		String fileName = path.substring(path.lastIndexOf("/") + 1);
 
-		IconDataMeta iMeta = IconDataMeta.get();
-		IconData iconData = Datastore.query(iMeta).filter(
-				iMeta.fileName.equal(fileName)).asSingle();
+		MemcacheService memcache = MemcacheServiceFactory.getMemcacheService();
+		IconData iconData = (IconData) memcache.get(fileName);
+
+		if (DEBUG) {
+			if (iconData != null) {
+				log.info("Hit memcache! icon=" + fileName);
+			}
+		}
+
+		if (iconData == null) {
+			IconDataMeta iMeta = IconDataMeta.get();
+			iconData = Datastore.query(iMeta).filter(
+					iMeta.fileName.equal(fileName)).asSingle();
+			memcache.put(fileName, iconData);
+		}
 
 		if (iconData == null) {
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);

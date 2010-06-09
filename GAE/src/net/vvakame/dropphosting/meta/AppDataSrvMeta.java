@@ -1,6 +1,6 @@
 package net.vvakame.dropphosting.meta;
 
-//@javax.annotation.Generated(value = { "slim3-gen", "@VERSION@" }, date = "2010-06-08 20:27:05")
+//@javax.annotation.Generated(value = { "slim3-gen", "@VERSION@" }, date = "2010-06-10 00:48:06")
 /** */
 public final class AppDataSrvMeta extends org.slim3.datastore.ModelMeta<net.vvakame.dropphosting.model.AppDataSrv> {
 

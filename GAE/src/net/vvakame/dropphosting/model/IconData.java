@@ -1,5 +1,6 @@
 package net.vvakame.dropphosting.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.slim3.datastore.Attribute;
@@ -10,7 +11,9 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.images.Image;
 
 @Model
-public class IconData {
+public class IconData implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Attribute(primaryKey = true)
 	private Key key = null;
