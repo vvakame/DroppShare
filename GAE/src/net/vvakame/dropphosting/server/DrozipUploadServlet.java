@@ -44,6 +44,9 @@ import org.slim3.datastore.Datastore;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.QueueFactory;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Builder;
 
 public class DrozipUploadServlet extends HttpServlet {
 	private static final long serialVersionUID = -7504558110741757404L;
@@ -58,7 +61,6 @@ public class DrozipUploadServlet extends HttpServlet {
 			.getLogger(DrozipUploadServlet.class.getName());
 
 	public void init() throws ServletException {
-
 		ResourceBundle rb = ResourceBundle.getBundle(PROP_DROP, Locale
 				.getDefault());
 		DEBUG = Boolean.parseBoolean(rb.getString("debug_mode"));
@@ -145,6 +147,11 @@ public class DrozipUploadServlet extends HttpServlet {
 
 		Datastore.put(variantData);
 		Datastore.put(variantData.getAppList());
+
+		Queue queue = QueueFactory.getQueue("tweet");
+		String u = variantData.getScreenName();
+		String v = variantData.getVariant();
+		queue.add(Builder.url("/tweet").param("u", u).param("v", v));
 
 		log.info("Yay! data save succeed...");
 	}

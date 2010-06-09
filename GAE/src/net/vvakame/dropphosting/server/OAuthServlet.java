@@ -24,6 +24,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import net.vvakame.dropphosting.meta.OAuthDataMeta;
 import net.vvakame.dropphosting.model.OAuthData;
+import net.vvakame.dropphosting.model.TwitterAuthorizedData;
 
 import org.slim3.datastore.Datastore;
 import org.w3c.dom.DOMImplementation;
@@ -118,6 +119,7 @@ public class OAuthServlet extends HttpServlet {
 
 			saveOauth(data);
 			outputXml(response, data);
+			saveAnnounceAccount(data, accessToken);
 
 			return;
 
@@ -184,8 +186,19 @@ public class OAuthServlet extends HttpServlet {
 
 			saveOauth(data);
 			outputXml(response, data);
+			saveAnnounceAccount(data, accessToken);
 
 			return;
+		}
+	}
+
+	private void saveAnnounceAccount(OAuthData data, AccessToken accessToken) {
+		if ("DroppShare".equals(data.getScreenName())) {
+			TwitterAuthorizedData twiData = new TwitterAuthorizedData();
+			twiData.setAccessToken(accessToken);
+			twiData.setScreenName(data.getScreenName());
+			twiData.createKey();
+			Datastore.put(twiData);
 		}
 	}
 
