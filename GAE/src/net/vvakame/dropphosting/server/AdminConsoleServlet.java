@@ -71,6 +71,9 @@ public class AdminConsoleServlet extends HttpServlet {
 					oMeta.screenName.equal(screenName)).asKeyList();
 
 			Datastore.delete(keys);
+		} else if ("delete_session".equals(req.getParameter("action"))) {
+			List<Key> keys = Datastore.query("_ah_SESSION").asKeyList();
+			Datastore.delete(keys);
 		}
 
 		ServletContext sc = getServletContext();

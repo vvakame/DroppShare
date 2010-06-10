@@ -24,3 +24,8 @@ oauthとか消せます<br />
 	screenName:<input type="text" name="screen_name" value="" /><br />
 	<input type="submit" />
 </form>
+sessionとか消せます<br />
+<form method="post" action="/admin">
+	<input type="hidden" name="action" value="delete_session" /><br />
+	<input type="submit" />
+</form>

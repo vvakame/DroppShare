@@ -39,6 +39,10 @@ public class HttpPostMultipartWrapper {
 		mUrl = url;
 	}
 
+	public HttpURLConnection getHttpURLConnection() {
+		return mCon;
+	}
+
 	private void connect() throws IOException {
 		if (mCon == null) {
 			mCon = (HttpURLConnection) mUrl.openConnection();

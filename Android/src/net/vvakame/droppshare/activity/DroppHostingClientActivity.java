@@ -55,9 +55,10 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 						.getStringExtra(TwitterOAuthDialog.PASSWORD);
 
 				try {
-					OAuthData oath = TwitterOAuthAccessor.getAuthorizedData(
+					OAuthData oauth = TwitterOAuthAccessor.getAuthorizedData(
 							name, password);
-					saveOAuth(oath);
+					saveOAuth(oauth);
+					pool(oauth);
 				} catch (IllegalStateException e) {
 					throw e;
 				} catch (IOException e) {
@@ -90,6 +91,12 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 				: null;
 	}
 
+	private void deleteOAuth() {
+		SharedPreferences pref = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		pref.edit().remove("oauth_hashcode").commit();
+	}
+
 	public void pool(OAuthData oauth) throws IOException {
 		if (oauth == null) {
 			throw new IllegalArgumentException("Not authorized twitter oauth.");
@@ -101,9 +108,10 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 
 		try {
 			HttpPostMultipartWrapper post = new HttpPostMultipartWrapper(
-					"http://192.168.0.6:8888/upload");
+					"http://drphost.appspot.com/upload");
 			post.pushString("screen_name", oauth.getScreenName());
 			post.pushString("oauth_hashcode", oauth.getOauthHashCode());
+			post.pushString("variant", "default");
 			post.pushFile("drozip", drozip);
 			post.close();
 
@@ -112,6 +120,7 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 
 		} catch (FileNotFoundException e) {
 			Log.e(TAG, HelperUtil.getExceptionLog(e));
+			deleteOAuth();
 			throw e;
 		} catch (MalformedURLException e) {
 			Log.e(TAG, HelperUtil.getExceptionLog(e));
