@@ -1,7 +1,10 @@
 package net.vvakame.dropphosting.model;
 
-import java.util.Collection;
+import java.text.Collator;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -117,7 +120,8 @@ public class VariantData {
 		variantData.createKey();
 	}
 
-	public Document getDOMDocument() throws ParserConfigurationException {
+	public Document getDOMDocument(Locale locale)
+			throws ParserConfigurationException {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
 				.newInstance();
 		DocumentBuilder documentBuilder = documentBuilderFactory
@@ -139,7 +143,14 @@ public class VariantData {
 		authorNode.appendChild(document.createTextNode(screenName));
 		root.appendChild(authorNode);
 
-		Collection<AppDataSrv> appList = getAppListRef().getModelList();
+		List<AppDataSrv> appList = getAppListRef().getModelList();
+		final Collator collator = Collator.getInstance(locale);
+		Collections.sort(appList, new Comparator<AppDataSrv>() {
+			@Override
+			public int compare(AppDataSrv o1, AppDataSrv o2) {
+				return collator.compare(o1.getAppName(), o2.getAppName());
+			}
+		});
 		for (AppDataSrv app : appList) {
 			root.appendChild(app.getDOMElement(document));
 		}

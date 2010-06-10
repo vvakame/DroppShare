@@ -67,7 +67,7 @@ public class DataDownloadServlet extends HttpServlet {
 		}
 
 		try {
-			Document document = variantData.getDOMDocument();
+			Document document = variantData.getDOMDocument(req.getLocale());
 			DOMSource src = new DOMSource(document);
 
 			TransformerFactory transFactory = TransformerFactory.newInstance();
