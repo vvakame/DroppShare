@@ -1,6 +1,7 @@
 package net.vvakame.dropphosting.taskqueue;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -71,11 +72,10 @@ public class TweetQueueServlet extends HttpServlet {
 			Twitter twitter = twiFac.getOAuthAuthorizedInstance(consumerKey,
 					consumerSecret, twiData.getAccessToken());
 			try {
-				twitter.updateStatus(".@" + variantData.getScreenName() + "'s "
-						+ variantData.getVariant() + " "
-						+ "http://drphost.appspot.com/view?u="
-						+ variantData.getScreenName() + "&v="
-						+ variantData.getVariant());
+				twitter.updateStatus(".@" + variantData.getScreenName()
+						+ "'s app list " + "http://drphost.appspot.com/view?u="
+						+ variantData.getScreenName() + " "
+						+ new Date().toString());
 			} catch (TwitterException e) {
 				throw new ServletException(e);
 			}

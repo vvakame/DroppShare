@@ -100,9 +100,9 @@ public final class R {
         public static final int selector=0x7f090001;
     }
     public static final class string {
-        public static final int add_dir=0x7f080021;
-        public static final int add_dir_button_text=0x7f080027;
-        public static final int add_dir_title=0x7f080026;
+        public static final int add_dir=0x7f080022;
+        public static final int add_dir_button_text=0x7f080028;
+        public static final int add_dir_title=0x7f080027;
         public static final int added=0x7f080005;
         /**  For DroppShareActivity 
          */
@@ -112,45 +112,48 @@ public final class R {
         public static final int app_name=0x7f080000;
         public static final int app_not_exists=0x7f080009;
         public static final int cache_refresh=0x7f08000e;
-        public static final int cancel=0x7f08002e;
-        public static final int cant_resolve_intent_message=0x7f080030;
+        public static final int cancel=0x7f080032;
+        public static final int cant_resolve_intent_message=0x7f080034;
         /**  For ActivityHelper 
  For ActivityHelper 
          */
-        public static final int cant_resolve_intent_title=0x7f08002f;
+        public static final int cant_resolve_intent_title=0x7f080033;
         public static final int create_cache_automatically=0x7f080015;
         public static final int create_cache_automatically_summary=0x7f080016;
-        public static final int files_not_exists=0x7f080028;
+        public static final int done_upload=0x7f08002c;
         /**  For DroppSelectorActivity 
  For DroppSelectorActivity 
          */
-        public static final int gen_drozip=0x7f080020;
-        public static final int gen_drozip_negative=0x7f080024;
-        public static final int gen_drozip_positive=0x7f080023;
-        public static final int gen_drozip_title=0x7f080022;
-        public static final int go_market=0x7f080031;
+        public static final int external_storage_not_exists=0x7f080020;
+        public static final int failed_upload=0x7f08002d;
+        public static final int files_not_exists=0x7f080029;
+        public static final int gen_drozip=0x7f080021;
+        public static final int gen_drozip_negative=0x7f080025;
+        public static final int gen_drozip_positive=0x7f080024;
+        public static final int gen_drozip_title=0x7f080023;
+        public static final int go_market=0x7f080035;
         public static final int googl_shorten=0x7f08000c;
         public static final int history=0x7f080003;
         /**  For DroppHostingClientActivity 
          */
-        public static final int hosting_client_name=0x7f080029;
+        public static final int hosting_client_name=0x7f08002a;
         public static final int http_schema=0x7f08000a;
-        public static final int ignore=0x7f080032;
+        public static final int ignore=0x7f080036;
         public static final int installed=0x7f080002;
         public static final int market_schema=0x7f08000b;
         public static final int message_added=0x7f080019;
         public static final int message_added_summary=0x7f080018;
         public static final int message_added_title=0x7f080017;
-        public static final int name_hint=0x7f08002b;
-        public static final int now_compress_data=0x7f080025;
+        public static final int name_hint=0x7f08002f;
+        public static final int now_compress_data=0x7f080026;
         public static final int now_matchting_data=0x7f08001e;
         /**  For TwitterOAuthDialog 
          */
-        public static final int oauth_title=0x7f08002a;
-        public static final int oi_file_manager_app_name=0x7f080033;
-        public static final int oi_file_manager_package=0x7f080034;
-        public static final int ok=0x7f08002d;
-        public static final int pass_hint=0x7f08002c;
+        public static final int oauth_title=0x7f08002e;
+        public static final int oi_file_manager_app_name=0x7f080037;
+        public static final int oi_file_manager_package=0x7f080038;
+        public static final int ok=0x7f080031;
+        public static final int pass_hint=0x7f080030;
         /**  For PreferenceActivity 
  For PreferenceActivity 
          */
@@ -177,14 +180,17 @@ public final class R {
  For XmlUtil 
  For XmlUtil 
          */
-        public static final int screen_dpi=0x7f080037;
+        public static final int screen_dpi=0x7f08003b;
         public static final int show_selector=0x7f08000f;
+        /**  For DroppHostingClientActivity 
+         */
+        public static final int uploading=0x7f08002b;
         public static final int uri_shorten=0x7f080013;
         public static final int uri_shorten_failure=0x7f080008;
         public static final int uri_shorten_summary=0x7f080014;
         public static final int wait_a_moment=0x7f08001f;
-        public static final int zxing_app_name=0x7f080035;
-        public static final int zxing_package=0x7f080036;
+        public static final int zxing_app_name=0x7f080039;
+        public static final int zxing_package=0x7f08003a;
     }
     public static final class xml {
         public static final int pref=0x7f050000;

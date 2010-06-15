@@ -5,7 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import net.vvakame.android.helper.Closure;
+import net.vvakame.android.helper.DrivenHandler;
 import net.vvakame.android.helper.HelperUtil;
+import net.vvakame.droppshare.R;
 import net.vvakame.droppshare.helper.HttpPostMultipartWrapper;
 import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.helper.TwitterOAuthAccessor;
@@ -14,6 +17,8 @@ import net.vvakame.droppshare.model.OAuthData;
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -21,9 +26,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 public class DroppHostingClientActivity extends Activity implements LogTagIF {
 	private static final int REQUEST_TWIT_INFO = 0;
+
+	private static final int DIALOG_PROGRESS = 1;
+
+	private static final int MESSAGE_START_PROGRESS = 1;
+	private static final int MESSAGE_FINISH_PROGRESS = 2;
+	private static final int MESSAGE_FAILED_PROGRESS = 3;
+	private static final int MESSAGE_EXCEPTION_PROGRESS = 4;
+
+	private ProgressDialog mProgDialog = null;
+	private final DrivenHandler mHandler = new DrivenHandler(this,
+			DIALOG_PROGRESS);
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -32,43 +49,126 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 
 		super.onCreate(savedInstanceState);
 
-		OAuthData oauth = restoreOAuth();
+		Closure cloFinish = new Closure() {
+			@Override
+			public void exec() {
+				Toast.makeText(DroppHostingClientActivity.this,
+						getString(R.string.done_upload), Toast.LENGTH_LONG)
+						.show();
+				finish();
+			}
+		};
+
+		Closure cloFailed = new Closure() {
+			@Override
+			public void exec() {
+				Toast.makeText(DroppHostingClientActivity.this,
+						getString(R.string.failed_upload), Toast.LENGTH_LONG)
+						.show();
+				finish();
+			}
+		};
+
+		mHandler.pushEventWithShowDialog(MESSAGE_START_PROGRESS, null);
+		mHandler.pushEventWithDissmiss(MESSAGE_FINISH_PROGRESS, cloFinish);
+		mHandler.pushEventWithDissmiss(MESSAGE_FAILED_PROGRESS, cloFailed);
+
+		final OAuthData oauth = restoreOAuth();
 		if (oauth == null) {
 			Intent intent = new Intent(this, TwitterOAuthDialog.class);
 			startActivityForResult(intent, REQUEST_TWIT_INFO);
 		} else {
-			try {
-				pool(oauth);
-			} catch (IOException e) {
-				Log.e(TAG, HelperUtil.getExceptionLog(e));
-				// TODO エラー処理ちゃんとする
-			}
+			new Thread() {
+				@Override
+				public void run() {
+					boolean done = false;
+
+					mHandler.sendEmptyMessage(MESSAGE_START_PROGRESS);
+					try {
+						done = pool(oauth);
+					} catch (IOException e) {
+						sanitizeException(e);
+					}
+
+					if (done) {
+						mHandler.sendEmptyMessage(MESSAGE_FINISH_PROGRESS);
+					} else {
+						mHandler.sendEmptyMessage(MESSAGE_FAILED_PROGRESS);
+					}
+				}
+			}.start();
 		}
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == REQUEST_TWIT_INFO) {
 			if (resultCode == RESULT_OK) {
-				String name = data
+
+				final String name = data
 						.getStringExtra(TwitterOAuthDialog.SCREEN_NAME);
-				String password = data
+				final String password = data
 						.getStringExtra(TwitterOAuthDialog.PASSWORD);
 
-				try {
-					OAuthData oauth = TwitterOAuthAccessor.getAuthorizedData(
-							name, password);
-					saveOAuth(oauth);
-					pool(oauth);
-				} catch (IllegalStateException e) {
-					throw e;
-				} catch (IOException e) {
-					throw new IllegalStateException(e);
-				} catch (XmlPullParserException e) {
-					throw new IllegalStateException(e);
-				}
+				new Thread() {
+					@Override
+					public void run() {
+						boolean done = false;
+
+						mHandler.sendEmptyMessage(MESSAGE_START_PROGRESS);
+
+						try {
+							OAuthData oauth = TwitterOAuthAccessor
+									.getAuthorizedData(name, password);
+							saveOAuth(oauth);
+							done = pool(oauth);
+						} catch (IllegalStateException e) {
+							sanitizeException(e);
+						} catch (IOException e) {
+							sanitizeException(e);
+						} catch (XmlPullParserException e) {
+							throw new IllegalStateException(e);
+						}
+
+						if (done) {
+							mHandler.sendEmptyMessage(MESSAGE_FINISH_PROGRESS);
+						} else {
+							mHandler.sendEmptyMessage(MESSAGE_FAILED_PROGRESS);
+						}
+					}
+				}.start();
 			} else if (resultCode == RESULT_CANCELED) {
 				finish();
 			}
+		}
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DIALOG_PROGRESS:
+			mProgDialog = new ProgressDialog(this);
+			onPrepareDialog(id, mProgDialog);
+
+			return mProgDialog;
+		default:
+			break;
+		}
+		return null;
+	}
+
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		switch (id) {
+		case DIALOG_PROGRESS:
+			ProgressDialog progDialog = (ProgressDialog) dialog;
+			progDialog.setTitle(getString(R.string.uploading));
+			progDialog.setMessage(getString(R.string.wait_a_moment));
+			progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			progDialog.setCancelable(false);
+
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -97,7 +197,9 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 		pref.edit().remove("oauth_hashcode").commit();
 	}
 
-	public void pool(OAuthData oauth) throws IOException {
+	public boolean pool(OAuthData oauth) throws IOException {
+		boolean success = false;
+
 		if (oauth == null) {
 			throw new IllegalArgumentException("Not authorized twitter oauth.");
 		}
@@ -115,19 +217,37 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 			post.pushFile("drozip", drozip);
 			post.close();
 
-			String str = post.readResponse();
-			str.toString();
+			post.readResponse();
+			success = true;
 
 		} catch (FileNotFoundException e) {
-			Log.e(TAG, HelperUtil.getExceptionLog(e));
 			deleteOAuth();
-			throw e;
+			sanitizeException(e);
 		} catch (MalformedURLException e) {
 			Log.e(TAG, HelperUtil.getExceptionLog(e));
 			throw e;
 		} catch (IOException e) {
-			Log.e(TAG, HelperUtil.getExceptionLog(e));
-			throw e;
+			sanitizeException(e);
 		}
+
+		return success;
+	}
+
+	public void sanitizeException(Exception e) {
+		Log.e(TAG, HelperUtil.getExceptionLog(e));
+
+		final String message = e.getMessage();
+
+		Closure clo = new Closure() {
+			@Override
+			public void exec() {
+				Toast.makeText(DroppHostingClientActivity.this, message,
+						Toast.LENGTH_LONG).show();
+				finish();
+			}
+		};
+
+		mHandler.pushEventWithDissmiss(MESSAGE_EXCEPTION_PROGRESS, clo);
+		mHandler.sendEmptyMessage(MESSAGE_EXCEPTION_PROGRESS);
 	}
 }

@@ -44,6 +44,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
@@ -94,6 +95,12 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 
 		ImageView button = (ImageView) findViewById(R.id.gen_drozip);
 		button.setOnClickListener(this);
+
+		if (!Environment.getExternalStorageDirectory().canRead()) {
+			Toast.makeText(this,
+					getString(R.string.external_storage_not_exists),
+					Toast.LENGTH_LONG).show();
+		}
 
 		// ファイルの作成
 		installWatchingFile(this);

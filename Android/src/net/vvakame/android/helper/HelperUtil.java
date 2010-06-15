@@ -68,7 +68,7 @@ public class HelperUtil {
 	 */
 	public static String getExceptionLog(Exception e) {
 		String ret = getStackName() + ", " + e.getClass().getSimpleName() + "="
-				+ e.getMessage();
+				+ e.getMessage() + " - " + e.getStackTrace();
 		return ret;
 	}
 

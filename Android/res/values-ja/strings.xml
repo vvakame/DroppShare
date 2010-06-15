@@ -42,6 +42,8 @@
 	<string name="wait_a_moment">頑張ってます…</string>
 
 	<!-- For DroppSelectorActivity -->
+	<string name="external_storage_not_exists">SDカードが利用できないです。</string>
+
 	<string name="gen_drozip">drozip作成</string>
 	<string name="add_dir">ディレクトリの追加</string>
 
@@ -55,6 +57,15 @@
 
 	<string name="add_dir_title">droppファイルのあるディレクトリは？</string>
 	<string name="add_dir_button_text">このディレクトリです！</string>
+
+	<!-- For DroppHostingClientActivity -->
+	<string name="uploading">データアップロード中</string>
+	<string name="done_upload">
+		アップロード完了！TwitterのTLをチェックしてください。
+	</string>
+	<string name="failed_upload">
+		アップロードが失敗しました…
+	</string>
 
 	<!-- For ActivityHelper -->
 	<string name="cant_resolve_intent_title">%sが必要です。</string>

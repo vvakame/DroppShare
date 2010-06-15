@@ -51,6 +51,8 @@
 	<string name="wait_a_moment">Wait a moment...</string>
 
 	<!-- For DroppSelectorActivity -->
+	<string name="external_storage_not_exists">External storage not exists!</string>
+
 	<string name="gen_drozip">Generate Drozip</string>
 	<string name="add_dir">Add directory</string>
 
@@ -67,6 +69,13 @@
 
 	<!-- For DroppHostingClientActivity -->
 	<string name="hosting_client_name">DroppHosting</string>
+	<string name="uploading">Uploading app list!</string>
+	<string name="done_upload">
+		Data uploaded! Check your twitter time line.
+	</string>
+	<string name="failed_upload">
+		Sorry, Data upload were failed...
+	</string>
 
 	<!-- For TwitterOAuthDialog -->
 	<string name="oauth_title">Twitter OAuth Login</string>
