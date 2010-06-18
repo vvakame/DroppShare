@@ -1,6 +1,7 @@
 package net.vvakame.droppshare.helper;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,6 +44,7 @@ public class TwitterOAuthAccessor {
 			XmlPullParserException {
 		// API Level 8 AndroidHttpClient に変更できるものならしたほうがよさそう
 		HttpClient httpclient = new DefaultHttpClient();
+		httpclient.getParams().setParameter("User-Agent", "DroppShare");
 		HttpContext localContext = new BasicHttpContext();
 		CookieStore cookieStore = new BasicCookieStore();
 		localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
@@ -80,6 +82,26 @@ public class TwitterOAuthAccessor {
 		String redirectFor = TwitterOAuthAccessor.parseTwitterRedirect(res
 				.getEntity().getContent());
 		if (redirectFor == null) {
+
+			post = new HttpPost("https://twitter.com/oauth/authenticate");
+			post.getParams().setParameter(
+					CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
+			nvps = new ArrayList<NameValuePair>();
+			tokens.put("session[username_or_email]", screenName);
+			tokens.put("session[password]", password);
+			for (String key : tokens.keySet()) {
+				String value = tokens.get(key);
+				nvps.add(new BasicNameValuePair(key, value));
+			}
+			post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+			res = httpclient.execute(post, localContext);
+			if (res.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+				throw new IllegalStateException(res.getStatusLine()
+						.getReasonPhrase());
+			}
+			redirectFor = TwitterOAuthAccessor.parseTwitterRedirect(res
+					.getEntity().getContent());
+
 			throw new IllegalStateException("You can't get redirect url.");
 		}
 
@@ -101,12 +123,17 @@ public class TwitterOAuthAccessor {
 		return oauth;
 	}
 
-	public static Map<String, String> parseTwitterLogin(InputStream isr)
+	public static Map<String, String> parseTwitterLogin(InputStream is)
 			throws XmlPullParserException, IOException {
 		XmlPullParser xmlParser = Xml.newPullParser();
 		Map<String, String> map = null;
 
-		xmlParser.setInput(isr, null);
+		// デバッグ用
+		if ("".equals("")) {
+			String html = getStringFromInputStream(is);
+			is = new ByteArrayInputStream(html.getBytes());
+		}
+		xmlParser.setInput(is, null);
 
 		int eventType = xmlParser.getEventType();
 
@@ -209,7 +236,7 @@ public class TwitterOAuthAccessor {
 		String line = null;
 		StringBuilder stb = new StringBuilder();
 		while ((line = br.readLine()) != null) {
-			stb.append(line);
+			stb.append(line).append("\n");
 		}
 		return stb.toString();
 	}

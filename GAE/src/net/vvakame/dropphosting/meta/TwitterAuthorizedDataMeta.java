@@ -1,6 +1,6 @@
 package net.vvakame.dropphosting.meta;
 
-//@javax.annotation.Generated(value = { "slim3-gen", "@VERSION@" }, date = "2010-06-08 20:27:05")
+//@javax.annotation.Generated(value = { "slim3-gen", "@VERSION@" }, date = "2010-06-16 01:14:20")
 /** */
 public final class TwitterAuthorizedDataMeta extends org.slim3.datastore.ModelMeta<net.vvakame.dropphosting.model.TwitterAuthorizedData> {
 

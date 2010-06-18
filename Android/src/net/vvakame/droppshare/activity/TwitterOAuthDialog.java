@@ -36,12 +36,19 @@ public class TwitterOAuthDialog extends Activity implements LogTagIF,
 		EditText editName = (EditText) findViewById(R.id.name);
 		editName.setText(screenName);
 
-		((EditText) findViewById(R.id.name)).addTextChangedListener(this);
-		((EditText) findViewById(R.id.password)).addTextChangedListener(this);
+		EditText nameEdit = (EditText) findViewById(R.id.name);
+		EditText passEdit = (EditText) findViewById(R.id.password);
+		nameEdit.addTextChangedListener(this);
+		passEdit.addTextChangedListener(this);
+
 		findViewById(R.id.ok_button).setOnClickListener(this);
 		findViewById(R.id.cancel_button).setOnClickListener(this);
 
 		toggleOkEnable();
+
+		if (!"".equals(nameEdit.getText())) {
+			passEdit.requestFocus();
+		}
 	}
 
 	@Override
