@@ -3,7 +3,7 @@ package net.vvakame.droppshare.model;
 public class OAuthData {
 
 	private String screenName = null;
-	private int oauthHashCode = 0;
+	private Long oauthHashCode = null;
 
 	public String getScreenName() {
 		return screenName;
@@ -13,11 +13,11 @@ public class OAuthData {
 		this.screenName = screenName;
 	}
 
-	public int getOauthHashCode() {
+	public Long getOauthHashCode() {
 		return oauthHashCode;
 	}
 
-	public void setOauthHashCode(int oauthHashCode) {
+	public void setOauthHashCode(long oauthHashCode) {
 		this.oauthHashCode = oauthHashCode;
 	}
 }

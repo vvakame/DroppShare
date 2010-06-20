@@ -11,10 +11,7 @@ import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
 import net.vvakame.droppshare.helper.HttpPostMultipartWrapper;
 import net.vvakame.droppshare.helper.LogTagIF;
-import net.vvakame.droppshare.helper.TwitterOAuthAccessor;
 import net.vvakame.droppshare.model.OAuthData;
-
-import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -29,8 +26,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class DroppHostingClientActivity extends Activity implements LogTagIF {
-	private static final int REQUEST_TWIT_INFO = 0;
-
 	private static final int DIALOG_PROGRESS = 1;
 
 	private static final int MESSAGE_START_PROGRESS = 1;
@@ -49,97 +44,12 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 
 		super.onCreate(savedInstanceState);
 
-		Closure cloFinish = new Closure() {
-			@Override
-			public void exec() {
-				Toast.makeText(DroppHostingClientActivity.this,
-						getString(R.string.done_upload), Toast.LENGTH_LONG)
-						.show();
-				finish();
-			}
-		};
-
-		Closure cloFailed = new Closure() {
-			@Override
-			public void exec() {
-				Toast.makeText(DroppHostingClientActivity.this,
-						getString(R.string.failed_upload), Toast.LENGTH_LONG)
-						.show();
-				finish();
-			}
-		};
-
-		mHandler.pushEventWithShowDialog(MESSAGE_START_PROGRESS, null);
-		mHandler.pushEventWithDissmiss(MESSAGE_FINISH_PROGRESS, cloFinish);
-		mHandler.pushEventWithDissmiss(MESSAGE_FAILED_PROGRESS, cloFailed);
-
-		final OAuthData oauth = restoreOAuth();
-		if (oauth == null) {
-			Intent intent = new Intent(this, TwitterOAuthDialog.class);
-			startActivityForResult(intent, REQUEST_TWIT_INFO);
-		} else {
-			new Thread() {
-				@Override
-				public void run() {
-					boolean done = false;
-
-					mHandler.sendEmptyMessage(MESSAGE_START_PROGRESS);
-					try {
-						done = pool(oauth);
-					} catch (IOException e) {
-						sanitizeException(e);
-					}
-
-					if (done) {
-						mHandler.sendEmptyMessage(MESSAGE_FINISH_PROGRESS);
-					} else {
-						mHandler.sendEmptyMessage(MESSAGE_FAILED_PROGRESS);
-					}
-				}
-			}.start();
-		}
+		process();
 	}
 
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == REQUEST_TWIT_INFO) {
-			if (resultCode == RESULT_OK) {
-
-				final String name = data
-						.getStringExtra(TwitterOAuthDialog.SCREEN_NAME);
-				final String password = data
-						.getStringExtra(TwitterOAuthDialog.PASSWORD);
-
-				new Thread() {
-					@Override
-					public void run() {
-						boolean done = false;
-
-						mHandler.sendEmptyMessage(MESSAGE_START_PROGRESS);
-
-						try {
-							OAuthData oauth = TwitterOAuthAccessor
-									.getAuthorizedData(name, password);
-							saveOAuth(oauth);
-							done = pool(oauth);
-						} catch (IllegalStateException e) {
-							sanitizeException(e);
-						} catch (IOException e) {
-							sanitizeException(e);
-						} catch (XmlPullParserException e) {
-							throw new IllegalStateException(e);
-						}
-
-						if (done) {
-							mHandler.sendEmptyMessage(MESSAGE_FINISH_PROGRESS);
-						} else {
-							mHandler.sendEmptyMessage(MESSAGE_FAILED_PROGRESS);
-						}
-					}
-				}.start();
-			} else if (resultCode == RESULT_CANCELED) {
-				finish();
-			}
-		}
+	@Override
+	public void onNewIntent(Intent intent) {
+		switchAction(intent);
 	}
 
 	@Override
@@ -172,32 +82,91 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 		}
 	}
 
-	private void saveOAuth(OAuthData oauth) {
-		Editor editor = PreferenceManager.getDefaultSharedPreferences(this)
-				.edit();
-		editor.putString("screen_name", oauth.getScreenName());
-		editor.putInt("oauth_hashcode", oauth.getOauthHashCode());
-		editor.commit();
+	private void switchAction(Intent receive) {
+		if (receive.getAction().equals(Intent.ACTION_SEND)) {
+			process();
+		} else if (receive.getAction().equals(Intent.ACTION_VIEW)) {
+			doProcessRedirect(receive.getData());
+		}
 	}
 
-	private OAuthData restoreOAuth() {
-		SharedPreferences pref = PreferenceManager
-				.getDefaultSharedPreferences(this);
+	private void doOAuthAuthorize() {
+		Intent oauthIntent = null;
+
+		oauthIntent = new Intent();
+		oauthIntent.setAction(Intent.ACTION_VIEW);
+		oauthIntent.setData(Uri.parse("http://drphost.appspot.com/twitter"));
+
+		startActivity(oauthIntent);
+	}
+
+	private void doProcessRedirect(Uri data) {
+		String str = data.getSchemeSpecificPart();
+
+		String screenName = str.substring(0, str.indexOf("?"));
+		String hash = str.substring(str.indexOf("hash=") + "hash=".length());
+
 		OAuthData oauth = new OAuthData();
-		oauth.setScreenName(pref.getString("screen_name", null));
-		oauth.setOauthHashCode(pref.getInt("oauth_hashcode", 0));
+		oauth.setScreenName(screenName);
+		oauth.setOauthHashCode(Long.parseLong(hash));
 
-		return oauth.getScreenName() != null && oauth.getOauthHashCode() != 0 ? oauth
-				: null;
+		saveOAuth(oauth);
+		// setIntentしてないので、ACTION_SENDのIntentが取れるはず
+		onNewIntent(getIntent());
 	}
 
-	private void deleteOAuth() {
-		SharedPreferences pref = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		pref.edit().remove("oauth_hashcode").commit();
+	public void process() {
+		final OAuthData oauth = restoreOAuth();
+		if (oauth == null) {
+			doOAuthAuthorize();
+		} else {
+			Closure cloFinish = new Closure() {
+				@Override
+				public void exec() {
+					Toast.makeText(DroppHostingClientActivity.this,
+							getString(R.string.done_upload), Toast.LENGTH_LONG)
+							.show();
+					finish();
+				}
+			};
+
+			Closure cloFailed = new Closure() {
+				@Override
+				public void exec() {
+					Toast.makeText(DroppHostingClientActivity.this,
+							getString(R.string.failed_upload),
+							Toast.LENGTH_LONG).show();
+					finish();
+				}
+			};
+
+			mHandler.pushEventWithShowDialog(MESSAGE_START_PROGRESS, null);
+			mHandler.pushEventWithDissmiss(MESSAGE_FINISH_PROGRESS, cloFinish);
+			mHandler.pushEventWithDissmiss(MESSAGE_FAILED_PROGRESS, cloFailed);
+
+			new Thread() {
+				@Override
+				public void run() {
+					boolean done = false;
+
+					mHandler.sendEmptyMessage(MESSAGE_START_PROGRESS);
+					try {
+						done = doUpload(oauth);
+					} catch (IOException e) {
+						sanitizeException(e);
+					}
+
+					if (done) {
+						mHandler.sendEmptyMessage(MESSAGE_FINISH_PROGRESS);
+					} else {
+						mHandler.sendEmptyMessage(MESSAGE_FAILED_PROGRESS);
+					}
+				}
+			}.start();
+		}
 	}
 
-	public boolean pool(OAuthData oauth) throws IOException {
+	public boolean doUpload(OAuthData oauth) throws IOException {
 		boolean success = false;
 
 		if (oauth == null) {
@@ -212,7 +181,8 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 			HttpPostMultipartWrapper post = new HttpPostMultipartWrapper(
 					"http://drphost.appspot.com/upload");
 			post.pushString("screen_name", oauth.getScreenName());
-			post.pushString("oauth_hashcode", oauth.getOauthHashCode());
+			post.pushString("oauth_hashcode", String.valueOf(oauth
+					.getOauthHashCode()));
 			post.pushString("variant", "default");
 			post.pushFile("drozip", drozip);
 			post.close();
@@ -231,6 +201,31 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 		}
 
 		return success;
+	}
+
+	private void saveOAuth(OAuthData oauth) {
+		Editor editor = PreferenceManager.getDefaultSharedPreferences(this)
+				.edit();
+		editor.putString("screen_name", oauth.getScreenName());
+		editor.putLong("oauth_hashcode", oauth.getOauthHashCode());
+		editor.commit();
+	}
+
+	private OAuthData restoreOAuth() {
+		SharedPreferences pref = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		OAuthData oauth = new OAuthData();
+		oauth.setScreenName(pref.getString("screen_name", null));
+		oauth.setOauthHashCode(pref.getLong("oauth_hashcode", 0));
+
+		return oauth.getScreenName() != null && oauth.getOauthHashCode() != 0 ? oauth
+				: null;
+	}
+
+	private void deleteOAuth() {
+		SharedPreferences pref = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		pref.edit().remove("oauth_hashcode").commit();
 	}
 
 	public void sanitizeException(Exception e) {

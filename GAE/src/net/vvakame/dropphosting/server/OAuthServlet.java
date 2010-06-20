@@ -12,32 +12,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import net.vvakame.dropphosting.meta.OAuthDataMeta;
 import net.vvakame.dropphosting.model.OAuthData;
 import net.vvakame.dropphosting.model.TwitterAuthorizedData;
 
 import org.slim3.datastore.Datastore;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import com.google.appengine.api.datastore.Key;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.http.AccessToken;
 import twitter4j.http.RequestToken;
+
+import com.google.appengine.api.datastore.Key;
 
 public class OAuthServlet extends HttpServlet {
 
@@ -92,7 +80,7 @@ public class OAuthServlet extends HttpServlet {
 			data.setScreenName("vvakame");
 			data.setOauthHashCode(01234567);
 			saveOauth(data);
-			outputXml(response, data);
+			responseDrpScheme(response, data);
 		} else if (accessToken != null) {
 			// アクセストークン取得後の処理
 
@@ -118,7 +106,7 @@ public class OAuthServlet extends HttpServlet {
 			}
 
 			saveOauth(data);
-			outputXml(response, data);
+			responseDrpScheme(response, data);
 			saveAnnounceAccount(data, accessToken);
 
 			return;
@@ -185,7 +173,7 @@ public class OAuthServlet extends HttpServlet {
 			}
 
 			saveOauth(data);
-			outputXml(response, data);
+			responseDrpScheme(response, data);
 			saveAnnounceAccount(data, accessToken);
 
 			return;
@@ -210,43 +198,10 @@ public class OAuthServlet extends HttpServlet {
 		Datastore.put(data);
 	}
 
-	private void outputXml(HttpServletResponse response, OAuthData data)
-			throws TransformerFactoryConfigurationError, IOException,
-			ServletException {
-		try {
-			DOMImplementation dom = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder().getDOMImplementation();
-
-			Document document = dom.createDocument("", "twitter", null);
-			Element root = document.getDocumentElement();
-
-			Element screenName = document.createElement("screenName");
-			screenName.appendChild(document
-					.createTextNode(data.getScreenName()));
-
-			Element oauthHashcode = document.createElement("oauthHashcode");
-			oauthHashcode.appendChild(document.createTextNode(String
-					.valueOf(data.getOauthHashCode())));
-
-			root.appendChild(screenName);
-			root.appendChild(oauthHashcode);
-
-			DOMSource src = new DOMSource(document);
-
-			TransformerFactory transFactory = TransformerFactory.newInstance();
-			Transformer transformer = transFactory.newTransformer();
-
-			response.setContentType("application/xml");
-			StreamResult result = new StreamResult(response.getOutputStream());
-			transformer.transform(src, result);
-
-		} catch (ParserConfigurationException e) {
-			throw new ServletException(e);
-		} catch (TransformerConfigurationException e) {
-			throw new ServletException(e);
-		} catch (TransformerException e) {
-			throw new ServletException(e);
-		}
+	private void responseDrpScheme(HttpServletResponse response, OAuthData data)
+			throws IOException {
+		response.sendRedirect("drphost:" + data.getScreenName() + "?hash="
+				+ data.getOauthHashCode());
 	}
 
 	private void clearSession(HttpSession session) {
