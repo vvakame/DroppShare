@@ -33,11 +33,10 @@ public final class R {
     public static final class drawable {
         public static final int at_yanzm_presents=0x7f020000;
         public static final int droid=0x7f020001;
-        public static final int twitter=0x7f020002;
-        public static final int wrapping_droid=0x7f020003;
+        public static final int wrapping_droid=0x7f020002;
     }
     public static final class id {
-        public static final int add_dir=0x7f0a0025;
+        public static final int add_dir=0x7f0a0021;
         public static final int application_action=0x7f0a000c;
         public static final int application_description=0x7f0a0007;
         public static final int application_icon=0x7f0a0004;
@@ -45,8 +44,7 @@ public final class R {
         public static final int application_process_date=0x7f0a000d;
         public static final int application_version_name=0x7f0a000e;
         public static final int boss=0x7f0a0001;
-        public static final int cache_refresh=0x7f0a0022;
-        public static final int cancel_button=0x7f0a0020;
+        public static final int cache_refresh=0x7f0a001e;
         public static final int dirs_layout=0x7f0a001b;
         public static final int file_icon=0x7f0a000a;
         public static final int file_name=0x7f0a000b;
@@ -55,20 +53,17 @@ public final class R {
         public static final int history=0x7f0a0012;
         public static final int history_list=0x7f0a0013;
         public static final int http=0x7f0a0016;
-        public static final int icon=0x7f0a001d;
         public static final int installed=0x7f0a0010;
         public static final int installed_list=0x7f0a0011;
-        public static final int list=0x7f0a0021;
+        public static final int list=0x7f0a001d;
         public static final int market=0x7f0a0017;
         public static final int name=0x7f0a0000;
-        public static final int ok_button=0x7f0a001f;
-        public static final int password=0x7f0a001e;
-        public static final int preferences=0x7f0a0024;
+        public static final int preferences=0x7f0a0020;
         public static final int qr_code=0x7f0a0019;
         public static final int receive_text=0x7f0a001a;
         public static final int recent_list=0x7f0a0015;
         public static final int recently_used=0x7f0a0014;
-        public static final int show_selector=0x7f0a0023;
+        public static final int show_selector=0x7f0a001f;
         public static final int side_1=0x7f0a0003;
         public static final int side_1_parent=0x7f0a0002;
         public static final int side_2=0x7f0a0006;
@@ -92,8 +87,7 @@ public final class R {
         public static final int redirect_to_market=0x7f03000c;
         public static final int selector=0x7f03000d;
         public static final int selector_titlebar=0x7f03000e;
-        public static final int twitter_dialog=0x7f03000f;
-        public static final int viewer=0x7f030010;
+        public static final int viewer=0x7f03000f;
     }
     public static final class menu {
         public static final int main=0x7f090000;

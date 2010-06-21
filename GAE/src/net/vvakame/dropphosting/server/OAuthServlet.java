@@ -1,7 +1,6 @@
 package net.vvakame.dropphosting.server;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -34,8 +33,9 @@ public class OAuthServlet extends HttpServlet {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private static final String PROP_TWITTER = "twitter";
-	private static final String SESSION_REQUEST_TOKEN = "requestToken";
-	private static final String SESSION_ACCESS_TOKEN = "accessToken";
+
+	private static final String SESSION_TOKEN = "token";
+	private static final String SESSION_TOKEN_SECRET = "tokenSecret";
 
 	private static final String PARAM_OAUTH_VERIFIER = "oauth_verifier";
 
@@ -62,125 +62,131 @@ public class OAuthServlet extends HttpServlet {
 		DEBUG = Boolean.parseBoolean(rb.getString("debug_mode"));
 	}
 
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse res)
+			throws ServletException, IOException {
 
-		HttpSession session = request.getSession();
+		HttpSession session = req.getSession();
 
-		String oauth_verifier = request.getParameter(PARAM_OAUTH_VERIFIER);
-
-		AccessToken accessToken = (AccessToken) session
-				.getAttribute(SESSION_ACCESS_TOKEN);
-
-		String userAgent = request.getHeader("User-Agent");
-		logger.info(userAgent);
+		String oauthVerifier = req.getParameter(PARAM_OAUTH_VERIFIER);
+		String token = (String) session.getAttribute(SESSION_TOKEN);
+		String tokenSecret = (String) session
+				.getAttribute(SESSION_TOKEN_SECRET);
 
 		if (DEBUG) {
-			OAuthData data = new OAuthData();
-			data.setScreenName("vvakame");
-			data.setOauthHashCode(01234567);
-			saveOauth(data);
-			responseDrpScheme(response, data);
-		} else if (accessToken != null) {
-			// アクセストークン取得後の処理
+			logger.info("DEBUG mode.");
+			processDebug(res);
 
-			Twitter twitter = twiFac.getOAuthAuthorizedInstance(consumerKey,
-					consumerSecret, accessToken);
+		} else if (oauthVerifier != null) {
+			logger.info("process callback.");
+			processCallback(res, session, token, tokenSecret, oauthVerifier);
 
-			OAuthData data = null;
-			try {
-				data = new OAuthData();
-				data.setScreenName(twitter.getScreenName());
-				data.setOauthHashCode(accessToken.hashCode());
-
-				StringBuilder stb = new StringBuilder();
-				stb.append("by accessToken, ");
-				stb.append("name=").append(data.getScreenName()).append(", ");
-				stb.append("hashCode=").append(data.getOauthHashCode());
-				logger.info(stb.toString());
-
-			} catch (TwitterException e) {
-				clearSession(session);
-				raiseTwitterException(response, e);
-				return;
-			}
-
-			saveOauth(data);
-			responseDrpScheme(response, data);
-			saveAnnounceAccount(data, accessToken);
-
-			return;
-
-		} else if (oauth_verifier == null) {
-			// 初回アクセス時の処理
-
-			clearSession(session);
-
-			Twitter twitter = twiFac.getInstance();
-			try {
-				twitter.setOAuthConsumer(consumerKey, consumerSecret);
-
-				RequestToken requestToken = twitter
-						.getOAuthRequestToken(callbackUrl);
-				session.setAttribute(SESSION_REQUEST_TOKEN, requestToken);
-				session.setAttribute(PROP_TWITTER, twitter);
-				response.sendRedirect(requestToken.getAuthenticationURL());
-
-			} catch (TwitterException e) {
-				clearSession(session);
-				raiseTwitterException(response, e);
-				return;
-			}
-
-			return;
+		} else if (token != null && tokenSecret != null) {
+			logger.info("process authorized.");
+			processAuthorized(res, session, token, tokenSecret);
 
 		} else {
-			// 承認後Callback
-
-			OAuthData data = null;
-			try {
-				Twitter twitter = (Twitter) session.getAttribute(PROP_TWITTER);
-				if (twitter == null) {
-					clearSession(session);
-					throw new ServletException("Twitter instance was null!!!");
-				}
-				RequestToken requestToken = (RequestToken) session
-						.getAttribute(SESSION_REQUEST_TOKEN);
-				if (requestToken == null) {
-					clearSession(session);
-					throw new ServletException(
-							"RequestToken instance was null!!!");
-				}
-
-				accessToken = twitter.getOAuthAccessToken(requestToken,
-						oauth_verifier);
-				session.setAttribute(SESSION_ACCESS_TOKEN, accessToken);
-
-				data = new OAuthData();
-				data.setScreenName(twitter.getScreenName());
-				data.setOauthHashCode(accessToken.hashCode());
-
-				StringBuilder stb = new StringBuilder();
-				stb.append("by accessToken, ");
-				stb.append("name=").append(data.getScreenName()).append(", ");
-				stb.append("hashCode=").append(data.getOauthHashCode());
-				logger.info(stb.toString());
-
-			} catch (TwitterException e) {
-				clearSession(session);
-				raiseTwitterException(response, e);
-				return;
-			}
-
-			saveOauth(data);
-			responseDrpScheme(response, data);
-			saveAnnounceAccount(data, accessToken);
-
-			return;
+			logger.info("process first process.");
+			processFirstTime(res, session);
 		}
 	}
 
+	private void processDebug(HttpServletResponse res) throws IOException {
+		OAuthData data = new OAuthData();
+		data.setScreenName("vvakame");
+		data.setOauthHashCode(01234567);
+		saveOauth(data);
+		responseDrpScheme(res, data);
+	}
+
+	private void processFirstTime(HttpServletResponse res, HttpSession session)
+			throws IOException, ServletException {
+		clearSession(session);
+
+		try {
+			Twitter twitter = twiFac.getInstance();
+			twitter.setOAuthConsumer(consumerKey, consumerSecret);
+
+			RequestToken requestToken = twitter
+					.getOAuthRequestToken(callbackUrl);
+			session.setAttribute(SESSION_TOKEN, requestToken.getToken());
+			session.setAttribute(SESSION_TOKEN_SECRET, requestToken
+					.getTokenSecret());
+			res.sendRedirect(requestToken.getAuthenticationURL());
+
+		} catch (TwitterException e) {
+			clearSession(session);
+			logger.info(e.getMessage());
+			throw new ServletException(e);
+		}
+	}
+
+	private void processAuthorized(HttpServletResponse res,
+			HttpSession session, String token, String tokenSecret)
+			throws IOException, ServletException {
+
+		AccessToken accessToken = new AccessToken(token, tokenSecret);
+		Twitter twitter = twiFac.getOAuthAuthorizedInstance(consumerKey,
+				consumerSecret, accessToken);
+
+		OAuthData data = null;
+		try {
+			data = new OAuthData();
+			data.setScreenName(twitter.getScreenName());
+			data.setOauthHashCode(accessToken.hashCode());
+
+			StringBuilder stb = new StringBuilder();
+			stb.append("by accessToken, ");
+			stb.append("name=").append(data.getScreenName()).append(", ");
+			stb.append("hashCode=").append(data.getOauthHashCode());
+			logger.info(stb.toString());
+
+		} catch (TwitterException e) {
+			clearSession(session);
+			logger.info(e.getMessage());
+			throw new ServletException(e);
+		}
+
+		saveOauth(data);
+		responseDrpScheme(res, data);
+		saveAnnounceAccount(data, accessToken);
+	}
+
+	private void processCallback(HttpServletResponse res, HttpSession session,
+			String token, String tokenSecret, String oauthVerifier)
+			throws IOException, ServletException {
+
+		OAuthData data = null;
+		AccessToken accessToken = null;
+		try {
+			Twitter twitter = twiFac.getInstance();
+			twitter.setOAuthConsumer(consumerKey, consumerSecret);
+			RequestToken requestToken = new RequestToken(token, tokenSecret);
+			accessToken = twitter.getOAuthAccessToken(requestToken,
+					oauthVerifier);
+
+			data = new OAuthData();
+			data.setScreenName(twitter.getScreenName());
+			data.setOauthHashCode(accessToken.hashCode());
+
+			StringBuilder stb = new StringBuilder();
+			stb.append("by accessToken, ");
+			stb.append("name=").append(data.getScreenName()).append(", ");
+			stb.append("hashCode=").append(data.getOauthHashCode());
+			logger.info(stb.toString());
+
+		} catch (TwitterException e) {
+			clearSession(session);
+			logger.info(e.getMessage());
+			throw new ServletException(e);
+		}
+
+		saveOauth(data);
+		responseDrpScheme(res, data);
+		saveAnnounceAccount(data, accessToken);
+	}
+
 	private void saveAnnounceAccount(OAuthData data, AccessToken accessToken) {
+
 		if ("DroppShare".equals(data.getScreenName())) {
 			TwitterAuthorizedData twiData = new TwitterAuthorizedData();
 			twiData.setAccessToken(accessToken);
@@ -191,6 +197,7 @@ public class OAuthServlet extends HttpServlet {
 	}
 
 	private void saveOauth(OAuthData data) {
+
 		OAuthDataMeta oMeta = OAuthDataMeta.get();
 		List<Key> keys = Datastore.query(oMeta).filter(
 				oMeta.screenName.equal(data.getScreenName())).asKeyList();
@@ -200,6 +207,7 @@ public class OAuthServlet extends HttpServlet {
 
 	private void responseDrpScheme(HttpServletResponse response, OAuthData data)
 			throws IOException {
+
 		response.sendRedirect("drphost:" + data.getScreenName() + "?hash="
 				+ data.getOauthHashCode());
 	}
@@ -207,26 +215,7 @@ public class OAuthServlet extends HttpServlet {
 	private void clearSession(HttpSession session) {
 
 		session.removeAttribute(PROP_TWITTER);
-		session.removeAttribute(SESSION_ACCESS_TOKEN);
-		session.removeAttribute(SESSION_REQUEST_TOKEN);
-	}
-
-	private void raiseTwitterException(HttpServletResponse response,
-			TwitterException e) throws IOException {
-
-		logger.warning(e.getMessage());
-
-		response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		response.setContentType("text/html");
-		PrintWriter wr = response.getWriter();
-		wr.print("<html>");
-		wr.print("<body>");
-		wr.println("Raise Twitter exception");
-		wr.println(e.getMessage());
-		wr.print("</body>");
-		wr.print("</html>");
-		wr.flush();
-		// 閉じちゃう
-		wr.close();
+		session.removeAttribute(SESSION_TOKEN);
+		session.removeAttribute(SESSION_TOKEN_SECRET);
 	}
 }
