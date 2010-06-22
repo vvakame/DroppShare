@@ -4,4 +4,5 @@ Android/bin/
 GAE/war/WEB-INF/appengine-generated/
 GAE/war/WEB-INF/classes/
 GAE/src/twitter.properties
+GAE/bin
 
