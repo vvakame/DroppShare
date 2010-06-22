@@ -47,6 +47,8 @@ import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.QueueFactory;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Builder;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 
 public class DrozipUploadServlet extends HttpServlet {
 	private static final long serialVersionUID = -7504558110741757404L;
@@ -113,17 +115,20 @@ public class DrozipUploadServlet extends HttpServlet {
 
 		// まだ整合性は気にしない
 		for (AppDataSrv app : appList) {
+			IconData appIcon = app.getIconData();
+
 			IconDataMeta iMeta = IconDataMeta.get();
 			IconData iconData = Datastore.query(iMeta).filter(
-					iMeta.packageName.equal(app.getPackageName())).asSingle();
-
-			IconData appIcon = app.getIconData();
+					iMeta.fileName.equal(appIcon.getFileName())).asSingle();
 
 			// 現在持ってるのよりでかいサイズのが来たらDB差し替えたい
 			if (iconData == null || appIcon.getHeight() > iconData.getHeight()
 					&& appIcon.getHeight() <= 72 && appIcon.getWidth() <= 72) {
 
 				if (iconData != null) {
+					MemcacheService memcache = MemcacheServiceFactory
+							.getMemcacheService();
+					memcache.delete(iconData.getFileName());
 					Datastore.delete(iconData.getKey());
 				}
 				Datastore.put(appIcon);
