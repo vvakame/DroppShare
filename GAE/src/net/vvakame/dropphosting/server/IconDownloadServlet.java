@@ -47,7 +47,8 @@ public class IconDownloadServlet extends HttpServlet {
 		}
 		String fileName = path.substring(path.lastIndexOf("/") + 1);
 
-		MemcacheService memcache = MemcacheServiceFactory.getMemcacheService();
+		MemcacheService memcache = MemcacheServiceFactory
+				.getMemcacheService("icon");
 		IconData iconData = (IconData) memcache.get(fileName);
 
 		if (DEBUG) {

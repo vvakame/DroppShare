@@ -127,7 +127,7 @@ public class DrozipUploadServlet extends HttpServlet {
 
 				if (iconData != null) {
 					MemcacheService memcache = MemcacheServiceFactory
-							.getMemcacheService();
+							.getMemcacheService("icon");
 					memcache.delete(iconData.getFileName());
 					Datastore.delete(iconData.getKey());
 				}
