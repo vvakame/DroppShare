@@ -1,35 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/tabhost" android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
-	<LinearLayout android:orientation="vertical"
-		android:layout_width="fill_parent" android:layout_height="fill_parent">
-		<TabWidget android:id="@android:id/tabs"
-			android:layout_width="fill_parent" android:layout_height="wrap_content" />
-		<FrameLayout android:id="@android:id/tabcontent"
-			android:layout_width="fill_parent" android:layout_height="0dip"
-			android:layout_weight="1">
-			<LinearLayout android:id="@+id/installed"
-				android:orientation="vertical" android:layout_width="fill_parent"
-				android:layout_height="fill_parent" android:paddingBottom="3px">
-				<ListView android:id="@+id/installed_list"
-					android:layout_width="fill_parent" android:layout_height="fill_parent">
-				</ListView>
-			</LinearLayout>
-			<LinearLayout android:id="@+id/history"
-				android:orientation="vertical" android:layout_width="fill_parent"
-				android:layout_height="fill_parent" android:paddingBottom="3px">
-				<ListView android:id="@+id/history_list"
-					android:layout_width="fill_parent" android:layout_height="fill_parent">
-				</ListView>
-			</LinearLayout>
-			<LinearLayout android:id="@+id/recently_used"
-				android:orientation="vertical" android:layout_width="fill_parent"
-				android:layout_height="fill_parent" android:paddingBottom="3px">
-				<ListView android:id="@+id/recent_list"
-					android:layout_width="fill_parent" android:layout_height="fill_parent">
-				</ListView>
-			</LinearLayout>
-		</FrameLayout>
-	</LinearLayout>
-</TabHost>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:paddingBottom="3px">
+	<Button android:layout_height="wrap_content" android:id="@+id/app_share"
+		android:layout_width="fill_parent" android:text="@string/app_share" />
+	<Button android:layout_height="wrap_content" android:id="@+id/hosting_upload"
+		android:layout_width="fill_parent" android:text="@string/hosting_upload" />
+	<Button android:layout_height="wrap_content" android:id="@+id/drozip_selector"
+		android:layout_width="fill_parent" android:text="@string/drozip_selector" />
+</LinearLayout>
