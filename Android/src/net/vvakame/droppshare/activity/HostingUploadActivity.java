@@ -25,7 +25,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
-public class DroppHostingClientActivity extends Activity implements LogTagIF {
+public class HostingUploadActivity extends Activity implements LogTagIF {
 	private static final int DIALOG_PROGRESS = 1;
 
 	private static final int MESSAGE_START_PROGRESS = 1;
@@ -123,7 +123,7 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 			Closure cloFinish = new Closure() {
 				@Override
 				public void exec() {
-					Toast.makeText(DroppHostingClientActivity.this,
+					Toast.makeText(HostingUploadActivity.this,
 							getString(R.string.done_upload), Toast.LENGTH_LONG)
 							.show();
 					finish();
@@ -133,7 +133,7 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 			Closure cloFailed = new Closure() {
 				@Override
 				public void exec() {
-					Toast.makeText(DroppHostingClientActivity.this,
+					Toast.makeText(HostingUploadActivity.this,
 							getString(R.string.failed_upload),
 							Toast.LENGTH_LONG).show();
 					finish();
@@ -236,7 +236,7 @@ public class DroppHostingClientActivity extends Activity implements LogTagIF {
 		Closure clo = new Closure() {
 			@Override
 			public void exec() {
-				Toast.makeText(DroppHostingClientActivity.this, message,
+				Toast.makeText(HostingUploadActivity.this, message,
 						Toast.LENGTH_LONG).show();
 				finish();
 			}

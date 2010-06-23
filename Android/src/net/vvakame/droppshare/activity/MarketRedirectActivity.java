@@ -18,7 +18,7 @@ import android.widget.TextView;
  * 
  * @author vvakame
  */
-public class DroppRedirectActivity extends Activity implements LogTagIF {
+public class MarketRedirectActivity extends Activity implements LogTagIF {
 
 	private static String marketProtcol = "market://";
 
