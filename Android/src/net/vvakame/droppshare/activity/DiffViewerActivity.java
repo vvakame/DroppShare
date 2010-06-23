@@ -8,7 +8,7 @@ import net.vvakame.android.helper.Closure;
 import net.vvakame.android.helper.DrivenHandler;
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.asynctask.DroppInstalledAsyncTask;
+import net.vvakame.droppshare.asynctask.DrozipInstalledAsyncTask;
 import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.AppDiffAdapter;
 import net.vvakame.droppshare.helper.CacheUtil;
@@ -33,7 +33,7 @@ import android.widget.AdapterView.OnItemClickListener;
  * 
  * @author vvakame
  */
-public class DroppViewerActivity extends Activity implements LogTagIF {
+public class DiffViewerActivity extends Activity implements LogTagIF {
 	/** 受け付けるデータタイプ */
 	public static final String TYPE = "application/droppshare";
 
@@ -94,7 +94,7 @@ public class DroppViewerActivity extends Activity implements LogTagIF {
 				List<AppData> srcList = null;
 				try {
 					srcList = CacheUtil
-							.readSerializedCaches(DroppInstalledAsyncTask.CACHE_FILE);
+							.readSerializedCaches(DrozipInstalledAsyncTask.CACHE_FILE);
 				} catch (InvalidClassException e) {
 					mHandler.sendEmptyMessage(MESSAGE_FAILURE_SRC);
 				} catch (ClassNotFoundException e) {
@@ -102,12 +102,12 @@ public class DroppViewerActivity extends Activity implements LogTagIF {
 				}
 
 				List<AppData> destList = null;
-				destList = XmlUtil.readXmlCache(DroppViewerActivity.this,
+				destList = XmlUtil.readXmlCache(DiffViewerActivity.this,
 						destFile);
 
 				List<AppDiffData> diffList = AppDataUtil.zipAppData(srcList,
 						destList);
-				mDiffAdapter = new AppDiffAdapter(DroppViewerActivity.this,
+				mDiffAdapter = new AppDiffAdapter(DiffViewerActivity.this,
 						R.layout.diff_view, diffList);
 
 				mHandler.sendEmptyMessage(MESSAGE_FINISH_PROGRESS);

@@ -14,7 +14,7 @@ import net.vvakame.android.helper.Closure;
 import net.vvakame.android.helper.DrivenHandler;
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.asynctask.DroppInstalledAsyncTask;
+import net.vvakame.droppshare.asynctask.DrozipInstalledAsyncTask;
 import net.vvakame.droppshare.helper.FileListAdapter;
 import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.helper.OpenIntentIF;
@@ -53,7 +53,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
  * 
  * @author vvakame
  */
-public class DroppSelectorActivity extends Activity implements LogTagIF,
+public class DrozipSelectorActivity extends Activity implements LogTagIF,
 		OpenIntentIF, OnClickListener {
 	/** 探すデータファイルの拡張子 */
 	private static final String SUFFIX = ".drozip";
@@ -286,7 +286,7 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 						}
 
 						PreferencesActivity.setDrozipName(
-								DroppSelectorActivity.this, value);
+								DrozipSelectorActivity.this, value);
 						dialog.dismiss();
 
 						genDrozip();
@@ -324,8 +324,8 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 				mHandler.sendEmptyMessage(MESSAGE_START_PROGRESS);
 
 				// 同期実行
-				DroppInstalledAsyncTask async = new DroppInstalledAsyncTask(
-						DroppSelectorActivity.this, null);
+				DrozipInstalledAsyncTask async = new DrozipInstalledAsyncTask(
+						DrozipSelectorActivity.this, null);
 
 				List<AppData> appList = null;
 				try {
@@ -336,9 +336,9 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 					Log.d(TAG, HelperUtil.getExceptionLog(e));
 				}
 
-				XmlUtil.writeXmlCache(DroppSelectorActivity.this,
+				XmlUtil.writeXmlCache(DrozipSelectorActivity.this,
 						PreferencesActivity
-								.getDrozipName(DroppSelectorActivity.this),
+								.getDrozipName(DrozipSelectorActivity.this),
 						appList);
 
 				mHandler.sendEmptyMessage(MESSAGE_FINISH_PROGRESS);
@@ -359,7 +359,7 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 			Intent intent = new Intent(Intent.ACTION_VIEW);
 			intent.setDataAndType(
 					Uri.parse("file://" + file.getAbsolutePath()),
-					DroppViewerActivity.TYPE);
+					DiffViewerActivity.TYPE);
 
 			startActivity(intent);
 		}
@@ -374,7 +374,7 @@ public class DroppSelectorActivity extends Activity implements LogTagIF,
 
 			File file = (File) parent.getItemAtPosition(position);
 			Intent intent = new Intent(Intent.ACTION_SEND);
-			intent.setType(DroppViewerActivity.TYPE);
+			intent.setType(DiffViewerActivity.TYPE);
 			intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"
 					+ file.getAbsolutePath()));
 

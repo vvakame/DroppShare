@@ -4,9 +4,9 @@ import java.util.List;
 
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.asynctask.DroppHistoryAsyncTask;
-import net.vvakame.droppshare.asynctask.DroppInstalledAsyncTask;
-import net.vvakame.droppshare.asynctask.DroppRecentlyUsedAsyncTask;
+import net.vvakame.droppshare.asynctask.DrozipHistoryAsyncTask;
+import net.vvakame.droppshare.asynctask.DrozipInstalledAsyncTask;
+import net.vvakame.droppshare.asynctask.DrozipRecentlyUsedAsyncTask;
 import net.vvakame.droppshare.helper.AppDataAdapter;
 import net.vvakame.droppshare.helper.AppDataUtil;
 import net.vvakame.droppshare.helper.Func;
@@ -42,7 +42,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
  * 
  * @author vvakame
  */
-public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF {
+public class AppShareActivity extends Activity implements LogTagIF, SimejiIF {
 
 	public static final int SEND = 0;
 	public static final int MENU_DIALOG = 1;
@@ -73,7 +73,7 @@ public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF {
 		TabHost.TabSpec tab;
 
 		// インストール履歴タブ
-		tabHost = (TabHost) DroppShareActivity.this.findViewById(R.id.tabhost);
+		tabHost = (TabHost) AppShareActivity.this.findViewById(R.id.tabhost);
 		tab = tabHost.newTabSpec("history");
 		tab.setContent(R.id.history);
 		tab.setIndicator(getString(R.string.history), getResources()
@@ -81,7 +81,7 @@ public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF {
 		tabHost.addTab(tab);
 
 		// 最近実行したアプリタブ
-		tabHost = (TabHost) DroppShareActivity.this.findViewById(R.id.tabhost);
+		tabHost = (TabHost) AppShareActivity.this.findViewById(R.id.tabhost);
 		tab = tabHost.newTabSpec("recent");
 		tab.setContent(R.id.recently_used);
 		tab.setIndicator(getString(R.string.recent), getResources()
@@ -229,7 +229,7 @@ public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF {
 				if (arg == null || arg.size() == 0) {
 					listView.addFooterView(mAppNotExistView);
 				}
-				new DroppRecentlyUsedAsyncTask(DroppShareActivity.this,
+				new DrozipRecentlyUsedAsyncTask(AppShareActivity.this,
 						mRecentAdapter, mRecentFunc).execute();
 			}
 		};
@@ -244,12 +244,12 @@ public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF {
 				if (arg == null || arg.size() == 0) {
 					listView.addFooterView(mAppNotExistView);
 				}
-				new DroppInstalledAsyncTask(DroppShareActivity.this,
+				new DrozipInstalledAsyncTask(AppShareActivity.this,
 						mInstalledAdapter, mInstalledFunc).execute(mClearFlag);
 			}
 		};
 
-		new DroppHistoryAsyncTask(DroppShareActivity.this, mHistoryAdapter,
+		new DrozipHistoryAsyncTask(AppShareActivity.this, mHistoryAdapter,
 				mHistoryFunc).execute(mClearFlag);
 	}
 
@@ -279,7 +279,7 @@ public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF {
 			break;
 
 		case R.id.show_selector:
-			intent = new Intent(this, DroppSelectorActivity.class);
+			intent = new Intent(this, DrozipSelectorActivity.class);
 			startActivity(intent);
 			break;
 
@@ -410,7 +410,7 @@ public class DroppShareActivity extends Activity implements LogTagIF, SimejiIF {
 			}
 			AppData appData = adapter.getItem(position);
 
-			Intent intent = new Intent(DroppShareActivity.this,
+			Intent intent = new Intent(AppShareActivity.this,
 					MenuDialogActivity.class);
 			intent.putExtra(MenuDialogActivity.APP_DATA, appData);
 			startActivityForResult(intent, MENU_DIALOG);

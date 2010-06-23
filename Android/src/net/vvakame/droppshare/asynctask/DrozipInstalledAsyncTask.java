@@ -24,7 +24,7 @@ import android.widget.ArrayAdapter;
  * 
  * @author vvakame
  */
-public class DroppInstalledAsyncTask extends DroppBaseAsyncTask implements
+public class DrozipInstalledAsyncTask extends DrozipBaseAsyncTask implements
 		LogTagIF {
 
 	private static final int MODE_NEW = 0;
@@ -41,14 +41,14 @@ public class DroppInstalledAsyncTask extends DroppBaseAsyncTask implements
 
 	private int mMode = MODE_CACHE;
 
-	public DroppInstalledAsyncTask(Context context,
+	public DrozipInstalledAsyncTask(Context context,
 			ArrayAdapter<AppData> adapter, Func<List<AppData>> postExecFunc) {
 		super(context, adapter, postExecFunc);
 
 		Log.d(TAG, HelperUtil.getStackName());
 	}
 
-	public DroppInstalledAsyncTask(Context context,
+	public DrozipInstalledAsyncTask(Context context,
 			Func<List<AppData>> postExecFunc) {
 		super(context, postExecFunc);
 
