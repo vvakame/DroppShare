@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<!-- For DroppShareActivity -->
+	<!-- For DroppShare -->
+	<string name="app_name">DroppShare</string>
 	<string name="app_description">おすすめアプリを友達におすすめるアプリ</string>
 
+	<!-- For MainActivity -->
+	<string name="app_share">アプリをおすすめる</string>
+	<string name="hosting_upload">アプリ一覧を公開する</string>
+	<string name="drozip_selector">drozipをこねこねする</string>
+
+	<!-- For AppShareActivity -->
 	<string name="added">インストール</string>
 	<string name="replaced">アップデート</string>
 	<string name="removed">アンインストール</string>
@@ -31,17 +38,17 @@
 	<string name="message_added_summary">$app, $market, $version, $description
 		と記述すると置き換えられます。</string>
 
-	<!-- For DroppRedirectActivity -->
+	<!-- For MarketRedirectActivity -->
 	<string name="redirect_market_summary">market:// 表記をMarketへのリンクに変換します。</string>
 
-	<!-- For DroppViewerActivity -->
+	<!-- For DiffViewerActivity -->
 	<string name="read_failure_src">比較元ファイルの読み込みに失敗しました…</string>
 	<string name="read_failure_dest">比較先ファイルの読み込みに失敗しました…</string>
 
 	<string name="now_matchting_data">データ突き合わせ中…</string>
 	<string name="wait_a_moment">頑張ってます…</string>
 
-	<!-- For DroppSelectorActivity -->
+	<!-- For DrozipSelectorActivity -->
 	<string name="external_storage_not_exists">SDカードが利用できないです。</string>
 
 	<string name="gen_drozip">drozip作成</string>
@@ -58,7 +65,7 @@
 	<string name="add_dir_title">droppファイルのあるディレクトリは？</string>
 	<string name="add_dir_button_text">このディレクトリです！</string>
 
-	<!-- For DroppHostingClientActivity -->
+	<!-- For HostingUploadActivity -->
 	<string name="uploading">データアップロード中</string>
 	<string name="done_upload">
 		アップロード完了！TwitterのTLをチェックしてください。

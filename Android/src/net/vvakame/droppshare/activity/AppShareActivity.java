@@ -63,7 +63,7 @@ public class AppShareActivity extends Activity implements LogTagIF, SimejiIF {
 		super.onCreate(savedInstanceState);
 
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		setContentView(R.layout.main);
+		setContentView(R.layout.app_share);
 
 		setProgressBarIndeterminateVisibility(true);
 
