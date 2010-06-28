@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -56,7 +56,7 @@ public class AppDiffAdapter extends ArrayAdapter<AppDiffData> {
 			textColor = mContext.getResources().getColor(R.color.side_2_exists);
 		}
 
-		RelativeLayout l = (RelativeLayout) convertView.findViewById(R.id.boss);
+		LinearLayout l = (LinearLayout) convertView.findViewById(R.id.boss);
 		l.setBackgroundDrawable(new ColorDrawable(R.color.none));
 
 		// 左の耳の色
