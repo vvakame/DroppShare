@@ -39,7 +39,7 @@ public final class R {
         public static final int add_dir=0x7f0a0024;
         public static final int app_share=0x7f0a0016;
         public static final int application_action=0x7f0a0013;
-        public static final int application_description=0x7f0a000e;
+        public static final int application_description=0x7f0a000d;
         public static final int application_icon=0x7f0a000b;
         public static final int application_name=0x7f0a000c;
         public static final int application_process_date=0x7f0a0014;
@@ -69,8 +69,8 @@ public final class R {
         public static final int show_selector=0x7f0a0022;
         public static final int side_1=0x7f0a000a;
         public static final int side_1_parent=0x7f0a0009;
-        public static final int side_2=0x7f0a000d;
-        public static final int side_2_parent=0x7f0a000f;
+        public static final int side_2=0x7f0a000f;
+        public static final int side_2_parent=0x7f0a000e;
         public static final int tabhost=0x7f0a0000;
         public static final int title=0x7f0a0010;
     }
