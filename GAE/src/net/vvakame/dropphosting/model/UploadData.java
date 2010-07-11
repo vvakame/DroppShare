@@ -1,15 +1,15 @@
 package net.vvakame.dropphosting.model;
 
 public class UploadData {
-	private OAuthData oauth = null;
+	private TwitterOAuthData oauth = null;
 	private String variant = null;
 	private byte[] zipData = null;
 
-	public OAuthData getOauth() {
+	public TwitterOAuthData getOauth() {
 		return oauth;
 	}
 
-	public void setOauth(OAuthData oauth) {
+	public void setOauth(TwitterOAuthData oauth) {
 		this.oauth = oauth;
 	}
 
@@ -39,7 +39,7 @@ public class UploadData {
 		} else if (upData.getVariant() == null) {
 			upData.setVariant("default");
 		} else {
-			OAuthData.checkState(upData.getOauth());
+			TwitterOAuthData.checkState(upData.getOauth());
 		}
 	}
 }

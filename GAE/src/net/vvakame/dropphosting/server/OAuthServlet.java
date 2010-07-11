@@ -12,9 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.vvakame.dropphosting.meta.OAuthDataMeta;
-import net.vvakame.dropphosting.model.OAuthData;
-import net.vvakame.dropphosting.model.TwitterAuthorizedData;
+import net.vvakame.dropphosting.meta.TwitterOAuthDataMeta;
+import net.vvakame.dropphosting.model.TwitterOAuthData;
 
 import org.slim3.datastore.Datastore;
 
@@ -91,7 +90,7 @@ public class OAuthServlet extends HttpServlet {
 	}
 
 	private void processDebug(HttpServletResponse res) throws IOException {
-		OAuthData data = new OAuthData();
+		TwitterOAuthData data = new TwitterOAuthData();
 		data.setScreenName("vvakame");
 		data.setOauthHashCode(01234567);
 		saveOauth(data);
@@ -128,11 +127,12 @@ public class OAuthServlet extends HttpServlet {
 		Twitter twitter = twiFac.getOAuthAuthorizedInstance(consumerKey,
 				consumerSecret, accessToken);
 
-		OAuthData data = null;
+		TwitterOAuthData data = null;
 		try {
-			data = new OAuthData();
+			data = new TwitterOAuthData();
 			data.setScreenName(twitter.getScreenName());
 			data.setOauthHashCode(accessToken.hashCode());
+			data.setAccessToken(accessToken);
 
 			StringBuilder stb = new StringBuilder();
 			stb.append("by accessToken, ");
@@ -148,14 +148,13 @@ public class OAuthServlet extends HttpServlet {
 
 		saveOauth(data);
 		responseDrpScheme(res, data);
-		saveOAuthToken(data, accessToken);
 	}
 
 	private void processCallback(HttpServletResponse res, HttpSession session,
 			String token, String tokenSecret, String oauthVerifier)
 			throws IOException, ServletException {
 
-		OAuthData data = null;
+		TwitterOAuthData data = null;
 		AccessToken accessToken = null;
 		try {
 			Twitter twitter = twiFac.getInstance();
@@ -164,9 +163,10 @@ public class OAuthServlet extends HttpServlet {
 			accessToken = twitter.getOAuthAccessToken(requestToken,
 					oauthVerifier);
 
-			data = new OAuthData();
+			data = new TwitterOAuthData();
 			data.setScreenName(twitter.getScreenName());
 			data.setOauthHashCode(accessToken.hashCode());
+			data.setAccessToken(accessToken);
 
 			StringBuilder stb = new StringBuilder();
 			stb.append("by accessToken, ");
@@ -182,29 +182,19 @@ public class OAuthServlet extends HttpServlet {
 
 		saveOauth(data);
 		responseDrpScheme(res, data);
-		saveOAuthToken(data, accessToken);
 	}
 
-	private void saveOAuthToken(OAuthData data, AccessToken accessToken) {
-
-		TwitterAuthorizedData twiData = new TwitterAuthorizedData();
-		twiData.setAccessToken(accessToken);
-		twiData.setScreenName(data.getScreenName());
-		twiData.createKey();
-		Datastore.put(twiData);
-	}
-
-	private void saveOauth(OAuthData data) {
-
-		OAuthDataMeta oMeta = OAuthDataMeta.get();
+	private void saveOauth(TwitterOAuthData data) {
+		TwitterOAuthData.checkState(data);
+		TwitterOAuthDataMeta oMeta = TwitterOAuthDataMeta.get();
 		List<Key> keys = Datastore.query(oMeta).filter(
 				oMeta.screenName.equal(data.getScreenName())).asKeyList();
 		Datastore.delete(keys);
 		Datastore.put(data);
 	}
 
-	private void responseDrpScheme(HttpServletResponse response, OAuthData data)
-			throws IOException {
+	private void responseDrpScheme(HttpServletResponse response,
+			TwitterOAuthData data) throws IOException {
 
 		response.sendRedirect("drphost:" + data.getScreenName() + "?hash="
 				+ data.getOauthHashCode());

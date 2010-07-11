@@ -51,13 +51,6 @@ public class PackageOperationReceiver extends BroadcastReceiver implements
 		}
 		appInfo = pInfo.applicationInfo;
 
-		// DEBUGGABLEなアプリだったら無視する(開発中に反応するとうざいので)
-		// AndroidManifest,xmlで明示的に設定されていないと役にたたないけど。
-		if ((appInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
-			Log.d(TAG, HelperUtil.getStackName() + " Target is DEBUGGABLE!");
-			return;
-		}
-
 		// キャッシュ再構成のためとりあえず消しておく
 		CacheUtil.deleteOwnCache();
 

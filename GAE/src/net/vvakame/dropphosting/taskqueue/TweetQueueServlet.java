@@ -11,13 +11,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.vvakame.dropphosting.meta.TwitterAuthorizedDataMeta;
+import net.vvakame.dropphosting.meta.TwitterOAuthDataMeta;
 import net.vvakame.dropphosting.meta.VariantDataMeta;
-import net.vvakame.dropphosting.model.TwitterAuthorizedData;
+import net.vvakame.dropphosting.model.TwitterOAuthData;
 import net.vvakame.dropphosting.model.VariantData;
 import net.vvakame.dropphosting.server.DataDownloadServlet;
 
 import org.slim3.datastore.Datastore;
+
+import com.google.apphosting.api.ApiProxy;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -54,14 +56,23 @@ public class TweetQueueServlet extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
 
+		log.info("app version="
+				+ ApiProxy.getCurrentEnvironment().getVersionId());
+
 		String u = req.getParameter("u");
 		String v = req.getParameter("v");
 
-		log.warning("taskqueue tweet upload! u=" + u + ", v=" + v);
+		log.info("taskqueue tweet upload! u=" + u + ", v=" + v);
 
-		TwitterAuthorizedDataMeta tMeta = TwitterAuthorizedDataMeta.get();
-		TwitterAuthorizedData twiData = Datastore.query(tMeta).filter(
-				tMeta.screenName.equal("DroppShare")).asSingle();
+		tweet("DroppShare", u, v);
+		tweet(u, u, v);
+	}
+
+	private void tweet(String tweeter, String u, String v)
+			throws ServletException {
+		TwitterOAuthDataMeta tMeta = TwitterOAuthDataMeta.get();
+		TwitterOAuthData twiData = Datastore.query(tMeta).filter(
+				tMeta.screenName.equal(tweeter)).asSingle();
 
 		if (twiData != null) {
 			VariantDataMeta vMeta = VariantDataMeta.get();

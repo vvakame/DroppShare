@@ -9,19 +9,17 @@ import net.vvakame.android.helper.Closure;
 import net.vvakame.android.helper.DrivenHandler;
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
+import net.vvakame.droppshare.helper.DroppHostingHelper;
 import net.vvakame.droppshare.helper.HttpPostMultipartWrapper;
 import net.vvakame.droppshare.helper.LogTagIF;
+import net.vvakame.droppshare.helper.OAuthHelper;
 import net.vvakame.droppshare.model.OAuthData;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -45,11 +43,6 @@ public class HostingUploadActivity extends Activity implements LogTagIF {
 		super.onCreate(savedInstanceState);
 
 		process();
-	}
-
-	@Override
-	public void onNewIntent(Intent intent) {
-		switchAction(intent);
 	}
 
 	@Override
@@ -82,43 +75,10 @@ public class HostingUploadActivity extends Activity implements LogTagIF {
 		}
 	}
 
-	private void switchAction(Intent receive) {
-		if (receive.getAction().equals(Intent.ACTION_SEND)) {
-			process();
-		} else if (receive.getAction().equals(Intent.ACTION_VIEW)) {
-			doProcessRedirect(receive.getData());
-		}
-	}
-
-	private void doOAuthAuthorize() {
-		Intent oauthIntent = null;
-
-		oauthIntent = new Intent();
-		oauthIntent.setAction(Intent.ACTION_VIEW);
-		oauthIntent.setData(Uri.parse("http://drphost.appspot.com/twitter"));
-
-		startActivity(oauthIntent);
-	}
-
-	private void doProcessRedirect(Uri data) {
-		String str = data.getSchemeSpecificPart();
-
-		String screenName = str.substring(0, str.indexOf("?"));
-		String hash = str.substring(str.indexOf("hash=") + "hash=".length());
-
-		OAuthData oauth = new OAuthData();
-		oauth.setScreenName(screenName);
-		oauth.setOauthHashCode(Long.parseLong(hash));
-
-		saveOAuth(oauth);
-		// setIntentしてないので、ACTION_SENDのIntentが取れるはず
-		onNewIntent(getIntent());
-	}
-
 	public void process() {
-		final OAuthData oauth = restoreOAuth();
+		final OAuthData oauth = OAuthHelper.restoreOAuth(this);
 		if (oauth == null) {
-			doOAuthAuthorize();
+			throw new NullPointerException("oauth data is null!!");
 		} else {
 			Closure cloFinish = new Closure() {
 				@Override
@@ -179,7 +139,7 @@ public class HostingUploadActivity extends Activity implements LogTagIF {
 
 		try {
 			HttpPostMultipartWrapper post = new HttpPostMultipartWrapper(
-					"http://drphost.appspot.com/upload");
+					DroppHostingHelper.getUploadUri(this));
 			post.pushString("screen_name", oauth.getScreenName());
 			post.pushString("oauth_hashcode", String.valueOf(oauth
 					.getOauthHashCode()));
@@ -191,7 +151,6 @@ public class HostingUploadActivity extends Activity implements LogTagIF {
 			success = true;
 
 		} catch (FileNotFoundException e) {
-			deleteOAuth();
 			sanitizeException(e);
 		} catch (MalformedURLException e) {
 			Log.e(TAG, HelperUtil.getExceptionLog(e));
@@ -201,31 +160,6 @@ public class HostingUploadActivity extends Activity implements LogTagIF {
 		}
 
 		return success;
-	}
-
-	private void saveOAuth(OAuthData oauth) {
-		Editor editor = PreferenceManager.getDefaultSharedPreferences(this)
-				.edit();
-		editor.putString("screen_name", oauth.getScreenName());
-		editor.putLong("oauth_hashcode", oauth.getOauthHashCode());
-		editor.commit();
-	}
-
-	private OAuthData restoreOAuth() {
-		SharedPreferences pref = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		OAuthData oauth = new OAuthData();
-		oauth.setScreenName(pref.getString("screen_name", null));
-		oauth.setOauthHashCode(pref.getLong("oauth_hashcode", 0));
-
-		return oauth.getScreenName() != null && oauth.getOauthHashCode() != 0 ? oauth
-				: null;
-	}
-
-	private void deleteOAuth() {
-		SharedPreferences pref = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		pref.edit().remove("oauth_hashcode").commit();
 	}
 
 	public void sanitizeException(Exception e) {
