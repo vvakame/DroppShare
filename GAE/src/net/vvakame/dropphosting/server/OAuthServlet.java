@@ -148,7 +148,7 @@ public class OAuthServlet extends HttpServlet {
 
 		saveOauth(data);
 		responseDrpScheme(res, data);
-		saveAnnounceAccount(data, accessToken);
+		saveOAuthToken(data, accessToken);
 	}
 
 	private void processCallback(HttpServletResponse res, HttpSession session,
@@ -182,18 +182,16 @@ public class OAuthServlet extends HttpServlet {
 
 		saveOauth(data);
 		responseDrpScheme(res, data);
-		saveAnnounceAccount(data, accessToken);
+		saveOAuthToken(data, accessToken);
 	}
 
-	private void saveAnnounceAccount(OAuthData data, AccessToken accessToken) {
+	private void saveOAuthToken(OAuthData data, AccessToken accessToken) {
 
-		if ("DroppShare".equals(data.getScreenName())) {
-			TwitterAuthorizedData twiData = new TwitterAuthorizedData();
-			twiData.setAccessToken(accessToken);
-			twiData.setScreenName(data.getScreenName());
-			twiData.createKey();
-			Datastore.put(twiData);
-		}
+		TwitterAuthorizedData twiData = new TwitterAuthorizedData();
+		twiData.setAccessToken(accessToken);
+		twiData.setScreenName(data.getScreenName());
+		twiData.createKey();
+		Datastore.put(twiData);
 	}
 
 	private void saveOauth(OAuthData data) {
@@ -210,6 +208,8 @@ public class OAuthServlet extends HttpServlet {
 
 		response.sendRedirect("drphost:" + data.getScreenName() + "?hash="
 				+ data.getOauthHashCode());
+		response.getOutputStream().flush();
+		response.getOutputStream().close();
 	}
 
 	private void clearSession(HttpSession session) {

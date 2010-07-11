@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<string name="language">日本語</string>
+
 	<!-- For DroppShare -->
 	<string name="app_name">DroppShare</string>
 	<string name="app_description">おすすめアプリを友達におすすめるアプリ</string>
@@ -64,6 +66,16 @@
 
 	<string name="add_dir_title">droppファイルのあるディレクトリは？</string>
 	<string name="add_dir_button_text">このディレクトリです！</string>
+
+	<!-- For HostingFrontendActivity -->
+	<string name="not_authorized">まだ認証されていません</string>
+	<string name="authorized">%sとしてログイン済</string>
+
+	<!-- For TwitterOAuthActivity -->
+	<string name="connecting_server">サーバとお話中…</string>
+	<string name="failed_connect">
+		サーバとのお話が失敗しました…
+	</string>
 
 	<!-- For HostingUploadActivity -->
 	<string name="uploading">データアップロード中</string>
