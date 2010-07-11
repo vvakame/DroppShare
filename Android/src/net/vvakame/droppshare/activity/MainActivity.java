@@ -38,7 +38,7 @@ public class MainActivity extends Activity implements LogTagIF, OnClickListener 
 			break;
 
 		case R.id.hosting_upload:
-			intent = new Intent(this, HostingUploadActivity.class);
+			intent = new Intent(this, HostingFrontendActivity.class);
 			startActivity(intent);
 
 			break;

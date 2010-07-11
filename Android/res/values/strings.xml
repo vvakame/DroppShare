@@ -73,6 +73,14 @@
 
 	<string name="files_not_exists">"*.dropp" files not exists.</string>
 
+	<!-- For HostingFrontendActivity -->
+	<string name="not_authorized">Not authorized.</string>
+	<string name="authorized">Certified as %s.</string>
+
+	<!-- For TwitterOAuthActivity -->
+	<string name="drphost_address">http://drphost.appspot.com/twitter</string>
+	<string name="drphost_scheme">drphost</string>
+
 	<!-- For HostingUploadActivity -->
 	<string name="hosting_client_name">DroppHosting</string>
 	<string name="uploading">Uploading app list!</string>
