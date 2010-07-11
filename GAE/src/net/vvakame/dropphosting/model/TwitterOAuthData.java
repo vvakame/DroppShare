@@ -9,7 +9,7 @@ import com.google.appengine.api.datastore.Key;
 import twitter4j.http.AccessToken;
 
 @Model
-public class TwitterAuthorizedData {
+public class TwitterOAuthData {
 
 	@Attribute(primaryKey = true)
 	private Key key = null;
@@ -17,9 +17,11 @@ public class TwitterAuthorizedData {
 	private String screenName = null;
 	@Attribute(lob = true)
 	private AccessToken accessToken = null;
+	// Android側からあげられてくるhashCode
+	private Integer oauthHashCode = null;
 
 	public void createKey() {
-		key = Datastore.createKey(TwitterAuthorizedData.class, screenName);
+		key = Datastore.createKey(TwitterOAuthData.class, screenName);
 	}
 
 	public void setKey(Key key) {
@@ -45,4 +47,26 @@ public class TwitterAuthorizedData {
 	public void setAccessToken(AccessToken accessToken) {
 		this.accessToken = accessToken;
 	}
+
+	public void setOauthHashCode(Integer oauthHashCode) {
+		this.oauthHashCode = oauthHashCode;
+	}
+
+	public Integer getOauthHashCode() {
+		return oauthHashCode;
+	}
+
+	public static void checkState(TwitterOAuthData twitAuth) {
+		if (twitAuth.getScreenName() == null) {
+			throw new IllegalStateException("screenName is null");
+		}
+		if (twitAuth.getAccessToken() == null) {
+			throw new IllegalStateException("access token is null");
+		}
+		if (twitAuth.getOauthHashCode() == null) {
+			twitAuth.setOauthHashCode(twitAuth.getAccessToken().hashCode());
+		}
+		twitAuth.createKey();
+	}
+
 }

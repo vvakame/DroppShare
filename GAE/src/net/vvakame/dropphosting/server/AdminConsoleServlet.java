@@ -19,7 +19,7 @@ import com.google.appengine.api.memcache.MemcacheServiceFactory;
 
 import net.vvakame.dropphosting.meta.AppDataSrvMeta;
 import net.vvakame.dropphosting.meta.IconDataMeta;
-import net.vvakame.dropphosting.meta.OAuthDataMeta;
+import net.vvakame.dropphosting.meta.TwitterOAuthDataMeta;
 import net.vvakame.dropphosting.meta.VariantDataMeta;
 
 public class AdminConsoleServlet extends HttpServlet {
@@ -66,7 +66,7 @@ public class AdminConsoleServlet extends HttpServlet {
 		} else if ("delete_oauth".equals(req.getParameter("action"))) {
 			String screenName = req.getParameter("screen_name");
 
-			OAuthDataMeta oMeta = OAuthDataMeta.get();
+			TwitterOAuthDataMeta oMeta = TwitterOAuthDataMeta.get();
 			List<Key> keys = Datastore.query(oMeta).filter(
 					oMeta.screenName.equal(screenName)).asKeyList();
 

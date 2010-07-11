@@ -4,6 +4,7 @@ import net.vvakame.android.helper.Closure;
 import net.vvakame.android.helper.DrivenHandler;
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
+import net.vvakame.droppshare.helper.DroppHostingHelper;
 import net.vvakame.droppshare.helper.LogTagIF;
 import net.vvakame.droppshare.helper.OAuthHelper;
 import net.vvakame.droppshare.model.OAuthData;
@@ -98,7 +99,7 @@ public class TwitterOAuthActivity extends Activity implements LogTagIF {
 		websettings.setSaveFormData(false);
 		websettings.setSavePassword(false);
 
-		webview.loadUrl(getString(R.string.drphost_address));
+		webview.loadUrl(DroppHostingHelper.getTwitterUri(this));
 	}
 
 	private OAuthData createOAuthData(Uri data) {

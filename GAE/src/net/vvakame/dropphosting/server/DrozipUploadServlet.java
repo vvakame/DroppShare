@@ -27,11 +27,11 @@ import javax.xml.stream.XMLStreamReader;
 
 import net.vvakame.dropphosting.meta.AppDataSrvMeta;
 import net.vvakame.dropphosting.meta.IconDataMeta;
-import net.vvakame.dropphosting.meta.OAuthDataMeta;
+import net.vvakame.dropphosting.meta.TwitterOAuthDataMeta;
 import net.vvakame.dropphosting.meta.VariantDataMeta;
 import net.vvakame.dropphosting.model.AppDataSrv;
 import net.vvakame.dropphosting.model.IconData;
-import net.vvakame.dropphosting.model.OAuthData;
+import net.vvakame.dropphosting.model.TwitterOAuthData;
 import net.vvakame.dropphosting.model.UploadData;
 import net.vvakame.dropphosting.model.VariantData;
 
@@ -78,18 +78,20 @@ public class DrozipUploadServlet extends HttpServlet {
 
 		// Uploadデータを受け取る
 		UploadData upData = getUploadFiles(req);
-		OAuthData upOauth = upData.getOauth();
-		OAuthDataMeta oMeta = OAuthDataMeta.get();
-		OAuthData dbOauth = Datastore.query(oMeta).filter(
+		TwitterOAuthData upOauth = upData.getOauth();
+		TwitterOAuthDataMeta oMeta = TwitterOAuthDataMeta.get();
+		TwitterOAuthData dbOauth = Datastore.query(oMeta).filter(
 				oMeta.screenName.equal(upOauth.getScreenName())).asSingle();
 		if (dbOauth == null) {
 			throw new IllegalStateException(
 					"OAuth on Twitter still has not been authenticated!");
 		}
-		if (!dbOauth.equals(upOauth)) {
+		if (!(dbOauth.getScreenName().equals(upOauth.getScreenName()) && dbOauth
+				.getOauthHashCode().equals(upOauth.getOauthHashCode()))) {
 			throw new IllegalStateException(
 					"Please try to authenticate once more...");
 		}
+		upData.setOauth(dbOauth);
 		UploadData.chechState(upData);
 
 		// 受け取ったzipデータの展開とかする
@@ -98,6 +100,7 @@ public class DrozipUploadServlet extends HttpServlet {
 		VariantData.checkState(variantData);
 
 		save(upData.getOauth(), variantData);
+		pushTweetQueue(variantData);
 
 		res.setStatus(HttpServletResponse.SC_CREATED);
 		String url = req.getRequestURL().toString();
@@ -108,7 +111,7 @@ public class DrozipUploadServlet extends HttpServlet {
 						+ variantData.getScreenName());
 	}
 
-	private void save(OAuthData oauth, VariantData variantData)
+	private void save(TwitterOAuthData oauth, VariantData variantData)
 			throws ServletException {
 		log.info("start save droData");
 		List<AppDataSrv> appList = variantData.getAppList();
@@ -153,12 +156,14 @@ public class DrozipUploadServlet extends HttpServlet {
 		Datastore.put(variantData);
 		Datastore.put(variantData.getAppList());
 
+		log.info("Yay! data save succeed...");
+	}
+
+	private void pushTweetQueue(VariantData variantData) {
 		Queue queue = QueueFactory.getQueue("tweet");
 		String u = variantData.getScreenName();
 		String v = variantData.getVariant();
 		queue.add(Builder.url("/tweet").param("u", u).param("v", v));
-
-		log.info("Yay! data save succeed...");
 	}
 
 	private VariantData unzip(UploadData upData) throws IOException {
@@ -281,7 +286,7 @@ public class DrozipUploadServlet extends HttpServlet {
 		upload.setSizeMax(MAX_UPLOAD_SIZE);
 
 		UploadData upData = new UploadData();
-		upData.setOauth(new OAuthData());
+		upData.setOauth(new TwitterOAuthData());
 		try {
 			FileItemIterator iter = upload.getItemIterator(req);
 			while (iter.hasNext()) {
@@ -291,7 +296,8 @@ public class DrozipUploadServlet extends HttpServlet {
 				if (item.isFormField()) {
 					String name = item.getFieldName();
 					String value = null;
-					log.info("Got a form field: " + item.getFieldName());
+					log.info("Got a form field: " + item.getFieldName()
+							+ ", name = " + item.getName());
 					InputStreamReader isr = new InputStreamReader(is);
 					BufferedReader br = new BufferedReader(isr);
 					String line = null;
