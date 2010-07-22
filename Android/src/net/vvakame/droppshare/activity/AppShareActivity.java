@@ -149,8 +149,9 @@ public class AppShareActivity extends Activity implements LogTagIF, SimejiIF {
 
 		if (requestCode == MENU_DIALOG && resultCode == RESULT_OK) {
 			int result = data.getIntExtra(MenuDialogActivity.RESULT, -1);
-			AppData appData = (AppData) data
-					.getSerializableExtra(MenuDialogActivity.APP_DATA);
+
+			AppData appData = AppData.fromByteArray(data
+					.getByteArrayExtra(MenuDialogActivity.APP_DATA));
 
 			switch (result) {
 			case R.id.http:
@@ -412,7 +413,7 @@ public class AppShareActivity extends Activity implements LogTagIF, SimejiIF {
 
 			Intent intent = new Intent(AppShareActivity.this,
 					MenuDialogActivity.class);
-			intent.putExtra(MenuDialogActivity.APP_DATA, appData);
+			intent.putExtra(MenuDialogActivity.APP_DATA, appData.toByteArray());
 			startActivityForResult(intent, MENU_DIALOG);
 
 			return true;

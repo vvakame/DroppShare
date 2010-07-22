@@ -34,6 +34,8 @@ public class DroppShareFilter implements Filter {
 
 	private void processOnlyDroppShare(ServletRequest req, ServletResponse res,
 			Exception e) throws IOException {
+		// TODO 今デッドコードになってる。
+
 		HttpServletRequest httpReq = (HttpServletRequest) req;
 		HttpServletResponse httpRes = (HttpServletResponse) res;
 		if (httpReq.getHeader("User-Agent").indexOf("DroppShare") != -1) {
