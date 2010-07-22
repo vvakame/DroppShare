@@ -1,11 +1,16 @@
 package net.vvakame.droppshare.model;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
+import org.msgpack.MessagePackable;
+import org.msgpack.MessageTypeException;
+import org.msgpack.MessageUnpackable;
+import org.msgpack.Packer;
+import org.msgpack.Unpacker;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,8 +22,10 @@ import android.graphics.drawable.Drawable;
  * 
  * @author vvakame
  */
-public class AppData implements Serializable {
-	public static final long serialVersionUID = 6L;
+public class AppData implements MessagePackable, MessageUnpackable {
+
+	public static final int PACK_VERSION = 7;
+
 	public static final int COMPRESS_QUALITY = 100;
 
 	private String appName = null;
@@ -106,32 +113,6 @@ public class AppData implements Serializable {
 		return packageName + "_v" + String.valueOf(versionCode);
 	}
 
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		// transient 以外
-		out.defaultWriteObject();
-
-		// transient
-		SerializableBitmapWrapper sBitmap = null;
-		if (icon instanceof BitmapDrawable) {
-			sBitmap = new SerializableBitmapWrapper(((BitmapDrawable) icon)
-					.getBitmap());
-		}
-		out.writeObject(sBitmap);
-	}
-
-	private void readObject(ObjectInputStream in) throws IOException,
-			ClassNotFoundException {
-		// transient 以外
-		in.defaultReadObject();
-
-		// transient
-		SerializableBitmapWrapper sBitmap = (SerializableBitmapWrapper) in
-				.readObject();
-		if (sBitmap != null) {
-			icon = new BitmapDrawable(sBitmap.getBitmap());
-		}
-	}
-
 	private String toString(CharSequence charSeq) {
 		return charSeq != null ? charSeq.toString() : null;
 	}
@@ -141,32 +122,147 @@ public class AppData implements Serializable {
 		return getClass().getName() + "@" + packageName;
 	}
 
-	/**
-	 * BitmapDrawableをSerializeするための変換用ラッパ
-	 * 
-	 * @author vvakame
-	 */
-	private class SerializableBitmapWrapper implements Serializable {
-		private static final long serialVersionUID = AppData.serialVersionUID;
+	public byte[] toByteArray() {
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		Packer packer = new Packer(bout);
+		try {
+			messagePack(packer);
+		} catch (IOException e) {
+		}
+		return bout.toByteArray();
+	}
 
-		private byte[] mBitmapArray = null;
-		private transient Bitmap mBitmap = null;
-
-		public SerializableBitmapWrapper(Bitmap bitmap) {
-			mBitmap = bitmap;
-
-			ByteArrayOutputStream bout = new ByteArrayOutputStream();
-			mBitmap.compress(Bitmap.CompressFormat.PNG, COMPRESS_QUALITY, bout);
-			mBitmapArray = bout.toByteArray();
+	public static AppData fromByteArray(byte[] bArray) {
+		ByteArrayInputStream bin = new ByteArrayInputStream(bArray);
+		Unpacker unpacker = new Unpacker(bin);
+		AppData appData = new AppData();
+		try {
+			appData.messageUnpack(unpacker);
+		} catch (MessageTypeException e) {
+			return null;
+		} catch (IOException e) {
+			return null;
 		}
 
-		public Bitmap getBitmap() {
-			if (mBitmapArray == null) {
-				return null;
+		return appData;
+	}
+
+	@Override
+	public void messagePack(Packer packer) throws IOException {
+		packer.packArray(9);
+		packer.pack(PACK_VERSION);
+
+		packer.pack(appName);
+		packer.pack(packageName);
+		packer.pack(description);
+		packer.pack(versionCode);
+		packer.pack(versionName);
+		packer.pack(action);
+		packer.pack(processDate != null ? processDate.getTime() : null);
+		if (icon instanceof BitmapDrawable) {
+			Bitmap bitmap = ((BitmapDrawable) icon).getBitmap();
+
+			ByteArrayOutputStream bout = new ByteArrayOutputStream();
+			bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESS_QUALITY, bout);
+			byte[] bArray = bout.toByteArray();
+			packer.pack(bArray);
+		} else {
+			packer.pack((Object) null);
+		}
+	}
+
+	@Override
+	public void messageUnpack(Unpacker unpacker) throws IOException,
+			MessageTypeException {
+		final int len = unpacker.unpackArray();
+		int version = unpacker.unpackInt();
+		switch (version) {
+		// 1〜6 はSerializable時代に消費
+		case 7:
+			if (len != 9) {
+				throw new IllegalArgumentException(
+						"mismatch version <-> array length!");
 			}
-			Bitmap bitmap = BitmapFactory.decodeByteArray(mBitmapArray, 0,
-					mBitmapArray.length);
-			return bitmap;
+			appName = unpacker.unpackString();
+			packageName = unpacker.unpackString();
+			description = unpacker.tryUnpackNull() ? null : unpacker
+					.unpackString();
+			versionCode = unpacker.unpackInt();
+			versionName = unpacker.tryUnpackNull() ? null : unpacker
+					.unpackString();
+			action = unpacker.tryUnpackNull() ? null : unpacker.unpackString();
+			Long date = unpacker.tryUnpackNull() ? null : unpacker.unpackLong();
+			processDate = date != null ? new Date(date) : null;
+			byte[] bArray = unpacker.unpackByteArray();
+			if (bArray != null) {
+				Bitmap bitmap = BitmapFactory.decodeByteArray(bArray, 0,
+						bArray.length);
+				icon = new BitmapDrawable(bitmap);
+			}
+			break;
+
+		default:
+			throw new IllegalStateException("unknown app data version!!");
+		}
+	}
+
+	public void messageUnpack(List<Object> list) throws IOException,
+			MessageTypeException {
+		// 注意 ここで渡ってくるListはArrays.toList(ary)産の可能性有り。immutable。
+
+		final int len = list.size();
+		int version = (Byte) list.get(0);
+		switch (version) {
+		// 1〜6 はSerializable時代に消費
+		case 7:
+			if (len != 9) {
+				throw new IllegalArgumentException(
+						"mismatch version <-> array length!");
+			}
+
+			appName = convObj2String(list.get(1));
+			packageName = convObj2String(list.get(2));
+			description = convObj2String(list.get(3));
+			Object obj = list.get(4);
+			if (obj instanceof Byte) {
+				versionCode = (Byte) obj;
+			} else if (obj instanceof Integer) {
+				versionCode = (Integer) obj;
+			} else if (obj instanceof Short) {
+				versionCode = (Short) obj;
+			} else if (obj instanceof Long) {
+				versionCode = (int) (long) (Long) obj;
+			} else {
+				throw new IllegalStateException();
+			}
+			versionName = convObj2String(list.get(5));
+			action = convObj2String(list.get(6));
+			Long date = (Long) list.get(7);
+			processDate = date != null ? new Date(date) : null;
+
+			byte[] bArray = (byte[]) list.get(8);
+			if (bArray != null) {
+				Bitmap bitmap = BitmapFactory.decodeByteArray(bArray, 0,
+						bArray.length);
+				icon = new BitmapDrawable(bitmap);
+			}
+			break;
+
+		default:
+			throw new IllegalStateException("unknown app data version!!");
+		}
+	}
+
+	private String convObj2String(Object obj) {
+		if (obj == null) {
+			return null;
+		} else if (obj instanceof byte[]) {
+			return new String((byte[]) obj);
+		} else if (obj instanceof String) {
+			return (String) obj;
+		} else {
+			throw new IllegalStateException(
+					"obj is not String byte array or String");
 		}
 	}
 }

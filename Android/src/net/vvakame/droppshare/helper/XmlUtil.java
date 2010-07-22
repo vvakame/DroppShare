@@ -139,7 +139,7 @@ public class XmlUtil implements LogTagIF {
 			serializer.startDocument("UTF-8", true);
 			serializer.startTag("", DROPP_SHARE);
 			serializer.attribute("", VERSION, String
-					.valueOf(AppData.serialVersionUID));
+					.valueOf(AppData.PACK_VERSION));
 			serializer.attribute("", SCREEN, context
 					.getString(R.string.screen_dpi));
 

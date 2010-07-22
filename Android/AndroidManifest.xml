@@ -44,7 +44,8 @@
 			</intent-filter>
 		</activity>
 		<activity android:name=".activity.HostingFrontendActivity" />
-		<activity android:name=".activity.TwitterOAuthActivity" />
+		<activity android:name=".activity.TwitterOAuthActivity"
+			android:configChanges="orientation" />
 		<activity android:configChanges="orientation" android:label="@string/hosting_client_name"
 			android:launchMode="singleInstance" android:name=".activity.HostingUploadActivity">
 			<intent-filter>
