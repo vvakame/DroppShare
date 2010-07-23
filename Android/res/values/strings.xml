@@ -76,6 +76,7 @@
 	<!-- For HostingFrontendActivity -->
 	<string name="not_authorized">Not authorized.</string>
 	<string name="authorized">Certified as %s.</string>
+	<string name="create">create</string>
 
 	<!-- For TwitterOAuthActivity -->
 	<string name="drphost_address">http://drphost.appspot.com</string>

@@ -9,6 +9,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -30,22 +33,27 @@ public class HostingFrontendActivity extends Activity implements LogTagIF,
 		switchViewEnable();
 	}
 
-	private void switchViewEnable() {
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main, menu);
+		return true;
+	}
 
-		Button authorizeButton = (Button) findViewById(R.id.authorize);
-		ImageButton removeButton = (ImageButton) findViewById(R.id.remove_authorize);
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		boolean ret = true;
+		switch (item.getItemId()) {
+		case R.id.create:
 
-		OAuthData oauth = OAuthHelper.restoreOAuth(this);
-		if (oauth != null) {
-			authorizeButton.setEnabled(false);
-			authorizeButton.setText(getString(R.string.authorized, oauth
-					.getScreenName()));
-			removeButton.setEnabled(true);
-		} else {
-			authorizeButton.setEnabled(true);
-			authorizeButton.setText(getString(R.string.not_authorized));
-			removeButton.setEnabled(false);
+			break;
+
+		default:
+			ret = super.onOptionsItemSelected(item);
+			break;
 		}
+		return ret;
 	}
 
 	@Override
@@ -75,4 +83,23 @@ public class HostingFrontendActivity extends Activity implements LogTagIF,
 			switchViewEnable();
 		}
 	}
+
+	private void switchViewEnable() {
+
+		Button authorizeButton = (Button) findViewById(R.id.authorize);
+		ImageButton removeButton = (ImageButton) findViewById(R.id.remove_authorize);
+
+		OAuthData oauth = OAuthHelper.restoreOAuth(this);
+		if (oauth != null) {
+			authorizeButton.setEnabled(false);
+			authorizeButton.setText(getString(R.string.authorized, oauth
+					.getScreenName()));
+			removeButton.setEnabled(true);
+		} else {
+			authorizeButton.setEnabled(true);
+			authorizeButton.setText(getString(R.string.not_authorized));
+			removeButton.setEnabled(false);
+		}
+	}
+
 }
