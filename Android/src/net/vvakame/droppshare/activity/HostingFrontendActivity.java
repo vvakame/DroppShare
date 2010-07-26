@@ -29,6 +29,7 @@ public class HostingFrontendActivity extends Activity implements LogTagIF,
 
 		findViewById(R.id.authorize).setOnClickListener(this);
 		findViewById(R.id.remove_authorize).setOnClickListener(this);
+		findViewById(R.id.generate).setOnClickListener(this);
 
 		switchViewEnable();
 	}
@@ -70,6 +71,9 @@ public class HostingFrontendActivity extends Activity implements LogTagIF,
 		case R.id.remove_authorize:
 			OAuthHelper.removeOAuth(this);
 			switchViewEnable();
+			break;
+
+		case R.id.generate:
 			break;
 
 		default:

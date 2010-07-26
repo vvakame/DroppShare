@@ -77,6 +77,7 @@
 	<string name="not_authorized">Not authorized.</string>
 	<string name="authorized">Certified as %s.</string>
 	<string name="create">create</string>
+	<string name="gen_list">Create new list.</string>
 
 	<!-- For TwitterOAuthActivity -->
 	<string name="drphost_address">http://drphost.appspot.com</string>

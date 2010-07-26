@@ -22,5 +22,8 @@
 		android:layout_height="2dip" android:src="@android:drawable/divider_horizontal_dark"
 		android:scaleType="fitXY" android:gravity="fill_horizontal"
 		android:layout_marginLeft="10dip" android:layout_marginRight="10dip" />
+	<Button android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/generate"
+		android:text="@string/gen_list"></Button>
 
 </LinearLayout>

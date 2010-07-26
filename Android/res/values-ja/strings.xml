@@ -71,6 +71,7 @@
 	<string name="not_authorized">まだ認証されていません</string>
 	<string name="authorized">%sとしてログイン済</string>
 	<string name="create">新規作成</string>
+	<string name="gen_list">新規リスト</string>
 
 	<!-- For TwitterOAuthActivity -->
 	<string name="connecting_server">サーバとお話中…</string>
