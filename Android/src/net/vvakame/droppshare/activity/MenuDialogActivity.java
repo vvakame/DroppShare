@@ -29,7 +29,8 @@ public class MenuDialogActivity extends Activity implements LogTagIF, ZXingIF {
 
 		super.onCreate(savedInstanceState);
 
-		mAppData = (AppData) getIntent().getSerializableExtra(APP_DATA);
+		mAppData = AppData.fromByteArray(getIntent()
+				.getByteArrayExtra(APP_DATA));
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.menu_dialog);
@@ -59,7 +60,7 @@ public class MenuDialogActivity extends Activity implements LogTagIF, ZXingIF {
 			case R.id.googl:
 				data = new Intent();
 				data.putExtra(RESULT, v.getId());
-				data.putExtra(APP_DATA, mAppData);
+				data.putExtra(APP_DATA, mAppData.toByteArray());
 				setResult(Activity.RESULT_OK, data);
 				finish();
 

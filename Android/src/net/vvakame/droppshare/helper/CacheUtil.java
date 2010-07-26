@@ -2,19 +2,23 @@ package net.vvakame.droppshare.helper;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InvalidClassException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.StreamCorruptedException;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.asynctask.DrozipHistoryAsyncTask;
 import net.vvakame.droppshare.asynctask.DrozipInstalledAsyncTask;
 import net.vvakame.droppshare.model.AppData;
+
+import org.msgpack.MessagePackable;
+import org.msgpack.MessageTypeException;
+import org.msgpack.Packer;
+import org.msgpack.Unpacker;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -67,35 +71,29 @@ public class CacheUtil implements LogTagIF {
 				+ cacheFile.getAbsolutePath());
 
 		List<AppData> appDataList = null;
-		ObjectInputStream in = null;
 		try {
 			FileInputStream fin = new FileInputStream(cacheFile);
-			in = new ObjectInputStream(fin);
-			appDataList = (List<AppData>) in.readObject();
+			Unpacker unpacker = new Unpacker(fin);
+			final int len = unpacker.unpackArray();
+			appDataList = new ArrayList<AppData>(len);
+			for (Object obj : unpacker) {
+				AppData appData = new AppData();
+				List<Object> lst = (List<Object>) obj;
+				appData.messageUnpack(lst);
+				appDataList.add(appData);
+			}
 
-		} catch (InvalidClassException e) {
+		} catch (FileNotFoundException e) {
 			Log.d(TAG, HelperUtil.getExceptionLog(e));
-			throw e;
-		} catch (ClassCastException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
-		} catch (ClassNotFoundException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
-			throw e;
-		} catch (StreamCorruptedException e) {
+		} catch (MessageTypeException e) {
 			Log.d(TAG, HelperUtil.getExceptionLog(e));
 		} catch (IOException e) {
 			Log.d(TAG, HelperUtil.getExceptionLog(e));
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					Log.d(TAG, HelperUtil.getExceptionLog(e));
-				}
-			}
+		} catch (Exception e) {
+			Log.d(TAG, HelperUtil.getExceptionLog(e));
 		}
 
-		return appDataList;
+		return appDataList != null ? appDataList : new ArrayList<AppData>();
 	}
 
 	/**
@@ -114,16 +112,19 @@ public class CacheUtil implements LogTagIF {
 		// v0.5→v0.6 のキャッシュ構成変更でゴミを残さないためのコード。暫く残す。
 		deleteOldCache(context);
 
-		ObjectOutputStream out = null;
 		try {
 			File tmpCache = new File(CACHE_DIR, fileName + ".tmp");
 			File cache = new File(CACHE_DIR, fileName);
 
 			CACHE_DIR.mkdirs();
 			FileOutputStream fout = new FileOutputStream(tmpCache);
-			out = new ObjectOutputStream(fout);
-			out.writeObject(appDataList);
-			out.flush();
+			Packer packer = new Packer(fout);
+			packer.packArray(appDataList.size());
+			for (AppData appData : appDataList) {
+				packer.pack((MessagePackable) appData);
+			}
+
+			fout.flush();
 
 			// 旧キャッシュの削除とすげ替え
 			if (cache.exists()) {
@@ -131,20 +132,8 @@ public class CacheUtil implements LogTagIF {
 			}
 			tmpCache.renameTo(cache);
 
-		} catch (InvalidClassException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
-		} catch (NotSerializableException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
 		} catch (IOException e) {
 			Log.d(TAG, HelperUtil.getExceptionLog(e));
-		} finally {
-			if (out != null) {
-				try {
-					out.close();
-				} catch (IOException e) {
-					Log.d(TAG, HelperUtil.getExceptionLog(e));
-				}
-			}
 		}
 	}
 
