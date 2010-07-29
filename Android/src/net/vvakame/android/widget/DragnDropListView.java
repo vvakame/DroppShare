@@ -80,7 +80,7 @@ public class DragnDropListView extends ListView {
 
 			int speed = 0;
 			if (ev.getEventTime() - ev.getDownTime() < 500) {
-				// 500�~���b�Ԃ̓X�N���[���Ȃ�
+				// 500ミリ秒間はスクロールなし
 			} else if (y < slowBound) {
 				speed = y < fastBound ? -SCROLL_SPEED_FAST : -SCROLL_SPEED_SLOW;
 			} else if (y > height - slowBound) {
@@ -98,7 +98,7 @@ public class DragnDropListView extends ListView {
 
 			View v = null;
 			if (speed != 0) {
-				// �����͂Ƃ肠�����l���Ȃ�
+				// 横方向はとりあえず考えない
 				int centerPosition = pointToPosition(0, center);
 				if (centerPosition == AdapterView.INVALID_POSITION) {
 					centerPosition = pointToPosition(0, center
@@ -158,7 +158,7 @@ public class DragnDropListView extends ListView {
 				wm = (WindowManager) getContext().getSystemService("window");
 				wm.removeView(mDragView);
 				mDragView = null;
-				// ���T�C�N������Ƃ��܂Ɏ��ʂ��ǃ^�C�~���O������Ȃ�
+				// リサイクルするとたまに死ぬけどタイミング分からない
 				// mDragBitmap.recycle();
 				mDragBitmap = null;
 
