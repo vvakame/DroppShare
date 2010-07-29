@@ -135,7 +135,7 @@ public class DragnDropListView extends ListView {
 		case MotionEvent.ACTION_UP:
 
 			if (mRemove != null && mRemoveTile != null
-					|| mRemoveTile.getVisibility() == View.VISIBLE) {
+					&& mRemoveTile.getVisibility() == View.VISIBLE) {
 				if (mRemoveHit == null) {
 					mRemoveHit = new Rect();
 				}
