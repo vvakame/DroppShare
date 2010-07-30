@@ -1,5 +1,6 @@
 package net.vvakame.droppshare.appshare;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,6 +11,7 @@ import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.common.AppData;
 import net.vvakame.droppshare.common.AppDataUtil;
 import net.vvakame.droppshare.common.LogTagIF;
+import net.vvakame.droppshare.common.SerializeUtil;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -29,7 +31,9 @@ public class DrozipInstalledAsyncTask extends DrozipBaseAsyncTask implements
 	private static final int MODE_NEW = 0;
 	private static final int MODE_CACHE = 1;
 
-	public static final String CACHE_FILE = "installed.dropp";
+	public static final File CACHE_FILE = new File(SerializeUtil.CACHE_DIR,
+			"installed.dropp");
+	public File cacheFile = CACHE_FILE;
 
 	private Comparator<AppData> mComparator = new Comparator<AppData>() {
 		@Override
@@ -61,7 +65,7 @@ public class DrozipInstalledAsyncTask extends DrozipBaseAsyncTask implements
 
 		List<AppData> appDataList = null;
 
-		appDataList = tryReadCache(CACHE_FILE, params);
+		appDataList = tryReadCache(cacheFile, params);
 
 		if (appDataList == null) {
 			Log.d(TAG, HelperUtil.getStackName() + ", create cache.");
@@ -98,7 +102,8 @@ public class DrozipInstalledAsyncTask extends DrozipBaseAsyncTask implements
 
 			Collections.sort(appDataList, mComparator);
 
-			CacheUtil.writeSerializedCache(mContext, CACHE_FILE, appDataList);
+			SerializeUtil
+					.writeSerializedCache(mContext, cacheFile, appDataList);
 		}
 
 		Log.d(TAG, HelperUtil.getStackName() + ", done it!");
@@ -114,5 +119,13 @@ public class DrozipInstalledAsyncTask extends DrozipBaseAsyncTask implements
 				mAdapter.sort(mComparator);
 			}
 		}
+	}
+
+	public File getCatcheFile() {
+		return cacheFile;
+	}
+
+	public void setCatcheFile(File cacheFile) {
+		this.cacheFile = cacheFile;
 	}
 }

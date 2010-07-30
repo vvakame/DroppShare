@@ -1,8 +1,12 @@
 package net.vvakame.droppshare.hosting;
 
+import java.io.File;
+
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
+import net.vvakame.droppshare.appshare.DrozipInstalledAsyncTask;
 import net.vvakame.droppshare.common.LogTagIF;
+import net.vvakame.droppshare.common.SerializeUtil;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -68,6 +72,22 @@ public class HostingFrontendActivity extends Activity implements LogTagIF,
 		case R.id.remove_authorize:
 			OAuthHelper.removeOAuth(this);
 			switchViewEnable();
+			break;
+
+あ		case R.id.generate:
+			DrozipInstalledAsyncTask async = new DrozipInstalledAsyncTask(this,
+					null);
+			File file = null;
+			for (int i = 0;; i++) {
+				file = new File(SerializeUtil.SERIALIZE_DIR, String.valueOf(i)
+						+ ".dropp");
+				if (!file.exists()) {
+					break;
+				}
+			}
+			async.setCatcheFile(file);
+			async.execute(true);
+			
 			break;
 
 		default:

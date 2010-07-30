@@ -46,7 +46,7 @@ public class PackageOperationReceiver extends BroadcastReceiver implements
 		appInfo = pInfo.applicationInfo;
 
 		// キャッシュ再構成のためとりあえず消しておく
-		CacheUtil.deleteOwnCache();
+		SerializeUtil.deleteOwnCache();
 
 		// 操作されたパッケージの情報をDBに書く
 		// 一意性制約とconflict時の挙動の定義で同一アプリ同一バージョンの情報が重複しないようにしている
