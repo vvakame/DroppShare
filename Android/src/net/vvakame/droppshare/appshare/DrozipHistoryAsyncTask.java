@@ -1,5 +1,6 @@
 package net.vvakame.droppshare.appshare;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.common.AppData;
 import net.vvakame.droppshare.common.AppDataUtil;
 import net.vvakame.droppshare.common.LogTagIF;
+import net.vvakame.droppshare.common.SerializeUtil;
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
@@ -21,7 +23,9 @@ import android.widget.ArrayAdapter;
 public class DrozipHistoryAsyncTask extends DrozipBaseAsyncTask implements
 		LogTagIF {
 
-	public static final String CACHE_FILE = "history.dropp";
+	public static final File CACHE_FILE = new File(SerializeUtil.CACHE_DIR,
+			"history.dropp");
+	public File cacheFile = CACHE_FILE;
 
 	public DrozipHistoryAsyncTask(Context context,
 			ArrayAdapter<AppData> adapter, Func<List<AppData>> postExecFunc) {
@@ -43,7 +47,7 @@ public class DrozipHistoryAsyncTask extends DrozipBaseAsyncTask implements
 
 		List<AppData> appDataList = null;
 
-		appDataList = tryReadCache(CACHE_FILE, params);
+		appDataList = tryReadCache(cacheFile, params);
 
 		if (appDataList == null) {
 			Log.d(TAG, HelperUtil.getStackName() + ", create cache.");
@@ -64,7 +68,8 @@ public class DrozipHistoryAsyncTask extends DrozipBaseAsyncTask implements
 				}
 			}
 
-			CacheUtil.writeSerializedCache(mContext, CACHE_FILE, appDataList);
+			SerializeUtil
+					.writeSerializedCache(mContext, cacheFile, appDataList);
 		}
 
 		Log.d(TAG, HelperUtil.getStackName() + ", get=" + appDataList.size());

@@ -8,11 +8,11 @@ import net.vvakame.android.helper.Closure;
 import net.vvakame.android.helper.DrivenHandler;
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.appshare.CacheUtil;
 import net.vvakame.droppshare.appshare.DrozipInstalledAsyncTask;
 import net.vvakame.droppshare.common.AppData;
 import net.vvakame.droppshare.common.AppDataUtil;
 import net.vvakame.droppshare.common.LogTagIF;
+import net.vvakame.droppshare.common.SerializeUtil;
 import net.vvakame.droppshare.common.XmlUtil;
 import android.app.Activity;
 import android.app.Dialog;
@@ -91,7 +91,7 @@ public class DiffViewerActivity extends Activity implements LogTagIF {
 
 				List<AppData> srcList = null;
 				try {
-					srcList = CacheUtil
+					srcList = SerializeUtil
 							.readSerializedCaches(DrozipInstalledAsyncTask.CACHE_FILE);
 				} catch (InvalidClassException e) {
 					mHandler.sendEmptyMessage(MESSAGE_FAILURE_SRC);

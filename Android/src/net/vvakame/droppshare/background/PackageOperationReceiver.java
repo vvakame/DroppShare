@@ -3,11 +3,11 @@ package net.vvakame.droppshare.background;
 import java.util.Date;
 
 import net.vvakame.android.helper.HelperUtil;
-import net.vvakame.droppshare.appshare.CacheUtil;
 import net.vvakame.droppshare.appshare.InstallLogDao;
 import net.vvakame.droppshare.appshare.InstallLogModel;
 import net.vvakame.droppshare.common.LogTagIF;
 import net.vvakame.droppshare.common.PreferencesActivity;
+import net.vvakame.droppshare.common.SerializeUtil;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -51,7 +51,7 @@ public class PackageOperationReceiver extends BroadcastReceiver implements
 		appInfo = pInfo.applicationInfo;
 
 		// キャッシュ再構成のためとりあえず消しておく
-		CacheUtil.deleteOwnCache();
+		SerializeUtil.deleteOwnCache();
 
 		// 操作されたパッケージの情報をDBに書く
 		// 一意性制約とconflict時の挙動の定義で同一アプリ同一バージョンの情報が重複しないようにしている

@@ -1,5 +1,6 @@
 package net.vvakame.droppshare.appshare;
 
+import java.io.File;
 import java.io.InvalidClassException;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import net.vvakame.android.helper.Func;
 import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.common.AppData;
 import net.vvakame.droppshare.common.LogTagIF;
+import net.vvakame.droppshare.common.SerializeUtil;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -42,7 +44,7 @@ public abstract class DrozipBaseAsyncTask extends
 		mFunc = postExecFunc;
 	}
 
-	protected List<AppData> tryReadCache(String fileName, Boolean... params) {
+	protected List<AppData> tryReadCache(File file, Boolean... params) {
 		Log.d(TAG, HelperUtil.getStackName());
 
 		List<AppData> appDataList = null;
@@ -50,10 +52,10 @@ public abstract class DrozipBaseAsyncTask extends
 		boolean clearFlg = params.length == 1
 				&& params[0].booleanValue() == true;
 
-		if (!clearFlg && CacheUtil.isExistCache(fileName)) {
+		if (!clearFlg && file.exists()) {
 			Log.d(TAG, HelperUtil.getStackName() + ", use cache.");
 			try {
-				appDataList = CacheUtil.readSerializedCaches(fileName);
+				appDataList = SerializeUtil.readSerializedCaches(file);
 				if (appDataList != null) {
 					for (AppData appData : appDataList) {
 						publishProgress(appData);
