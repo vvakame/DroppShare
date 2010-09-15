@@ -19,7 +19,6 @@ public class PreferencesActivity extends PreferenceActivity implements
 
 	private static final String URI_TYPES = "uri_types";
 	private static final String URI_SHORTEN = "uri_shorten";
-	private static final String CREATE_CACHE_AUTOMATICALLY = "create_cache_automatically";
 	private static final String MESSAGE_TEMPLATE = "message_template";
 
 	@Override
@@ -60,12 +59,6 @@ public class PreferencesActivity extends PreferenceActivity implements
 		patchV08(context);
 		return PreferenceManager.getDefaultSharedPreferences(context)
 				.getString(URI_SHORTEN, "goo.gl");
-	}
-
-	public static boolean isAllowAutoCache(Context con) {
-		String key = CREATE_CACHE_AUTOMATICALLY;
-		return PreferenceManager.getDefaultSharedPreferences(con).getBoolean(
-				key, true);
 	}
 
 	public static String getMessageTemplate(Context context) {

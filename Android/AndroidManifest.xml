@@ -40,6 +40,7 @@
 				<data android:mimeType="application/droppshare" />
 			</intent-filter>
 		</activity>
+		<!-- 
 		<activity android:name=".activity.DroppHostingClientActivity"
 			android:configChanges="orientation" android:label="@string/hosting_client_name"
 			android:launchMode="singleInstance">
@@ -56,12 +57,10 @@
 				<data android:scheme="drphost" />
 			</intent-filter>
 		</activity>
+		-->
 		<activity android:name=".activity.MenuDialogActivity"
 			android:theme="@android:style/Theme.Dialog"></activity>
 		<activity android:name=".activity.PreferencesActivity"></activity>
-
-		<service android:name=".service.CreateCacheService"></service>
-		<service android:name=".service.SleepWatcherService"></service>
 
 		<receiver android:name=".receiver.PackageOperationReceiver">
 			<intent-filter android:priority="1">
