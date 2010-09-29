@@ -1,6 +1,0 @@
-<queue-entries>
-	<queue>
-		<name>tweet</name>
-		<rate>1/m</rate>
-	</queue>
-</queue-entries>
