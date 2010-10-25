@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="net.vvakame.droppshare" android:versionName="0.21" android:versionCode="13">
+	package="net.vvakame.droppshare" android:versionName="0.22"
+	android:versionCode="14">
 	<uses-sdk android:minSdkVersion="4" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.GET_TASKS" />
@@ -39,23 +40,19 @@
 				<data android:mimeType="application/droppshare" />
 			</intent-filter>
 		</activity>
-		<!-- 
-		<activity android:name=".activity.DroppHostingClientActivity"
-			android:configChanges="orientation" android:label="@string/hosting_client_name"
-			android:launchMode="singleInstance">
-			<intent-filter>
-				<action android:name="android.intent.action.SEND" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<data android:mimeType="application/dropp" />
-				<data android:mimeType="application/droppshare" />
-			</intent-filter>
-			<intent-filter>
-				<action android:name="android.intent.action.VIEW" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
-				<data android:scheme="drphost" />
-			</intent-filter>
-		</activity>
+		<!--
+			<activity android:name=".activity.DroppHostingClientActivity"
+			android:configChanges="orientation"
+			android:label="@string/hosting_client_name"
+			android:launchMode="singleInstance"> <intent-filter> <action
+			android:name="android.intent.action.SEND" /> <category
+			android:name="android.intent.category.DEFAULT" /> <data
+			android:mimeType="application/dropp" /> <data
+			android:mimeType="application/droppshare" /> </intent-filter>
+			<intent-filter> <action android:name="android.intent.action.VIEW" />
+			<category android:name="android.intent.category.DEFAULT" /> <category
+			android:name="android.intent.category.BROWSABLE" /> <data
+			android:scheme="drphost" /> </intent-filter> </activity>
 		-->
 		<activity android:name=".activity.MenuDialogActivity"
 			android:theme="@android:style/Theme.Dialog"></activity>
