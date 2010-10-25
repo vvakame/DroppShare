@@ -6,4 +6,5 @@ war/WEB-INF/classes/
 war/WEB-INF/lib/
 src/twitter.properties
 bin
+target
 
