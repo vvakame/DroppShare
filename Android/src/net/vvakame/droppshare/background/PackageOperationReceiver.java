@@ -6,7 +6,6 @@ import net.vvakame.android.helper.HelperUtil;
 import net.vvakame.droppshare.appshare.InstallLogDao;
 import net.vvakame.droppshare.appshare.InstallLogModel;
 import net.vvakame.droppshare.common.LogTagIF;
-import net.vvakame.droppshare.common.PreferencesActivity;
 import net.vvakame.droppshare.common.SerializeUtil;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -73,16 +72,5 @@ public class PackageOperationReceiver extends BroadcastReceiver implements
 		model.setProcessDate(new Date());
 		InstallLogDao dao = new InstallLogDao(context);
 		dao.save(model);
-
-		// キャッシュ生成用サービスを作成
-		boolean cacheFlg = PreferencesActivity.isAllowAutoCache(context);
-		Log
-				.d(TAG, HelperUtil.getStackName() + ", isAllowAutoCache="
-						+ cacheFlg);
-		if (cacheFlg) {
-			Intent cacheIntent = new Intent(context, SleepWatcherService.class);
-			cacheIntent.putExtra(SleepWatcherService.REGIST_FLG, cacheFlg);
-			context.startService(cacheIntent);
-		}
 	}
 }

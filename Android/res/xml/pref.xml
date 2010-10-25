@@ -9,9 +9,6 @@
 	<ListPreference android:key="uri_shorten" android:title="@string/uri_shorten"
 		android:summary="@string/uri_shorten_summary" android:entries="@array/shorten_type"
 		android:entryValues="@array/shorten_type" android:defaultValue="goo.gl" />
-	<CheckBoxPreference android:key="create_cache_automatically"
-		android:defaultValue="false" android:title="@string/create_cache_automatically"
-		android:summary="@string/create_cache_automatically_summary" />
 	<EditTextPreference android:key="message_template"
 		android:title="@string/message_added_title" android:summary="@string/message_added_summary"
 		android:defaultValue="@string/message_added" />

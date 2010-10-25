@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="net.vvakame.droppshare" android:versionCode="12"
-	android:versionName="0.20">
+	package="net.vvakame.droppshare" android:versionName="0.21"
+	android:versionCode="13">
 	<uses-sdk android:minSdkVersion="4" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.GET_TASKS" />
@@ -47,7 +47,9 @@
 			</intent-filter>
 		</activity>
 		<activity android:name=".hosting.HostingFrontendActivity" />
-		<activity android:name=".hosting.HostingUploadActivity"
+		<activity android:name=".hosting.HostingUploadActivity" />
+
+		<activity android:name=".activity.DroppHostingClientActivity"
 			android:configChanges="orientation" android:label="@string/hosting_client_name"
 			android:launchMode="singleInstance">
 			<intent-filter>
@@ -60,10 +62,11 @@
 		<activity android:name=".hosting.TwitterOAuthActivity"
 			android:configChanges="orientation" />
 
-		<service android:name=".background.CreateCacheService" />
-		<service android:name=".background.SleepWatcherService" />
+		<activity android:name=".activity.MenuDialogActivity"
+			android:theme="@android:style/Theme.Dialog"></activity>
+		<activity android:name=".activity.PreferencesActivity"></activity>
 
-		<receiver android:name=".background.PackageOperationReceiver">
+		<receiver android:name=".receiver.PackageOperationReceiver">
 			<intent-filter android:priority="1">
 				<data android:scheme="package" />
 				<action android:name="android.intent.action.PACKAGE_ADDED" />

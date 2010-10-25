@@ -4,9 +4,9 @@ import org.slim3.datastore.Attribute;
 import org.slim3.datastore.Datastore;
 import org.slim3.datastore.Model;
 
-import com.google.appengine.api.datastore.Key;
-
 import twitter4j.http.AccessToken;
+
+import com.google.appengine.api.datastore.Key;
 
 @Model
 public class TwitterOAuthData {
