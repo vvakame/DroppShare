@@ -3,6 +3,10 @@ package net.vvakame.droppshare.background;
 import java.util.Date;
 
 import net.vvakame.android.helper.HelperUtil;
+import net.vvakame.droppshare.appshare.InstallLogDao;
+import net.vvakame.droppshare.appshare.InstallLogModel;
+import net.vvakame.droppshare.common.LogTagIF;
+import net.vvakame.droppshare.common.SerializeUtil;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;

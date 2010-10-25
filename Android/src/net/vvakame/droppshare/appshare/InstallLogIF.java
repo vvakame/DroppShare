@@ -1,7 +1,5 @@
 package net.vvakame.droppshare.appshare;
 
-import net.vvakame.droppshare.common.DatabaseIF;
-
 import android.content.Context;
 
 /**
