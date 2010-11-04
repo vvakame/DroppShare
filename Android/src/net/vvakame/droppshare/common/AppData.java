@@ -185,13 +185,11 @@ public class AppData implements MessagePackable, MessageUnpackable {
 			}
 			appName = unpacker.unpackString();
 			packageName = unpacker.unpackString();
-			description = unpacker.tryUnpackNull() ? null : unpacker
-					.unpackString();
+			description = unpacker.unpackString();
 			versionCode = unpacker.unpackInt();
-			versionName = unpacker.tryUnpackNull() ? null : unpacker
-					.unpackString();
-			action = unpacker.tryUnpackNull() ? null : unpacker.unpackString();
-			Long date = unpacker.tryUnpackNull() ? null : unpacker.unpackLong();
+			versionName = unpacker.unpackString();
+			action = unpacker.unpackString();
+			Long date = unpacker.unpackLong();
 			processDate = date != null ? new Date(date) : null;
 			byte[] bArray = unpacker.unpackByteArray();
 			if (bArray != null) {

@@ -60,7 +60,7 @@
 		<activity android:name=".hosting.TwitterOAuthActivity"
 			android:configChanges="orientation" />
 
-		<receiver android:name=".receiver.PackageOperationReceiver">
+		<receiver android:name=".background.PackageOperationReceiver">
 			<intent-filter android:priority="1">
 				<data android:scheme="package" />
 				<action android:name="android.intent.action.PACKAGE_ADDED" />
