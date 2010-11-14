@@ -1,0 +1,3 @@
+[submodule "AndroidUtil"]
+	path = AndroidUtil
+	url = git@github.com:vvakame/AndroidUtil.git
