@@ -79,9 +79,8 @@
 	<string name="create">create</string>
 
 	<!-- For TwitterOAuthActivity -->
-	<string name="drphost_address">http://drphost.appspot.com</string>
-	<string name="drphost_address_debug">http://2.latest.drphost.appspot.com
-	</string>
+	<!-- <string name="drphost_address">http://drphost.appspot.com</string> -->
+	<string name="drphost_address">http://2.latest.drphost.appspot.com</string>
 	<string name="drphost_scheme">drphost</string>
 
 	<!-- For HostingUploadActivity -->
