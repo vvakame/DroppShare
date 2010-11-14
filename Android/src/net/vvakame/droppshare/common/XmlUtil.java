@@ -11,9 +11,11 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.vvakame.android.helper.HelperUtil;
+import net.vvakame.android.helper.AndroidUtil;
 import net.vvakame.android.helper.ZipUtil;
 import net.vvakame.droppshare.R;
+import net.vvakame.droppshare.model.AppData;
+import net.vvakame.droppshare.model.AppDataUtil;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -54,9 +56,9 @@ public class XmlUtil implements LogTagIF {
 
 	public static void writeXmlCache(Context context, String fileName,
 			List<AppData> appDataList) {
-		Log.d(TAG, HelperUtil.getStackName());
+		Log.d(TAG, AndroidUtil.getStackName());
 
-		HelperUtil.deleteDir(WORKING_DIR);
+		AndroidUtil.deleteDir(WORKING_DIR);
 		TEMP_DIR.mkdirs();
 
 		String result = createXml(context, appDataList);
@@ -71,7 +73,7 @@ public class XmlUtil implements LogTagIF {
 			fw.close();
 
 		} catch (IOException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
+			Log.d(TAG, AndroidUtil.getExceptionLog(e));
 			return;
 		}
 
@@ -84,15 +86,15 @@ public class XmlUtil implements LogTagIF {
 			zedit.push(TEMP_DIR);
 			zedit.finish();
 		} catch (FileNotFoundException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
+			Log.d(TAG, AndroidUtil.getExceptionLog(e));
 			return;
 		} catch (IOException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
+			Log.d(TAG, AndroidUtil.getExceptionLog(e));
 			return;
 		}
 
 		archFile.renameTo(new File(DATA_DIR, fileName + POSTFIX));
-		HelperUtil.deleteDir(WORKING_DIR);
+		AndroidUtil.deleteDir(WORKING_DIR);
 	}
 
 	public static List<AppData> readXmlCache(Context context, File zipFile) {
@@ -102,15 +104,15 @@ public class XmlUtil implements LogTagIF {
 			throw new IllegalArgumentException("Not found " + zipFile.getName());
 		}
 
-		HelperUtil.deleteDir(WORKING_DIR);
+		AndroidUtil.deleteDir(WORKING_DIR);
 
 		File tmpZip = new File(WORKING_DIR, DROZIP_NAME);
 		tmpZip.getParentFile().mkdirs();
 		try {
-			HelperUtil.copyFile(zipFile, tmpZip);
+			AndroidUtil.copyFile(zipFile, tmpZip);
 			ZipUtil.unzip(tmpZip, WORKING_DIR);
 		} catch (IOException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
+			Log.d(TAG, AndroidUtil.getExceptionLog(e));
 			return null;
 		}
 
@@ -118,12 +120,12 @@ public class XmlUtil implements LogTagIF {
 		try {
 			fin = new FileInputStream(XML_FILE);
 		} catch (FileNotFoundException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
+			Log.d(TAG, AndroidUtil.getExceptionLog(e));
 			return null;
 		}
 		appList = readXml(context, fin);
 
-		HelperUtil.deleteDir(WORKING_DIR);
+		AndroidUtil.deleteDir(WORKING_DIR);
 
 		return appList;
 	}
@@ -137,10 +139,10 @@ public class XmlUtil implements LogTagIF {
 			serializer.setOutput(writer);
 			serializer.startDocument("UTF-8", true);
 			serializer.startTag("", DROPP_SHARE);
-			serializer.attribute("", VERSION, String
-					.valueOf(AppData.PACK_VERSION));
-			serializer.attribute("", SCREEN, context
-					.getString(R.string.screen_dpi));
+			serializer.attribute("", VERSION,
+					String.valueOf(AppData.PACK_VERSION));
+			serializer.attribute("", SCREEN,
+					context.getString(R.string.screen_dpi));
 
 			for (AppData appData : appDataList) {
 				serializer.startTag("", APP_DATA);
@@ -174,11 +176,11 @@ public class XmlUtil implements LogTagIF {
 
 			result = writer.toString();
 		} catch (IllegalArgumentException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
+			Log.d(TAG, AndroidUtil.getExceptionLog(e));
 		} catch (IllegalStateException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
+			Log.d(TAG, AndroidUtil.getExceptionLog(e));
 		} catch (IOException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
+			Log.d(TAG, AndroidUtil.getExceptionLog(e));
 		}
 
 		return result;
@@ -238,11 +240,10 @@ public class XmlUtil implements LogTagIF {
 					case XmlPullParser.END_TAG:
 						name = xmlParser.getName();
 						if (name.equalsIgnoreCase(APP_DATA)) {
-							File iconFile = new File(ICON_DIR, appData
-									.getUniqName()
-									+ ".png");
-							BitmapDrawable icon = new BitmapDrawable(iconFile
-									.getAbsolutePath());
+							File iconFile = new File(ICON_DIR,
+									appData.getUniqName() + ".png");
+							BitmapDrawable icon = new BitmapDrawable(
+									iconFile.getAbsolutePath());
 							icon = AppDataUtil.getResizedBitmapDrawable(
 									context, icon);
 							appData.setIcon(icon);
@@ -255,15 +256,15 @@ public class XmlUtil implements LogTagIF {
 					eventType = xmlParser.next();
 				}
 			} catch (NumberFormatException e) {
-				Log.d(TAG, HelperUtil.getExceptionLog(e));
+				Log.d(TAG, AndroidUtil.getExceptionLog(e));
 				return null;
 			} catch (IOException e) {
-				Log.d(TAG, HelperUtil.getExceptionLog(e));
+				Log.d(TAG, AndroidUtil.getExceptionLog(e));
 				return null;
 			}
 
 		} catch (XmlPullParserException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
+			Log.d(TAG, AndroidUtil.getExceptionLog(e));
 			return null;
 		}
 
@@ -288,14 +289,14 @@ public class XmlUtil implements LogTagIF {
 	}
 
 	private static void writeBitmap(File fileName, Bitmap bitmap) {
-		Log.d(TAG, HelperUtil.getStackName());
+		Log.d(TAG, AndroidUtil.getStackName());
 
 		try {
 			FileOutputStream fout = new FileOutputStream(fileName);
 
 			bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESS_QUALITY, fout);
 		} catch (FileNotFoundException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
+			Log.d(TAG, AndroidUtil.getExceptionLog(e));
 		}
 	}
 }

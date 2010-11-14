@@ -23,9 +23,7 @@ public class AppExistsUtil {
 			switch (which) {
 			case android.content.DialogInterface.BUTTON_POSITIVE:
 				Intent intent = new Intent(Intent.ACTION_VIEW);
-				intent
-						.setData(Uri.parse("market://details?id="
-								+ sPackageName));
+				intent.setData(Uri.parse("market://details?id=" + sPackageName));
 				sContext.startActivity(intent);
 
 				break;
@@ -70,8 +68,7 @@ public class AppExistsUtil {
 
 		diagBldr.setPositiveButton(context.getString(R.string.go_market),
 				sOnClick);
-		diagBldr
-				.setNegativeButton(context.getString(R.string.ignore), sOnClick);
+		diagBldr.setNegativeButton(context.getString(R.string.ignore), sOnClick);
 
 		diagBldr.setCancelable(true);
 		diagBldr.create();

@@ -89,11 +89,9 @@ public class DragnDropListView extends ListView {
 			}
 
 			if (DEBUG) {
-				Log
-						.d(TAG, "ACTION_MOVE y=" + y + ", height=" + height
-								+ ", fastBound=" + fastBound + ", slowBound="
-								+ slowBound + ", center=" + center + ", speed="
-								+ speed);
+				Log.d(TAG, "ACTION_MOVE y=" + y + ", height=" + height
+						+ ", fastBound=" + fastBound + ", slowBound="
+						+ slowBound + ", center=" + center + ", speed=" + speed);
 			}
 
 			View v = null;
@@ -277,7 +275,7 @@ public class DragnDropListView extends ListView {
 
 			Adapter adapter = getAdapter();
 			if (adapter != null && adapter instanceof ArrayAdapter) {
-				ArrayAdapter arrayAdapter = (ArrayAdapter) adapter;
+				ArrayAdapter<Object> arrayAdapter = (ArrayAdapter<Object>) adapter;
 				Object item = adapter.getItem(from);
 
 				arrayAdapter.remove(item);
@@ -299,7 +297,7 @@ public class DragnDropListView extends ListView {
 
 			Adapter adapter = getAdapter();
 			if (adapter != null && adapter instanceof ArrayAdapter) {
-				ArrayAdapter arrayAdapter = (ArrayAdapter) adapter;
+				ArrayAdapter<Object> arrayAdapter = (ArrayAdapter<Object>) adapter;
 				Object item = adapter.getItem(which);
 
 				arrayAdapter.remove(item);

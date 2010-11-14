@@ -71,8 +71,8 @@ public class HttpPostMultipartWrapper {
 	}
 
 	public String readResponse() throws IOException {
-		BufferedReader rd = new BufferedReader(new InputStreamReader(mCon
-				.getInputStream()));
+		BufferedReader rd = new BufferedReader(new InputStreamReader(
+				mCon.getInputStream()));
 
 		StringBuilder stb = new StringBuilder();
 		String line = null;

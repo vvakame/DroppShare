@@ -15,20 +15,20 @@ public final class R {
         public static final int overshoot=0x7f040003;
     }
     public static final class array {
-        public static final int shorten_type=0x7f070001;
-        public static final int uri_types=0x7f070000;
+        public static final int shorten_type=0x7f060001;
+        public static final int uri_types=0x7f060000;
     }
     public static final class attr {
     }
     public static final class color {
-        public static final int app_name=0x7f080000;
-        public static final int dir_header_bg=0x7f080001;
-        public static final int dir_header_textfore=0x7f080002;
-        public static final int none=0x7f080005;
-        public static final int side_1_exists=0x7f080006;
-        public static final int side_2_exists=0x7f080007;
-        public static final int strong=0x7f080003;
-        public static final int weak=0x7f080004;
+        public static final int app_name=0x7f070000;
+        public static final int dir_header_bg=0x7f070001;
+        public static final int dir_header_textfore=0x7f070002;
+        public static final int none=0x7f070005;
+        public static final int side_1_exists=0x7f070006;
+        public static final int side_2_exists=0x7f070007;
+        public static final int strong=0x7f070003;
+        public static final int weak=0x7f070004;
     }
     public static final class drawable {
         public static final int at_yanzm_presents=0x7f020000;
@@ -109,116 +109,115 @@ public final class R {
         public static final int selector=0x7f090002;
     }
     public static final class string {
-        public static final int add_dir=0x7f060026;
-        public static final int add_dir_button_text=0x7f06002c;
-        public static final int add_dir_title=0x7f06002b;
+        public static final int add_dir=0x7f080025;
+        public static final int add_dir_button_text=0x7f08002b;
+        public static final int add_dir_title=0x7f08002a;
         /**  For AppShareActivity 
          */
-        public static final int added=0x7f060009;
-        public static final int app_description=0x7f060002;
+        public static final int added=0x7f080008;
+        public static final int app_description=0x7f080001;
         /**  For DroppShare 
  For DroppShare 
          */
-        public static final int app_name=0x7f060001;
-        public static final int app_not_exists=0x7f06000d;
+        public static final int app_name=0x7f080000;
+        public static final int app_not_exists=0x7f08000c;
         /**  For MainActivity 
  For MainActivity 
          */
-        public static final int app_share=0x7f060003;
-        public static final int authorized=0x7f06002f;
-        public static final int cache_refresh=0x7f060012;
-        public static final int cant_resolve_intent_message=0x7f060039;
+        public static final int app_share=0x7f080002;
+        public static final int authorized=0x7f08002e;
+        public static final int cache_refresh=0x7f080011;
+        public static final int cant_resolve_intent_message=0x7f080038;
         /**  For ActivityHelper 
  For ActivityHelper 
          */
-        public static final int cant_resolve_intent_title=0x7f060038;
+        public static final int cant_resolve_intent_title=0x7f080037;
         /**  For TwitterOAuthActivity 
          */
-        public static final int connecting_server=0x7f060042;
-        public static final int create=0x7f060030;
-        public static final int create_cache_automatically=0x7f060019;
-        public static final int create_cache_automatically_summary=0x7f06001a;
-        public static final int done_upload=0x7f060036;
-        public static final int drozip_selector=0x7f060005;
+        public static final int connecting_server=0x7f080041;
+        public static final int create=0x7f08002f;
+        public static final int create_cache_automatically=0x7f080018;
+        public static final int create_cache_automatically_summary=0x7f080019;
+        public static final int done_upload=0x7f080035;
+        public static final int drozip_selector=0x7f080004;
         /**  For TwitterOAuthActivity 
          */
-        public static final int drphost_address=0x7f060031;
-        public static final int drphost_address_debug=0x7f060032;
-        public static final int drphost_scheme=0x7f060033;
+        public static final int drphost_address=0x7f080030;
+        public static final int drphost_address_debug=0x7f080031;
+        public static final int drphost_scheme=0x7f080032;
         /**  For DrozipSelectorActivity 
  For DrozipSelectorActivity 
          */
-        public static final int external_storage_not_exists=0x7f060024;
-        public static final int failed_connect=0x7f060043;
-        public static final int failed_upload=0x7f060037;
-        public static final int files_not_exists=0x7f06002d;
-        public static final int gen_drozip=0x7f060025;
-        public static final int gen_drozip_negative=0x7f060029;
-        public static final int gen_drozip_positive=0x7f060028;
-        public static final int gen_drozip_title=0x7f060027;
-        public static final int go_market=0x7f06003a;
-        public static final int googl_shorten=0x7f060010;
-        public static final int hello=0x7f060000;
-        public static final int history=0x7f060007;
+        public static final int external_storage_not_exists=0x7f080023;
+        public static final int failed_connect=0x7f080042;
+        public static final int failed_upload=0x7f080036;
+        public static final int files_not_exists=0x7f08002c;
+        public static final int gen_drozip=0x7f080024;
+        public static final int gen_drozip_negative=0x7f080028;
+        public static final int gen_drozip_positive=0x7f080027;
+        public static final int gen_drozip_title=0x7f080026;
+        public static final int go_market=0x7f080039;
+        public static final int googl_shorten=0x7f08000f;
+        public static final int history=0x7f080006;
         /**  For HostingUploadActivity 
          */
-        public static final int hosting_client_name=0x7f060034;
-        public static final int hosting_upload=0x7f060004;
-        public static final int http_schema=0x7f06000e;
-        public static final int ignore=0x7f06003b;
+        public static final int hosting_client_name=0x7f080033;
+        public static final int hosting_upload=0x7f080003;
+        public static final int http_schema=0x7f08000d;
+        public static final int ignore=0x7f08003a;
         /**  For AppShareActivity 
          */
-        public static final int installed=0x7f060006;
-        public static final int language=0x7f060041;
-        public static final int market_schema=0x7f06000f;
-        public static final int message_added=0x7f06001d;
-        public static final int message_added_summary=0x7f06001c;
-        public static final int message_added_title=0x7f06001b;
+        public static final int installed=0x7f080005;
+        public static final int language=0x7f080040;
+        public static final int market_schema=0x7f08000e;
+        public static final int message_added=0x7f08001c;
+        public static final int message_added_summary=0x7f08001b;
+        public static final int message_added_title=0x7f08001a;
         /**  For HostingFrontendActivity 
  For HostingFrontendActivity 
          */
-        public static final int not_authorized=0x7f06002e;
-        public static final int now_compress_data=0x7f06002a;
-        public static final int now_matchting_data=0x7f060022;
-        public static final int oi_file_manager_app_name=0x7f06003c;
-        public static final int oi_file_manager_package=0x7f06003d;
+        public static final int not_authorized=0x7f08002d;
+        public static final int now_compress_data=0x7f080029;
+        public static final int now_matchting_data=0x7f080021;
+        public static final int oi_file_manager_app_name=0x7f08003b;
+        public static final int oi_file_manager_package=0x7f08003c;
         /**  For PreferenceActivity 
  For PreferenceActivity 
          */
-        public static final int paste_uri_type=0x7f060015;
-        public static final int paste_uri_type_summary=0x7f060016;
-        public static final int preferences=0x7f060014;
-        public static final int qr_code=0x7f060011;
-        public static final int read_failure_dest=0x7f060021;
+        public static final int paste_uri_type=0x7f080014;
+        public static final int paste_uri_type_summary=0x7f080015;
+        public static final int preferences=0x7f080013;
+        public static final int qr_code=0x7f080010;
+        public static final int read_failure_dest=0x7f080020;
         /**  For DiffViewerActivity 
  For DiffViewerActivity 
          */
-        public static final int read_failure_src=0x7f060020;
-        public static final int recent=0x7f060008;
+        public static final int read_failure_src=0x7f08001f;
+        public static final int recent=0x7f080007;
         /**  For MarketRedirectActivity 
          */
-        public static final int redirect_market_summary=0x7f06001f;
+        public static final int redirect_market_summary=0x7f08001e;
         /**  For MarketRedirectActivity 
          */
-        public static final int redirect_name=0x7f06001e;
-        public static final int removed=0x7f06000b;
-        public static final int replaced=0x7f06000a;
+        public static final int redirect_name=0x7f08001d;
+        public static final int removed=0x7f08000a;
+        public static final int replaced=0x7f080009;
         /**  For XmlUtil 
  For XmlUtil 
  For XmlUtil 
  For XmlUtil 
          */
-        public static final int screen_dpi=0x7f060040;
-        public static final int show_selector=0x7f060013;
+        public static final int screen_dpi=0x7f08003f;
+        public static final int show_selector=0x7f080012;
         /**  For HostingUploadActivity 
          */
-        public static final int uploading=0x7f060035;
-        public static final int uri_shorten=0x7f060017;
-        public static final int uri_shorten_failure=0x7f06000c;
-        public static final int uri_shorten_summary=0x7f060018;
-        public static final int wait_a_moment=0x7f060023;
-        public static final int zxing_app_name=0x7f06003e;
-        public static final int zxing_package=0x7f06003f;
+        public static final int uploading=0x7f080034;
+        public static final int uri_shorten=0x7f080016;
+        public static final int uri_shorten_failure=0x7f08000b;
+        public static final int uri_shorten_summary=0x7f080017;
+        public static final int wait_a_moment=0x7f080022;
+        public static final int zxing_app_name=0x7f08003d;
+        public static final int zxing_package=0x7f08003e;
     }
     public static final class xml {
         public static final int pref=0x7f050000;

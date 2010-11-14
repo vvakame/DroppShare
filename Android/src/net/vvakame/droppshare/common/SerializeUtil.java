@@ -9,7 +9,9 @@ import java.io.InvalidClassException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.vvakame.android.helper.HelperUtil;
+import net.vvakame.android.helper.AndroidUtil;
+import net.vvakame.droppshare.model.AppData;
+import net.vvakame.droppshare.model.AppDataUtil;
 
 import org.msgpack.MessagePackable;
 import org.msgpack.MessageTypeException;
@@ -66,8 +68,8 @@ public class SerializeUtil implements LogTagIF {
 	@SuppressWarnings("unchecked")
 	public static List<AppData> readSerializedCaches(File file)
 			throws InvalidClassException, ClassNotFoundException {
-		Log.d(TAG, HelperUtil.getStackName() + ", file="
-				+ file.getAbsolutePath());
+		Log.d(TAG,
+				AndroidUtil.getStackName() + ", file=" + file.getAbsolutePath());
 
 		List<AppData> appDataList = null;
 		try {
@@ -83,13 +85,13 @@ public class SerializeUtil implements LogTagIF {
 			}
 
 		} catch (FileNotFoundException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
+			Log.d(TAG, AndroidUtil.getExceptionLog(e));
 		} catch (MessageTypeException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
+			Log.d(TAG, AndroidUtil.getExceptionLog(e));
 		} catch (IOException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
+			Log.d(TAG, AndroidUtil.getExceptionLog(e));
 		} catch (Exception e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
+			Log.d(TAG, AndroidUtil.getExceptionLog(e));
 		}
 
 		return appDataList != null ? appDataList : new ArrayList<AppData>();
@@ -106,7 +108,7 @@ public class SerializeUtil implements LogTagIF {
 	 */
 	public static void writeSerializedCache(Context context, String fileName,
 			List<AppData> appDataList) {
-		Log.d(TAG, HelperUtil.getStackName() + ", file=" + fileName);
+		Log.d(TAG, AndroidUtil.getStackName() + ", file=" + fileName);
 
 		writeSerializedCache(context, new File(CACHE_DIR, fileName),
 				appDataList);
@@ -123,7 +125,7 @@ public class SerializeUtil implements LogTagIF {
 	 */
 	public static void writeSerializedCache(Context context, File file,
 			List<AppData> appDataList) {
-		Log.d(TAG, HelperUtil.getStackName() + ", file=" + file);
+		Log.d(TAG, AndroidUtil.getStackName() + ", file=" + file);
 
 		try {
 			File tmpFile = new File(file.getParentFile(), file.getName()
@@ -146,7 +148,7 @@ public class SerializeUtil implements LogTagIF {
 			tmpFile.renameTo(file);
 
 		} catch (IOException e) {
-			Log.d(TAG, HelperUtil.getExceptionLog(e));
+			Log.d(TAG, AndroidUtil.getExceptionLog(e));
 		}
 	}
 
@@ -154,7 +156,7 @@ public class SerializeUtil implements LogTagIF {
 	 * キャッシュファイルを全て削除する
 	 */
 	public static void deleteOwnCache() {
-		Log.d(TAG, HelperUtil.getStackName());
-		HelperUtil.deleteDir(CACHE_DIR);
+		Log.d(TAG, AndroidUtil.getStackName());
+		AndroidUtil.deleteDir(CACHE_DIR);
 	}
 }

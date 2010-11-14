@@ -10,15 +10,15 @@
 	<application android:label="@string/app_name" android:icon="@drawable/at_yanzm_presents"
 		android:description="@string/app_description" android:debuggable="true">
 
-		<activity android:name=".common.MainActivity" android:label="@string/app_name"
-			android:configChanges="orientation">
+		<activity android:name=".activity.MainActivity"
+			android:label="@string/app_name" android:configChanges="orientation">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".common.PreferencesActivity" />
-		<activity android:name=".common.MarketRedirectActivity"
+		<activity android:name=".activity.PreferencesActivity" />
+		<activity android:name=".activity.MarketRedirectActivity"
 			android:label="@string/redirect_name" android:theme="@android:style/Theme.Dialog"
 			android:icon="@drawable/droid">
 			<intent-filter>
@@ -27,7 +27,7 @@
 				<data android:mimeType="text/plain" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".appshare.AppShareActivity"
+		<activity android:name=".activity.AppShareActivity"
 			android:label="@string/app_name" android:configChanges="orientation">
 			<intent-filter>
 				<action android:name="com.adamrocker.android.simeji.ACTION_INTERCEPT" />
@@ -35,10 +35,10 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".appshare.MenuDialogActivity"
+		<activity android:name=".activity.MenuDialogActivity"
 			android:theme="@android:style/Theme.Dialog" />
-		<activity android:name=".listshare.ListShareActivity" />
-		<activity android:name=".listshare.DiffViewerActivity">
+		<activity android:name=".activity.ListShareActivity" />
+		<activity android:name=".activity.DiffViewerActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />
@@ -46,8 +46,8 @@
 				<data android:mimeType="application/droppshare" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".hosting.HostingFrontendActivity" />
-		<activity android:name=".hosting.HostingUploadActivity"
+		<activity android:name=".activity.HostingFrontendActivity" />
+		<activity android:name=".activity.HostingUploadActivity"
 			android:configChanges="orientation" android:label="@string/hosting_client_name"
 			android:launchMode="singleInstance">
 			<intent-filter>
@@ -57,10 +57,10 @@
 				<data android:mimeType="application/droppshare" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".hosting.TwitterOAuthActivity"
+		<activity android:name=".activity.TwitterOAuthActivity"
 			android:configChanges="orientation" />
 
-		<receiver android:name=".background.PackageOperationReceiver">
+		<receiver android:name=".receiver.PackageOperationReceiver">
 			<intent-filter android:priority="1">
 				<data android:scheme="package" />
 				<action android:name="android.intent.action.PACKAGE_ADDED" />
