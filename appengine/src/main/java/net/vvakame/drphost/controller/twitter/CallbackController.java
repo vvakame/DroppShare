@@ -54,7 +54,7 @@ public class CallbackController extends Controller {
 
 		// テスト用
 		twitter = TwitterService.getInstance(oauth);
-		twitter.updateStatus("ぴかちゅー？！！");
+		twitter.updateStatus("案外住みやすいよ");
 
 		return redirect("drphost://id=" + oauth.getKey().getId() + "&hash="
 				+ oauth.getHash());
