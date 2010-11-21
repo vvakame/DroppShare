@@ -10,7 +10,7 @@ public class DroppHostingHelper {
 	}
 
 	public static String getTwitterUri(Context context) {
-		return getUri(context) + "/twitter";
+		return getUri(context) + "/twitter/auth";
 	}
 
 	public static String getUploadUri(Context context) {
