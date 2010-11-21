@@ -1,21 +1,18 @@
 package net.vvakame.droppshare.activity;
 
+import net.vvakame.android.helper.Log;
+import net.vvakame.droppshare.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import net.vvakame.android.helper.AndroidUtil;
-import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.common.LogTagIF;
 
-public class MainActivity extends Activity implements LogTagIF, OnClickListener {
+public class MainActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		super.onCreate(savedInstanceState);
 

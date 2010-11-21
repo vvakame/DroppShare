@@ -2,8 +2,7 @@ package net.vvakame.droppshare.receiver;
 
 import java.util.Date;
 
-import net.vvakame.android.helper.AndroidUtil;
-import net.vvakame.droppshare.common.LogTagIF;
+import net.vvakame.android.helper.Log;
 import net.vvakame.droppshare.common.SerializeUtil;
 import net.vvakame.droppshare.model.InstallLogDao;
 import net.vvakame.droppshare.model.InstallLogModel;
@@ -14,19 +13,17 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.util.Log;
 
 /**
  * パッケージ操作に関わるBroadcastを受けるReceiver
  * 
  * @author vvakame
  */
-public class PackageOperationReceiver extends BroadcastReceiver implements
-		LogTagIF {
+public class PackageOperationReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d(TAG, AndroidUtil.getStackName() + ", " + intent.getAction());
+		Log.d(Log.getStackName() + ", " + intent.getAction());
 
 		String action = intent.getAction();
 		if (!Intent.ACTION_PACKAGE_ADDED.equals(action)
@@ -36,7 +33,7 @@ public class PackageOperationReceiver extends BroadcastReceiver implements
 		}
 
 		String packageName = intent.getData().getSchemeSpecificPart();
-		Log.d(TAG, AndroidUtil.getStackName() + ", " + packageName);
+		Log.d(Log.getStackName() + ", " + packageName);
 
 		PackageInfo pInfo = null;
 		ApplicationInfo appInfo = null;

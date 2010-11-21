@@ -11,7 +11,8 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.vvakame.android.helper.AndroidUtil;
+import net.vvakame.android.helper.FileUtil;
+import net.vvakame.android.helper.Log;
 import net.vvakame.android.helper.ZipUtil;
 import net.vvakame.droppshare.R;
 import net.vvakame.droppshare.model.AppData;
@@ -27,10 +28,9 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.util.Xml;
 
-public class XmlUtil implements LogTagIF {
+public class XmlUtil {
 
 	private static final String DROPP_SHARE = "DroppShare";
 	private static final String VERSION = "version";
@@ -56,9 +56,9 @@ public class XmlUtil implements LogTagIF {
 
 	public static void writeXmlCache(Context context, String fileName,
 			List<AppData> appDataList) {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
-		AndroidUtil.deleteDir(WORKING_DIR);
+		FileUtil.deleteDir(WORKING_DIR);
 		TEMP_DIR.mkdirs();
 
 		String result = createXml(context, appDataList);
@@ -73,7 +73,7 @@ public class XmlUtil implements LogTagIF {
 			fw.close();
 
 		} catch (IOException e) {
-			Log.d(TAG, AndroidUtil.getExceptionLog(e));
+			Log.e(e);
 			return;
 		}
 
@@ -86,15 +86,15 @@ public class XmlUtil implements LogTagIF {
 			zedit.push(TEMP_DIR);
 			zedit.finish();
 		} catch (FileNotFoundException e) {
-			Log.d(TAG, AndroidUtil.getExceptionLog(e));
+			Log.e(e);
 			return;
 		} catch (IOException e) {
-			Log.d(TAG, AndroidUtil.getExceptionLog(e));
+			Log.e(e);
 			return;
 		}
 
 		archFile.renameTo(new File(DATA_DIR, fileName + POSTFIX));
-		AndroidUtil.deleteDir(WORKING_DIR);
+		FileUtil.deleteDir(WORKING_DIR);
 	}
 
 	public static List<AppData> readXmlCache(Context context, File zipFile) {
@@ -104,15 +104,15 @@ public class XmlUtil implements LogTagIF {
 			throw new IllegalArgumentException("Not found " + zipFile.getName());
 		}
 
-		AndroidUtil.deleteDir(WORKING_DIR);
+		FileUtil.deleteDir(WORKING_DIR);
 
 		File tmpZip = new File(WORKING_DIR, DROZIP_NAME);
 		tmpZip.getParentFile().mkdirs();
 		try {
-			AndroidUtil.copyFile(zipFile, tmpZip);
+			FileUtil.copyFile(zipFile, tmpZip);
 			ZipUtil.unzip(tmpZip, WORKING_DIR);
 		} catch (IOException e) {
-			Log.d(TAG, AndroidUtil.getExceptionLog(e));
+			Log.e(e);
 			return null;
 		}
 
@@ -120,12 +120,12 @@ public class XmlUtil implements LogTagIF {
 		try {
 			fin = new FileInputStream(XML_FILE);
 		} catch (FileNotFoundException e) {
-			Log.d(TAG, AndroidUtil.getExceptionLog(e));
+			Log.e(e);
 			return null;
 		}
 		appList = readXml(context, fin);
 
-		AndroidUtil.deleteDir(WORKING_DIR);
+		FileUtil.deleteDir(WORKING_DIR);
 
 		return appList;
 	}
@@ -176,11 +176,11 @@ public class XmlUtil implements LogTagIF {
 
 			result = writer.toString();
 		} catch (IllegalArgumentException e) {
-			Log.d(TAG, AndroidUtil.getExceptionLog(e));
+			Log.e(e);
 		} catch (IllegalStateException e) {
-			Log.d(TAG, AndroidUtil.getExceptionLog(e));
+			Log.e(e);
 		} catch (IOException e) {
-			Log.d(TAG, AndroidUtil.getExceptionLog(e));
+			Log.e(e);
 		}
 
 		return result;
@@ -256,15 +256,15 @@ public class XmlUtil implements LogTagIF {
 					eventType = xmlParser.next();
 				}
 			} catch (NumberFormatException e) {
-				Log.d(TAG, AndroidUtil.getExceptionLog(e));
+				Log.e(e);
 				return null;
 			} catch (IOException e) {
-				Log.d(TAG, AndroidUtil.getExceptionLog(e));
+				Log.e(e);
 				return null;
 			}
 
 		} catch (XmlPullParserException e) {
-			Log.d(TAG, AndroidUtil.getExceptionLog(e));
+			Log.e(e);
 			return null;
 		}
 
@@ -289,14 +289,14 @@ public class XmlUtil implements LogTagIF {
 	}
 
 	private static void writeBitmap(File fileName, Bitmap bitmap) {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		try {
 			FileOutputStream fout = new FileOutputStream(fileName);
 
 			bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESS_QUALITY, fout);
 		} catch (FileNotFoundException e) {
-			Log.d(TAG, AndroidUtil.getExceptionLog(e));
+			Log.e(e);
 		}
 	}
 }

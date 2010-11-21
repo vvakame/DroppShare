@@ -5,13 +5,11 @@ import java.io.InvalidClassException;
 import java.util.List;
 
 import net.vvakame.android.helper.Func;
-import net.vvakame.android.helper.AndroidUtil;
-import net.vvakame.droppshare.common.LogTagIF;
+import net.vvakame.android.helper.Log;
 import net.vvakame.droppshare.common.SerializeUtil;
 import net.vvakame.droppshare.model.AppData;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 
 /**
@@ -20,7 +18,7 @@ import android.widget.ArrayAdapter;
  * @author vvakame
  */
 public abstract class DrozipBaseAsyncTask extends
-		AsyncTask<Boolean, AppData, List<AppData>> implements LogTagIF {
+		AsyncTask<Boolean, AppData, List<AppData>> {
 
 	protected Context mContext = null;
 	protected ArrayAdapter<AppData> mAdapter = null;
@@ -30,7 +28,7 @@ public abstract class DrozipBaseAsyncTask extends
 			Func<List<AppData>> postExecFunc) {
 		super();
 
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 		mContext = context.getApplicationContext();
 		mAdapter = adapter;
 		mFunc = postExecFunc;
@@ -39,13 +37,13 @@ public abstract class DrozipBaseAsyncTask extends
 	public DrozipBaseAsyncTask(Context context, Func<List<AppData>> postExecFunc) {
 		super();
 
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 		mContext = context.getApplicationContext();
 		mFunc = postExecFunc;
 	}
 
 	protected List<AppData> tryReadCache(File file, Boolean... params) {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		List<AppData> appDataList = null;
 
@@ -53,7 +51,7 @@ public abstract class DrozipBaseAsyncTask extends
 				&& params[0].booleanValue() == true;
 
 		if (!clearFlg && file.exists()) {
-			Log.d(TAG, AndroidUtil.getStackName() + ", use cache.");
+			Log.d(Log.getStackName() + ", use cache.");
 			try {
 				appDataList = SerializeUtil.readSerializedCaches(file);
 				if (appDataList != null) {
@@ -63,10 +61,10 @@ public abstract class DrozipBaseAsyncTask extends
 				}
 			} catch (InvalidClassException e) {
 				// ここに来るのは、SerializeされたオブジェクトのserialVersionUIDが一致しないときに来る想定
-				Log.d(TAG, AndroidUtil.getExceptionLog(e));
+				Log.e(e);
 			} catch (ClassNotFoundException e) {
 				// ここに来るのは、Serializeされたオブジェクトのパッケージ名が変更になってたりしたときに来る想定
-				Log.d(TAG, AndroidUtil.getExceptionLog(e));
+				Log.e(e);
 			}
 		}
 
@@ -84,7 +82,7 @@ public abstract class DrozipBaseAsyncTask extends
 
 	@Override
 	protected void onPostExecute(List<AppData> appDataList) {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 		super.onPostExecute(appDataList);
 
 		if (mFunc != null) {

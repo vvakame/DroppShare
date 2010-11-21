@@ -3,9 +3,8 @@ package net.vvakame.droppshare.activity;
 import java.util.List;
 
 import net.vvakame.android.helper.Func;
-import net.vvakame.android.helper.AndroidUtil;
+import net.vvakame.android.helper.Log;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.common.LogTagIF;
 import net.vvakame.droppshare.common.SimejiIF;
 import net.vvakame.droppshare.model.AppData;
 import net.vvakame.droppshare.model.AppDataAdapter;
@@ -22,7 +21,6 @@ import android.app.LocalActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,19 +28,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 
 /**
  * アプリ一覧からみんなと共有したいアプリを選ぶActivity
  * 
  * @author vvakame
  */
-public class AppShareActivity extends Activity implements LogTagIF, SimejiIF {
+public class AppShareActivity extends Activity implements SimejiIF {
 
 	public static final int SEND = 0;
 	public static final int MENU_DIALOG = 1;
@@ -58,7 +56,7 @@ public class AppShareActivity extends Activity implements LogTagIF, SimejiIF {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		super.onCreate(savedInstanceState);
 
@@ -136,14 +134,14 @@ public class AppShareActivity extends Activity implements LogTagIF, SimejiIF {
 
 	@Override
 	public void onResume() {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		super.onResume();
 	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		super.onActivityResult(requestCode, resultCode, data);
 
@@ -256,7 +254,7 @@ public class AppShareActivity extends Activity implements LogTagIF, SimejiIF {
 
 	@Override
 	public void onPause() {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		super.onPause();
 	}
@@ -389,7 +387,7 @@ public class AppShareActivity extends Activity implements LogTagIF, SimejiIF {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			Log.d(TAG, AndroidUtil.getStackName());
+			Log.d();
 
 			AppDataAdapter adapter = pickAppDataAdapter(parent);
 			if (adapter.getCount() <= 0) {
@@ -403,7 +401,7 @@ public class AppShareActivity extends Activity implements LogTagIF, SimejiIF {
 		@Override
 		public boolean onItemLongClick(AdapterView<?> parent, View view,
 				int position, long id) {
-			Log.d(TAG, AndroidUtil.getStackName());
+			Log.d();
 
 			AppDataAdapter adapter = pickAppDataAdapter(parent);
 			if (adapter.getCount() <= 0) {
@@ -425,7 +423,7 @@ public class AppShareActivity extends Activity implements LogTagIF, SimejiIF {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			Log.d(TAG, AndroidUtil.getStackName());
+			Log.d();
 			AppDataAdapter adapter = pickAppDataAdapter(parent);
 			if (adapter.getCount() <= 0) {
 				return;

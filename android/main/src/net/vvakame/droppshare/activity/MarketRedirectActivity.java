@@ -2,14 +2,12 @@ package net.vvakame.droppshare.activity;
 
 import java.util.regex.Pattern;
 
-import net.vvakame.android.helper.AndroidUtil;
+import net.vvakame.android.helper.Log;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.common.LogTagIF;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.Window;
 import android.widget.TextView;
 
@@ -18,7 +16,7 @@ import android.widget.TextView;
  * 
  * @author vvakame
  */
-public class MarketRedirectActivity extends Activity implements LogTagIF {
+public class MarketRedirectActivity extends Activity {
 
 	private static String marketProtcol = "market://";
 
@@ -28,7 +26,7 @@ public class MarketRedirectActivity extends Activity implements LogTagIF {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		super.onCreate(savedInstanceState);
 

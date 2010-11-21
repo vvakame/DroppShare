@@ -1,14 +1,12 @@
 package net.vvakame.droppshare.activity;
 
-import net.vvakame.android.helper.AndroidUtil;
+import net.vvakame.android.helper.Log;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.common.LogTagIF;
 import net.vvakame.droppshare.model.OAuthData;
 import net.vvakame.droppshare.model.OAuthHelper;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,12 +15,12 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 
-public class HostingFrontendActivity extends Activity implements LogTagIF,
+public class HostingFrontendActivity extends Activity implements 
 		OnClickListener {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.hosting_frontend);

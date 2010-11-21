@@ -6,9 +6,8 @@ import java.util.List;
 
 import net.vvakame.android.helper.Closure;
 import net.vvakame.android.helper.DrivenHandler;
-import net.vvakame.android.helper.AndroidUtil;
+import net.vvakame.android.helper.Log;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.common.LogTagIF;
 import net.vvakame.droppshare.common.SerializeUtil;
 import net.vvakame.droppshare.common.XmlUtil;
 import net.vvakame.droppshare.model.AppData;
@@ -22,18 +21,17 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
 /**
  * 指定されたデータファイルの内容を表示するActivity
  * 
  * @author vvakame
  */
-public class DiffViewerActivity extends Activity implements LogTagIF {
+public class DiffViewerActivity extends Activity {
 	/** 受け付けるデータタイプ */
 	public static final String TYPE = "application/droppshare";
 
@@ -53,7 +51,7 @@ public class DiffViewerActivity extends Activity implements LogTagIF {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		super.onCreate(savedInstanceState);
 

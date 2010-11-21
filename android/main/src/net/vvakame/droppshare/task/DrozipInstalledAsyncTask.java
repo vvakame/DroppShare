@@ -7,8 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import net.vvakame.android.helper.Func;
-import net.vvakame.android.helper.AndroidUtil;
-import net.vvakame.droppshare.common.LogTagIF;
+import net.vvakame.android.helper.Log;
 import net.vvakame.droppshare.common.SerializeUtil;
 import net.vvakame.droppshare.model.AppData;
 import net.vvakame.droppshare.model.AppDataUtil;
@@ -17,7 +16,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 
 /**
@@ -25,8 +23,7 @@ import android.widget.ArrayAdapter;
  * 
  * @author vvakame
  */
-public class DrozipInstalledAsyncTask extends DrozipBaseAsyncTask implements
-		LogTagIF {
+public class DrozipInstalledAsyncTask extends DrozipBaseAsyncTask {
 
 	private static final int MODE_NEW = 0;
 	private static final int MODE_CACHE = 1;
@@ -48,19 +45,19 @@ public class DrozipInstalledAsyncTask extends DrozipBaseAsyncTask implements
 			ArrayAdapter<AppData> adapter, Func<List<AppData>> postExecFunc) {
 		super(context, adapter, postExecFunc);
 
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 	}
 
 	public DrozipInstalledAsyncTask(Context context,
 			Func<List<AppData>> postExecFunc) {
 		super(context, postExecFunc);
 
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 	}
 
 	@Override
 	protected List<AppData> doInBackground(Boolean... params) {
-		Log.d(TAG, AndroidUtil.getStackName() + ", clear cache:"
+		Log.d(Log.getStackName() + ", clear cache:"
 				+ (params.length == 1 ? params[0].toString() : "none"));
 
 		List<AppData> appDataList = null;
@@ -68,7 +65,7 @@ public class DrozipInstalledAsyncTask extends DrozipBaseAsyncTask implements
 		appDataList = tryReadCache(cacheFile, params);
 
 		if (appDataList == null) {
-			Log.d(TAG, AndroidUtil.getStackName() + ", create cache.");
+			Log.d(Log.getStackName() + ", create cache.");
 			mMode = MODE_NEW;
 			appDataList = new ArrayList<AppData>();
 
@@ -77,7 +74,7 @@ public class DrozipInstalledAsyncTask extends DrozipBaseAsyncTask implements
 					.getInstalledApplications(PackageManager.GET_ACTIVITIES);
 
 			for (ApplicationInfo appInfo : appInfoList) {
-				Log.d(TAG, "now processing " + appInfo.packageName);
+				Log.d("now processing " + appInfo.packageName);
 
 				// デフォルト系アプリを撥ねる
 				if ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
@@ -91,7 +88,7 @@ public class DrozipInstalledAsyncTask extends DrozipBaseAsyncTask implements
 							PackageManager.GET_ACTIVITIES);
 					appData = AppDataUtil.convert(mContext, pm, pInfo, appInfo);
 				} catch (NameNotFoundException e) {
-					Log.d(TAG, AndroidUtil.getExceptionLog(e));
+					Log.e(e);
 					continue;
 				}
 
@@ -106,7 +103,7 @@ public class DrozipInstalledAsyncTask extends DrozipBaseAsyncTask implements
 					.writeSerializedCache(mContext, cacheFile, appDataList);
 		}
 
-		Log.d(TAG, AndroidUtil.getStackName() + ", done it!");
+		Log.d(Log.getStackName() + ", done it!");
 
 		return appDataList;
 	}

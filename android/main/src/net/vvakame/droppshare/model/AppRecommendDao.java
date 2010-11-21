@@ -3,21 +3,19 @@ package net.vvakame.droppshare.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.vvakame.android.helper.AndroidUtil;
-import net.vvakame.droppshare.common.LogTagIF;
+import net.vvakame.android.helper.Log;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 /**
  * インストールログ保持のためのDAO
  * 
  * @author vvakame
  */
-public class AppRecommendDao implements AppRecommendIF, LogTagIF {
+public class AppRecommendDao implements AppRecommendIF {
 
 	private DBHelper mHelper = null;
 
@@ -53,7 +51,7 @@ public class AppRecommendDao implements AppRecommendIF, LogTagIF {
 	}
 
 	public AppRecommendModel save(AppRecommendModel model) {
-		Log.d(TAG, AndroidUtil.getStackName() + ", " + model);
+		Log.d(Log.getStackName() + ", " + model);
 
 		SQLiteDatabase db = mHelper.getWritableDatabase();
 		AppRecommendModel result = null;
@@ -81,7 +79,7 @@ public class AppRecommendDao implements AppRecommendIF, LogTagIF {
 	}
 
 	public AppRecommendModel load(Long rowId) {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		SQLiteDatabase db = mHelper.getReadableDatabase();
 		Cursor cursor = null;
@@ -100,7 +98,7 @@ public class AppRecommendDao implements AppRecommendIF, LogTagIF {
 	}
 
 	public void delete(AppRecommendModel model) {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		SQLiteDatabase db = mHelper.getWritableDatabase();
 		try {
@@ -112,7 +110,7 @@ public class AppRecommendDao implements AppRecommendIF, LogTagIF {
 	}
 
 	public void truncate() {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		SQLiteDatabase db = mHelper.getWritableDatabase();
 		try {
@@ -123,7 +121,7 @@ public class AppRecommendDao implements AppRecommendIF, LogTagIF {
 	}
 
 	public List<AppRecommendModel> list() {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		SQLiteDatabase db = mHelper.getReadableDatabase();
 		Cursor cursor = null;

@@ -12,9 +12,8 @@ import java.util.concurrent.ExecutionException;
 import net.vvakame.android.helper.AppExistsUtil;
 import net.vvakame.android.helper.Closure;
 import net.vvakame.android.helper.DrivenHandler;
-import net.vvakame.android.helper.AndroidUtil;
+import net.vvakame.android.helper.Log;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.common.LogTagIF;
 import net.vvakame.droppshare.common.OpenIntentIF;
 import net.vvakame.droppshare.common.XmlUtil;
 import net.vvakame.droppshare.model.AppData;
@@ -30,31 +29,30 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 
 /**
  * アプリ一覧読み込み元ファイル選択用Activity
  * 
  * @author vvakame
  */
-public class ListShareActivity extends Activity implements LogTagIF,
-		OpenIntentIF, OnClickListener {
+public class ListShareActivity extends Activity implements OpenIntentIF,
+		OnClickListener {
 	/** 探すデータファイルの拡張子 */
 	private static final String SUFFIX = ".drozip";
 
@@ -82,7 +80,7 @@ public class ListShareActivity extends Activity implements LogTagIF,
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		super.onCreate(savedInstanceState);
 
@@ -176,10 +174,7 @@ public class ListShareActivity extends Activity implements LogTagIF,
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d(TAG,
-				AndroidUtil.getStackName() + ", req=" + requestCode + ", res="
-						+ resultCode + ", data="
-						+ (data != null ? data.getDataString() : "none"));
+		Log.d();
 
 		if (requestCode == REQUEST_PICK_DIR) {
 			Uri uri = data != null ? data.getData() : null;
@@ -237,7 +232,7 @@ public class ListShareActivity extends Activity implements LogTagIF,
 	}
 
 	private void addFileSet(String dirName, List<File> fileList) {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		FileListAdapter fileAdapter = new FileListAdapter(this,
 				R.layout.file_view, fileList);
@@ -332,9 +327,9 @@ public class ListShareActivity extends Activity implements LogTagIF,
 				try {
 					appList = async.execute(false).get();
 				} catch (InterruptedException e) {
-					Log.d(TAG, AndroidUtil.getExceptionLog(e));
+					Log.e(e);
 				} catch (ExecutionException e) {
-					Log.d(TAG, AndroidUtil.getExceptionLog(e));
+					Log.e(e);
 				}
 
 				XmlUtil.writeXmlCache(ListShareActivity.this,

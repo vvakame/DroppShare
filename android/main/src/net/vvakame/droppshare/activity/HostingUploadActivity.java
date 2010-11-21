@@ -7,9 +7,8 @@ import java.net.MalformedURLException;
 
 import net.vvakame.android.helper.Closure;
 import net.vvakame.android.helper.DrivenHandler;
-import net.vvakame.android.helper.AndroidUtil;
+import net.vvakame.android.helper.Log;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.common.LogTagIF;
 import net.vvakame.droppshare.hosting.HttpPostMultipartWrapper;
 import net.vvakame.droppshare.model.DroppHostingHelper;
 import net.vvakame.droppshare.model.OAuthData;
@@ -20,10 +19,9 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
-public class HostingUploadActivity extends Activity implements LogTagIF {
+public class HostingUploadActivity extends Activity {
 	private static final int DIALOG_PROGRESS = 1;
 
 	private static final int MESSAGE_START_PROGRESS = 1;
@@ -38,7 +36,7 @@ public class HostingUploadActivity extends Activity implements LogTagIF {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		super.onCreate(savedInstanceState);
 
@@ -153,7 +151,7 @@ public class HostingUploadActivity extends Activity implements LogTagIF {
 		} catch (FileNotFoundException e) {
 			sanitizeException(e);
 		} catch (MalformedURLException e) {
-			Log.e(TAG, AndroidUtil.getExceptionLog(e));
+			Log.e(e);
 			throw e;
 		} catch (IOException e) {
 			sanitizeException(e);
@@ -163,7 +161,7 @@ public class HostingUploadActivity extends Activity implements LogTagIF {
 	}
 
 	public void sanitizeException(Exception e) {
-		Log.e(TAG, AndroidUtil.getExceptionLog(e));
+		Log.e(e);
 
 		final String message = e.getMessage();
 

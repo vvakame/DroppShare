@@ -1,23 +1,21 @@
 package net.vvakame.droppshare.activity;
 
 import net.vvakame.android.helper.AppExistsUtil;
-import net.vvakame.android.helper.AndroidUtil;
+import net.vvakame.android.helper.Log;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.common.LogTagIF;
 import net.vvakame.droppshare.common.ZXingIF;
 import net.vvakame.droppshare.model.AppData;
 import net.vvakame.droppshare.model.AppDataUtil;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 
-public class MenuDialogActivity extends Activity implements ZXingIF, LogTagIF {
+public class MenuDialogActivity extends Activity implements ZXingIF {
 	public static final String APP_DATA = "appData";
 	public static final String RESULT = "result";
 
@@ -25,7 +23,7 @@ public class MenuDialogActivity extends Activity implements ZXingIF, LogTagIF {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		super.onCreate(savedInstanceState);
 

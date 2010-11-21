@@ -2,9 +2,8 @@ package net.vvakame.droppshare.activity;
 
 import net.vvakame.android.helper.Closure;
 import net.vvakame.android.helper.DrivenHandler;
-import net.vvakame.android.helper.AndroidUtil;
+import net.vvakame.android.helper.Log;
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.common.LogTagIF;
 import net.vvakame.droppshare.model.DroppHostingHelper;
 import net.vvakame.droppshare.model.OAuthData;
 import net.vvakame.droppshare.model.OAuthHelper;
@@ -14,7 +13,6 @@ import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebSettings;
@@ -22,7 +20,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-public class TwitterOAuthActivity extends Activity implements LogTagIF {
+public class TwitterOAuthActivity extends Activity {
 	private static final int DIALOG_PROGRESS = 1;
 
 	private static final int MESSAGE_START_PROGRESS = 1;
@@ -75,7 +73,7 @@ public class TwitterOAuthActivity extends Activity implements LogTagIF {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		super.onCreate(savedInstanceState);
 

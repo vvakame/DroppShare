@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.vvakame.android.helper.Func;
-import net.vvakame.android.helper.AndroidUtil;
-import net.vvakame.droppshare.common.LogTagIF;
+import net.vvakame.android.helper.Log;
 import net.vvakame.droppshare.model.AppData;
 import net.vvakame.droppshare.model.AppDataUtil;
 import android.app.Activity;
@@ -15,7 +14,6 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 
 /**
@@ -24,8 +22,7 @@ import android.widget.ArrayAdapter;
  * 
  * @author vvakame
  */
-public class DrozipRecentlyUsedAsyncTask extends DrozipBaseAsyncTask implements
-		LogTagIF {
+public class DrozipRecentlyUsedAsyncTask extends DrozipBaseAsyncTask {
 
 	/** 表示するアプリの最大量 */
 	private static final int MAX_NUM = 30;
@@ -34,7 +31,7 @@ public class DrozipRecentlyUsedAsyncTask extends DrozipBaseAsyncTask implements
 			ArrayAdapter<AppData> adapter, Func<List<AppData>> postExecFunc) {
 		super(context, adapter, postExecFunc);
 
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 	}
 
 	@Deprecated
@@ -42,12 +39,12 @@ public class DrozipRecentlyUsedAsyncTask extends DrozipBaseAsyncTask implements
 			Func<List<AppData>> postExecFunc) {
 		super(context, postExecFunc);
 
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 	}
 
 	@Override
 	protected List<AppData> doInBackground(Boolean... params) {
-		Log.d(TAG, AndroidUtil.getStackName());
+		Log.d();
 
 		ActivityManager am = (ActivityManager) mContext
 				.getSystemService(Activity.ACTIVITY_SERVICE);
@@ -55,7 +52,7 @@ public class DrozipRecentlyUsedAsyncTask extends DrozipBaseAsyncTask implements
 		List<RecentTaskInfo> taskInfoList = am.getRecentTasks(MAX_NUM,
 				ActivityManager.RECENT_WITH_EXCLUDED);
 
-		Log.d(TAG, AndroidUtil.getStackName() + ", get="
+		Log.d(Log.getStackName() + ", get="
 				+ (taskInfoList == null ? -1 : taskInfoList.size()));
 
 		List<AppData> appDataList = new ArrayList<AppData>();
@@ -89,7 +86,7 @@ public class DrozipRecentlyUsedAsyncTask extends DrozipBaseAsyncTask implements
 			}
 		}
 
-		Log.d(TAG, AndroidUtil.getStackName() + ", get=" + appDataList.size());
+		Log.d(Log.getStackName() + ", get=" + appDataList.size());
 
 		return appDataList;
 	}

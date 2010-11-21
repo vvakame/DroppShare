@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 import net.vvakame.droppshare.R;
-import net.vvakame.droppshare.common.LogTagIF;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -29,7 +28,7 @@ import android.os.Environment;
  * 
  * @author vvakame
  */
-public class AppDataUtil implements LogTagIF {
+public class AppDataUtil {
 
 	public static final File EX_STRAGE = new File(
 			Environment.getExternalStorageDirectory(), "DroppShare/");
