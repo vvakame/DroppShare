@@ -23,20 +23,49 @@ public class AppDiffAdapter extends ArrayAdapter<AppDiffData> {
 	private Context mContext = null;
 	private int mResId = 0;
 
+	int mWeak;
+	int mStrong;
+	int mSide1exists;
+	int mSide2exists;
+	int mNone;
+
 	public AppDiffAdapter(Context context, int textViewResourceId,
 			List<AppDiffData> diffList) {
 		super(context, textViewResourceId, diffList);
 
 		mContext = context.getApplicationContext();
 		mResId = textViewResourceId;
+
+		mWeak = mContext.getResources().getColor(R.color.weak);
+		mStrong = mContext.getResources().getColor(R.color.strong);
+		mSide1exists = mContext.getResources().getColor(R.color.side_1_exists);
+		mSide2exists = mContext.getResources().getColor(R.color.side_2_exists);
+		mNone = mContext.getResources().getColor(R.color.none);
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		if (convertView == null) {
+		ViewHolder holder;
+
+		View view = convertView;
+		if (view == null) {
 			LayoutInflater inflater = (LayoutInflater) mContext
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = inflater.inflate(mResId, null);
+			view = inflater.inflate(mResId, null);
+
+			holder = new ViewHolder();
+			holder.layout = (LinearLayout) view.findViewById(R.id.boss);
+			holder.side1View = (ImageView) view.findViewById(R.id.side_1);
+			holder.side2View = (ImageView) view.findViewById(R.id.side_2);
+			holder.iconView = (ImageView) view
+					.findViewById(R.id.application_icon);
+			holder.appNameText = (TextView) view
+					.findViewById(R.id.application_name);
+			holder.appDescText = (TextView) view
+					.findViewById(R.id.application_description);
+			view.setTag(holder);
+		} else {
+			holder = (ViewHolder) view.getTag();
 		}
 
 		// 差分取得
@@ -45,63 +74,57 @@ public class AppDiffAdapter extends ArrayAdapter<AppDiffData> {
 		AppData master = diffData.getMasterAppData();
 		boolean side1 = diffData.hasSrcAppData();
 		boolean side2 = diffData.hasDestAppData();
-		int textColor = mContext.getResources().getColor(R.color.weak);
+		int textColor = mWeak;
 		if (side1 && side2) {
-			textColor = mContext.getResources().getColor(R.color.strong);
+			textColor = mStrong;
 		} else if (side1) {
-			textColor = mContext.getResources().getColor(R.color.side_1_exists);
+			textColor = mSide1exists;
 		} else if (side2) {
-			textColor = mContext.getResources().getColor(R.color.side_2_exists);
+			textColor = mSide2exists;
 		}
 
-		LinearLayout l = (LinearLayout) convertView.findViewById(R.id.boss);
-		l.setBackgroundDrawable(new ColorDrawable(R.color.none));
+		holder.layout.setBackgroundDrawable(new ColorDrawable(R.color.none));
 
 		// 左の耳の色
-		ImageView side1View = (ImageView) convertView.findViewById(R.id.side_1);
-
 		if (side1) {
-			side1View.setImageDrawable(new ColorDrawable(mContext
-					.getResources().getColor(R.color.side_1_exists)));
+			holder.side1View.setImageDrawable(new ColorDrawable(mSide1exists));
 		} else {
-			side1View.setImageDrawable(new ColorDrawable(mContext
-					.getResources().getColor(R.color.none)));
+			holder.side1View.setImageDrawable(new ColorDrawable(mNone));
 		}
 
 		// 右の耳の色
-		ImageView side2View = (ImageView) convertView.findViewById(R.id.side_2);
-
 		if (side2) {
-			side2View.setImageDrawable(new ColorDrawable(mContext
-					.getResources().getColor(R.color.side_2_exists)));
+			holder.side2View.setImageDrawable(new ColorDrawable(mSide2exists));
 		} else {
-			side2View.setImageDrawable(new ColorDrawable(mContext
-					.getResources().getColor(R.color.none)));
+			holder.side2View.setImageDrawable(new ColorDrawable(mNone));
 		}
 
 		// アプリicon
-		ImageView iconView = (ImageView) convertView
-				.findViewById(R.id.application_icon);
-		if (iconView != null) {
-			iconView.setImageDrawable(master.getIcon());
+		if (holder.iconView != null) {
+			holder.iconView.setImageDrawable(master.getIcon());
 		}
 
 		// アプリ名
-		TextView appNameText = (TextView) convertView
-				.findViewById(R.id.application_name);
-		if (appNameText != null) {
-			appNameText.setText(master.getAppName());
-			appNameText.setTextColor(textColor);
+		if (holder.appNameText != null) {
+			holder.appNameText.setText(master.getAppName());
+			holder.appNameText.setTextColor(textColor);
 		}
 
 		// アプリの説明
-		TextView appDescText = (TextView) convertView
-				.findViewById(R.id.application_description);
-		if (appDescText != null) {
-			appDescText.setText(master.getDescription());
-			appDescText.setTextColor(textColor);
+		if (holder.appDescText != null) {
+			holder.appDescText.setText(master.getDescription());
+			holder.appDescText.setTextColor(textColor);
 		}
 
-		return convertView;
+		return view;
+	}
+
+	private static class ViewHolder {
+		LinearLayout layout;
+		ImageView side1View;
+		ImageView side2View;
+		ImageView iconView;
+		TextView appNameText;
+		TextView appDescText;
 	}
 }

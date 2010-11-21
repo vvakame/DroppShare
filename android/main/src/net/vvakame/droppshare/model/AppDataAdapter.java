@@ -38,55 +38,74 @@ public class AppDataAdapter extends ArrayAdapter<AppData> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		if (convertView == null) {
+		ViewHolder holder;
+
+		View view = convertView;
+		if (view == null) {
 			LayoutInflater inflater = (LayoutInflater) mContext
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = inflater.inflate(mResId, null);
+			view = inflater.inflate(mResId, null);
+
+			holder = new ViewHolder();
+			holder.iconView = (ImageView) view
+					.findViewById(R.id.application_icon);
+			holder.appNameText = (TextView) view
+					.findViewById(R.id.application_name);
+			holder.appDescText = (TextView) view
+					.findViewById(R.id.application_description);
+			holder.appVerText = (TextView) view
+					.findViewById(R.id.application_version_name);
+			holder.actionView = (TextView) view
+					.findViewById(R.id.application_action);
+			holder.processDateView = (TextView) view
+					.findViewById(R.id.application_process_date);
+
+			view.setTag(holder);
+		} else {
+			holder = (ViewHolder) view.getTag();
 		}
 
 		// アプリicon
-		ImageView iconView = (ImageView) convertView
-				.findViewById(R.id.application_icon);
-		if (iconView != null) {
-			iconView.setImageDrawable(getItem(position).getIcon());
+		if (holder.iconView != null) {
+			holder.iconView.setImageDrawable(getItem(position).getIcon());
 		}
 
 		// アプリ名
-		TextView appNameText = (TextView) convertView
-				.findViewById(R.id.application_name);
-		if (appNameText != null) {
-			appNameText.setText(getItem(position).getAppName());
+		if (holder.appNameText != null) {
+			holder.appNameText.setText(getItem(position).getAppName());
 		}
 
 		// アプリの説明
-		TextView appDescText = (TextView) convertView
-				.findViewById(R.id.application_description);
-		if (appDescText != null) {
-			appDescText.setText(getItem(position).getDescription());
+		if (holder.appDescText != null) {
+			holder.appDescText.setText(getItem(position).getDescription());
 		}
 
 		// バージョン名
-		TextView appVerText = (TextView) convertView
-				.findViewById(R.id.application_version_name);
-		if (appVerText != null && getItem(position).getVersionName() != null) {
-			appVerText.setText(getItem(position).getVersionName());
+		if (holder.appVerText != null
+				&& getItem(position).getVersionName() != null) {
+			holder.appVerText.setText(getItem(position).getVersionName());
 		}
 
 		// アクション
-		TextView actionView = (TextView) convertView
-				.findViewById(R.id.application_action);
-		if (actionView != null) {
-			actionView.setText(getItem(position).getAction());
+		if (holder.actionView != null) {
+			holder.actionView.setText(getItem(position).getAction());
 		}
 
 		// 処理日時
-		TextView processDateView = (TextView) convertView
-				.findViewById(R.id.application_process_date);
-		if (processDateView != null) {
-			processDateView.setText(getItem(position).getProcessDate()
+		if (holder.processDateView != null) {
+			holder.processDateView.setText(getItem(position).getProcessDate()
 					.toLocaleString());
 		}
 
-		return convertView;
+		return view;
+	}
+
+	private static class ViewHolder {
+		ImageView iconView;
+		TextView appNameText;
+		TextView appDescText;
+		TextView appVerText;
+		TextView actionView;
+		TextView processDateView;
 	}
 }

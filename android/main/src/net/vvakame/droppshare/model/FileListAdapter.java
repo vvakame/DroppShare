@@ -38,18 +38,30 @@ public class FileListAdapter extends ArrayAdapter<File> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		if (convertView == null) {
+		ViewHolder holder;
+
+		View view = convertView;
+		if (view == null) {
 			LayoutInflater inflater = (LayoutInflater) mContext
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = inflater.inflate(mResId, null);
+			view = inflater.inflate(mResId, null);
+
+			holder = new ViewHolder();
+			holder.nameText = (TextView) view.findViewById(R.id.file_name);
+			view.setTag(holder);
+		} else {
+			holder = (ViewHolder) view.getTag();
 		}
 
 		// ファイル名
-		TextView nameText = (TextView) convertView.findViewById(R.id.file_name);
-		if (nameText != null) {
-			nameText.setText(getItem(position).getName());
+		if (holder.nameText != null) {
+			holder.nameText.setText(getItem(position).getName());
 		}
 
-		return convertView;
+		return view;
+	}
+
+	private	static class ViewHolder {
+		TextView nameText;
 	}
 }
