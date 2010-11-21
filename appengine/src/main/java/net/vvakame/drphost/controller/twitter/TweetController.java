@@ -26,7 +26,11 @@ public class TweetController extends Controller {
 
 	@Override
 	public Navigation run() throws Exception {
-		int id = asInteger("id");
+		Integer id = asInteger("id");
+
+		if (id == null) {
+			throw new IllegalArgumentException();
+		}
 
 		String tweet = asString("tweet");
 		tweet = StringUtil.isEmpty(tweet) ? "tweet!" : tweet;

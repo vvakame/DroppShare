@@ -32,7 +32,7 @@ public class CallbackController extends Controller {
 		RequestToken requestToken = sessionScope("requestToken");
 
 		if (twitter == null || requestToken == null) {
-			throw new IllegalStateException();
+			return redirect("/twitter/auth");
 		}
 
 		// AccessTokenの生成＆確認
@@ -51,10 +51,6 @@ public class CallbackController extends Controller {
 		oauth.setToken(accessToken.getToken());
 		oauth.setTokenSecret(accessToken.getTokenSecret());
 		Datastore.put(oauth);
-
-		// テスト用
-		twitter = TwitterService.getInstance(oauth);
-		twitter.updateStatus("案外住みやすいよ");
 
 		return redirect("drphost://id=" + oauth.getKey().getId() + "&hash="
 				+ oauth.getHash());
